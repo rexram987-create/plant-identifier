@@ -1,0 +1,11 @@
+{
+  "name": "Plant Identifier",
+  "short_name": "Plants",
+  "description": "Accessible multilingual plant identification app",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#0b1510",
+  "theme_color": "#10261b",
+  "lang": "he",
+  "dir": "rtl"
+}
