@@ -1,5 +1,5 @@
-const CACHE = 'plant-identifier-v4';
-const OFFLINE_ASSETS = ['./', './index.html', './styles.css', './app.js', './manifest.webmanifest'];
+const CACHE = 'plant-identifier-v5';
+const OFFLINE_ASSETS = ['./', './index.html', './styles.css', './local-name-search.js', './app.js', './manifest.webmanifest'];
 
 self.addEventListener('install', event => {
   event.waitUntil(
@@ -22,7 +22,11 @@ self.addEventListener('fetch', event => {
 
   const url = new URL(event.request.url);
 
-  if (url.hostname === 'api.gbif.org' || url.hostname.endsWith('.wikipedia.org')) {
+  if (
+    url.hostname === 'api.gbif.org' ||
+    url.hostname === 'www.wikidata.org' ||
+    url.hostname.endsWith('.wikipedia.org')
+  ) {
     event.respondWith(fetch(event.request));
     return;
   }
