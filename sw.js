@@ -1,8 +1,9 @@
-const CACHE = 'plant-identifier-v7';
+const CACHE = 'plant-identifier-v8';
 const OFFLINE_ASSETS = [
   './',
   './index.html',
   './styles.css',
+  './mobile-fix.css',
   './local-name-search.js',
   './app.js',
   './install.js',
