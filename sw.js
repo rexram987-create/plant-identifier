@@ -1,5 +1,15 @@
-const CACHE = 'plant-identifier-v5';
-const OFFLINE_ASSETS = ['./', './index.html', './styles.css', './local-name-search.js', './app.js', './manifest.webmanifest'];
+const CACHE = 'plant-identifier-v6';
+const OFFLINE_ASSETS = [
+  './',
+  './index.html',
+  './styles.css',
+  './local-name-search.js',
+  './app.js',
+  './install.js',
+  './manifest.webmanifest',
+  './icon-192.png',
+  './icon-512.png'
+];
 
 self.addEventListener('install', event => {
   event.waitUntil(

@@ -6,6 +6,7 @@
   <meta name="theme-color" content="#10261b" />
   <meta name="description" content="Accessible multilingual plant identification app" />
   <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="apple-touch-icon" href="icon-192.png" />
   <link rel="stylesheet" href="styles.css" />
   <title>מגדיר הצמחים</title>
 </head>
@@ -27,6 +28,7 @@
       </label>
       <button id="themeToggle" type="button" aria-pressed="true" data-i18n="theme">מצב כהה</button>
       <button id="fontToggle" type="button" aria-pressed="false" data-i18n="font">טקסט גדול</button>
+      <button id="installButton" type="button" hidden>התקן יישומון</button>
     </div>
   </header>
 
@@ -77,5 +79,6 @@
 
   <script src="local-name-search.js" defer></script>
   <script src="app.js" defer></script>
+  <script src="install.js" defer></script>
 </body>
 </html>
