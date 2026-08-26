@@ -1,4 +1,4 @@
-const CACHE = 'plant-identifier-v6';
+const CACHE = 'plant-identifier-v7';
 const OFFLINE_ASSETS = [
   './',
   './index.html',
