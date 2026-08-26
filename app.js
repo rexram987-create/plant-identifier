@@ -1,24 +1,30 @@
 const translations = {
   he: {
     dir: 'rtl', lang: 'he', eyebrow: 'מגדיר צמחים נגיש ורב־לשוני', title: 'מגדיר הצמחים', language: 'שפה', theme: 'מצב כהה', font: 'טקסט גדול',
-    heroTitle: 'זהה צמח או חפש מידע לפי שם', heroText: 'הגרסה הראשונה כוללת ממשק נגיש, חיפוש בסיסי והעלאת תמונה. בהמשך נחבר את מנועי הזיהוי ומאגרי המידע.',
-    searchTitle: 'חיפוש לפי שם', searchText: 'אפשר לחפש בעברית, באנגלית או בשם המדעי.', searchLabel: 'שם הצמח', searchPlaceholder: 'למשל: כלנית מצויה', searchButton: 'חפש',
+    heroTitle: 'זהה צמח או חפש מידע לפי שם', heroText: 'אפשר לחפש צמחים לפי שם באמצעות מאגר GBIF. זיהוי לפי תמונה יחובר בשלב הבא.',
+    searchTitle: 'חיפוש לפי שם', searchText: 'אפשר לחפש בשם מקומי, באנגלית או בשם המדעי.', searchLabel: 'שם הצמח', searchPlaceholder: 'למשל: Anemone coronaria', searchButton: 'חפש',
     photoTitle: 'זיהוי לפי תמונה', photoText: 'צלם צמח או בחר תמונה מהגלריה. הזיהוי האוטומטי יחובר בשלב הבא.', photoButton: 'בחר או צלם תמונה',
-    plannedTitle: 'מה נחבר בהמשך', footer: 'גרסת אב־טיפוס ראשונית', empty: 'יש להקליד שם של צמח.', searchDemo: 'בשלב זה החיפוש הוא הדגמה בלבד. חיפשת: ', imageReady: 'התמונה נטענה בהצלחה. בשלב הבא נחבר אותה למנוע זיהוי הצמחים.'
+    plannedTitle: 'מקורות ושירותים', footer: 'מגדיר צמחים נגיש ורב־לשוני', empty: 'יש להקליד שם של צמח.', imageReady: 'התמונה נטענה בהצלחה. בשלב הבא נחבר אותה למנוע זיהוי הצמחים.',
+    loading: 'מחפש במאגר GBIF…', noResults: 'לא נמצאו תוצאות מתאימות. נסה שם מדעי או שם באנגלית.', error: 'לא הצלחנו להתחבר כרגע ל־GBIF. כדאי לנסות שוב בעוד רגע.',
+    resultsFor: 'תוצאות עבור', scientificName: 'שם מדעי', commonName: 'שם נפוץ', family: 'משפחה', genus: 'סוג', order: 'סדרה', status: 'מעמד', source: 'מקור: GBIF', viewGbif: 'פתח ב־GBIF', unnamed: 'ללא שם נפוץ', unknown: 'לא ידוע'
   },
   en: {
     dir: 'ltr', lang: 'en', eyebrow: 'Accessible multilingual plant guide', title: 'Plant Identifier', language: 'Language', theme: 'Dark mode', font: 'Large text',
-    heroTitle: 'Identify a plant or search by name', heroText: 'This first version includes an accessible interface, basic search and photo upload. Data and identification services will be connected next.',
-    searchTitle: 'Search by name', searchText: 'Search in your language, English, or by scientific name.', searchLabel: 'Plant name', searchPlaceholder: 'For example: Anemone coronaria', searchButton: 'Search',
+    heroTitle: 'Identify a plant or search by name', heroText: 'You can now search for plants by name using GBIF. Photo identification will be connected next.',
+    searchTitle: 'Search by name', searchText: 'Search by a local name, English name, or scientific name.', searchLabel: 'Plant name', searchPlaceholder: 'For example: Anemone coronaria', searchButton: 'Search',
     photoTitle: 'Identify by photo', photoText: 'Take a photo or choose one from your gallery. Automatic identification will be connected next.', photoButton: 'Choose or take a photo',
-    plannedTitle: 'Coming next', footer: 'Initial prototype', empty: 'Please enter a plant name.', searchDemo: 'Search is a prototype for now. You searched for: ', imageReady: 'Image loaded successfully. Next we will connect it to a plant identification service.'
+    plannedTitle: 'Sources and services', footer: 'Accessible multilingual plant identifier', empty: 'Please enter a plant name.', imageReady: 'Image loaded successfully. Next we will connect it to a plant identification service.',
+    loading: 'Searching GBIF…', noResults: 'No matching plants were found. Try a scientific or English name.', error: 'We could not reach GBIF right now. Please try again shortly.',
+    resultsFor: 'Results for', scientificName: 'Scientific name', commonName: 'Common name', family: 'Family', genus: 'Genus', order: 'Order', status: 'Status', source: 'Source: GBIF', viewGbif: 'Open in GBIF', unnamed: 'No common name', unknown: 'Unknown'
   },
   ar: {
     dir: 'rtl', lang: 'ar', eyebrow: 'دليل نباتات سهل الوصول ومتعدد اللغات', title: 'مُعرّف النباتات', language: 'اللغة', theme: 'الوضع الداكن', font: 'نص كبير',
-    heroTitle: 'تعرّف على نبات أو ابحث بالاسم', heroText: 'تتضمن النسخة الأولى واجهة ميسّرة وبحثًا أساسيًا ورفع صورة. سنربط خدمات التعرف وقواعد البيانات لاحقًا.',
-    searchTitle: 'البحث بالاسم', searchText: 'يمكن البحث بلغتك أو بالإنجليزية أو بالاسم العلمي.', searchLabel: 'اسم النبات', searchPlaceholder: 'مثال: شقائق النعمان', searchButton: 'بحث',
+    heroTitle: 'تعرّف على نبات أو ابحث بالاسم', heroText: 'يمكن الآن البحث عن النباتات بالاسم باستخدام قاعدة GBIF. سيتم ربط التعرف بالصورة في المرحلة التالية.',
+    searchTitle: 'البحث بالاسم', searchText: 'يمكن البحث بالاسم المحلي أو الإنجليزي أو العلمي.', searchLabel: 'اسم النبات', searchPlaceholder: 'مثال: Anemone coronaria', searchButton: 'بحث',
     photoTitle: 'التعرف بواسطة صورة', photoText: 'التقط صورة أو اختر صورة من المعرض. سيتم ربط التعرف التلقائي في المرحلة التالية.', photoButton: 'اختر أو التقط صورة',
-    plannedTitle: 'ما سنضيفه لاحقًا', footer: 'نسخة أولية', empty: 'يرجى إدخال اسم النبات.', searchDemo: 'البحث تجريبي حاليًا. بحثت عن: ', imageReady: 'تم تحميل الصورة بنجاح. في المرحلة التالية سنربطها بخدمة التعرف على النباتات.'
+    plannedTitle: 'المصادر والخدمات', footer: 'مُعرّف نباتات ميسّر ومتعدد اللغات', empty: 'يرجى إدخال اسم النبات.', imageReady: 'تم تحميل الصورة بنجاح. في المرحلة التالية سنربطها بخدمة التعرف على النباتات.',
+    loading: 'جارٍ البحث في GBIF…', noResults: 'لم يتم العثور على نباتات مطابقة. جرّب الاسم العلمي أو الإنجليزي.', error: 'تعذر الاتصال بـ GBIF الآن. حاول مرة أخرى بعد قليل.',
+    resultsFor: 'نتائج البحث عن', scientificName: 'الاسم العلمي', commonName: 'الاسم الشائع', family: 'الفصيلة', genus: 'الجنس', order: 'الرتبة', status: 'الحالة', source: 'المصدر: GBIF', viewGbif: 'افتح في GBIF', unnamed: 'لا يوجد اسم شائع', unknown: 'غير معروف'
   }
 };
 
@@ -27,6 +33,9 @@ const languageSelect = document.getElementById('languageSelect');
 const themeToggle = document.getElementById('themeToggle');
 const fontToggle = document.getElementById('fontToggle');
 const result = document.getElementById('result');
+const searchButton = document.querySelector('#nameSearchForm button[type="submit"]');
+let lastSearch = '';
+let lastResults = [];
 
 function applyLanguage(code) {
   const t = translations[code] || translations.he;
@@ -42,6 +51,70 @@ function applyLanguage(code) {
     if (t[key]) el.placeholder = t[key];
   });
   localStorage.setItem('plant-language', code);
+  if (lastSearch && lastResults.length) renderResults(lastSearch, lastResults);
+}
+
+function escapeHtml(value) {
+  return String(value ?? '')
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#039;');
+}
+
+function plantResult(item) {
+  return item.kingdom === 'Plantae' || item.kingdomKey === 6;
+}
+
+function renderResults(query, items) {
+  const t = translations[languageSelect.value] || translations.he;
+  result.hidden = false;
+
+  if (!items.length) {
+    result.innerHTML = `<p class="result-message">${escapeHtml(t.noResults)}</p>`;
+    return;
+  }
+
+  const cards = items.map(item => {
+    const key = item.key || item.speciesKey;
+    const scientific = item.scientificName || item.canonicalName || t.unknown;
+    const common = item.vernacularName || t.unnamed;
+    const gbifUrl = key ? `https://www.gbif.org/species/${encodeURIComponent(key)}` : 'https://www.gbif.org/species/search';
+    return `
+      <article class="plant-result-card">
+        <div class="plant-result-heading">
+          <h3>${escapeHtml(item.canonicalName || scientific)}</h3>
+          <span class="source-badge">${escapeHtml(t.source)}</span>
+        </div>
+        <dl class="plant-facts">
+          <div><dt>${escapeHtml(t.scientificName)}</dt><dd><em>${escapeHtml(scientific)}</em></dd></div>
+          <div><dt>${escapeHtml(t.commonName)}</dt><dd>${escapeHtml(common)}</dd></div>
+          <div><dt>${escapeHtml(t.family)}</dt><dd>${escapeHtml(item.family || t.unknown)}</dd></div>
+          <div><dt>${escapeHtml(t.genus)}</dt><dd>${escapeHtml(item.genus || t.unknown)}</dd></div>
+          <div><dt>${escapeHtml(t.order)}</dt><dd>${escapeHtml(item.order || t.unknown)}</dd></div>
+          <div><dt>${escapeHtml(t.status)}</dt><dd>${escapeHtml(item.taxonomicStatus || item.status || t.unknown)}</dd></div>
+        </dl>
+        <a class="gbif-link" href="${gbifUrl}" target="_blank" rel="noopener noreferrer">${escapeHtml(t.viewGbif)}</a>
+      </article>`;
+  }).join('');
+
+  result.innerHTML = `
+    <div class="results-header">
+      <h2>${escapeHtml(t.resultsFor)}: “${escapeHtml(query)}”</h2>
+      <p>${items.length} GBIF</p>
+    </div>
+    <div class="results-grid">${cards}</div>`;
+}
+
+async function searchGbif(query) {
+  const endpoint = `https://api.gbif.org/v1/species/search?q=${encodeURIComponent(query)}&limit=20`;
+  const response = await fetch(endpoint, { headers: { Accept: 'application/json' } });
+  if (!response.ok) throw new Error(`GBIF ${response.status}`);
+  const data = await response.json();
+  const raw = Array.isArray(data.results) ? data.results : [];
+  const plants = raw.filter(plantResult);
+  return (plants.length ? plants : raw).slice(0, 8);
 }
 
 languageSelect.addEventListener('change', () => applyLanguage(languageSelect.value));
@@ -60,14 +133,35 @@ fontToggle.addEventListener('click', () => {
   localStorage.setItem('plant-large-text', String(enabled));
 });
 
-document.getElementById('nameSearchForm').addEventListener('submit', event => {
+document.getElementById('nameSearchForm').addEventListener('submit', async event => {
   event.preventDefault();
-  const code = languageSelect.value;
-  const t = translations[code];
+  const t = translations[languageSelect.value] || translations.he;
   const query = document.getElementById('plantQuery').value.trim();
   result.hidden = false;
-  result.textContent = query ? `${t.searchDemo}${query}` : t.empty;
-  result.focus?.();
+
+  if (!query) {
+    result.innerHTML = `<p class="result-message">${escapeHtml(t.empty)}</p>`;
+    return;
+  }
+
+  searchButton.disabled = true;
+  searchButton.setAttribute('aria-busy', 'true');
+  result.innerHTML = `<p class="result-message" role="status">${escapeHtml(t.loading)}</p>`;
+
+  try {
+    const items = await searchGbif(query);
+    lastSearch = query;
+    lastResults = items;
+    renderResults(query, items);
+  } catch (error) {
+    console.error(error);
+    lastSearch = '';
+    lastResults = [];
+    result.innerHTML = `<p class="result-message" role="alert">${escapeHtml(t.error)}</p>`;
+  } finally {
+    searchButton.disabled = false;
+    searchButton.removeAttribute('aria-busy');
+  }
 });
 
 document.getElementById('plantPhoto').addEventListener('change', event => {
