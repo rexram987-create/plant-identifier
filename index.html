@@ -14,71 +14,26 @@
 <body>
   <a class="skip-link" href="#main">דלג לתוכן הראשי</a>
   <header class="topbar">
-    <div>
-      <p class="eyebrow" data-i18n="eyebrow">מגדיר צמחים נגיש ורב־לשוני</p>
-      <h1 data-i18n="title">מגדיר הצמחים</h1>
-    </div>
+    <div><p class="eyebrow" data-i18n="eyebrow">מגדיר צמחים נגיש ורב־לשוני</p><h1 data-i18n="title">מגדיר הצמחים</h1></div>
     <div class="toolbar" aria-label="הגדרות תצוגה">
-      <label>
-        <span data-i18n="language">שפה</span>
-        <select id="languageSelect" aria-label="בחר שפה">
-          <option value="he">עברית</option>
-          <option value="en">English</option>
-          <option value="ar">العربية</option>
-        </select>
-      </label>
+      <label><span data-i18n="language">שפה</span><select id="languageSelect" aria-label="בחר שפה"><option value="he">עברית</option><option value="en">English</option><option value="ar">العربية</option></select></label>
       <button id="themeToggle" type="button" aria-pressed="true" data-i18n="theme">מצב כהה</button>
       <button id="fontToggle" type="button" aria-pressed="false" data-i18n="font">טקסט גדול</button>
       <button id="installButton" type="button" hidden>התקן יישומון</button>
     </div>
   </header>
-
   <main id="main" tabindex="-1">
-    <section class="hero" aria-labelledby="heroTitle">
-      <div>
-        <h2 id="heroTitle" data-i18n="heroTitle">זהה צמח או חפש מידע לפי שם</h2>
-        <p data-i18n="heroText">הגרסה הראשונה כוללת ממשק נגיש, חיפוש בסיסי והעלאת תמונה. בהמשך נחבר את מנועי הזיהוי ומאגרי המידע.</p>
-      </div>
-    </section>
-
+    <section class="hero" aria-labelledby="heroTitle"><div><h2 id="heroTitle" data-i18n="heroTitle">זהה צמח או חפש מידע לפי שם</h2><p data-i18n="heroText">חיפוש לפי שם וזיהוי תמונה ניסיוני מקומי.</p></div></section>
     <section class="grid" aria-label="אפשרויות חיפוש">
-      <article class="card">
-        <h2 data-i18n="searchTitle">חיפוש לפי שם</h2>
-        <p data-i18n="searchText">אפשר לחפש בעברית, באנגלית או בשם המדעי.</p>
-        <form id="nameSearchForm">
-          <label for="plantQuery" data-i18n="searchLabel">שם הצמח</label>
-          <input id="plantQuery" name="plantQuery" type="search" autocomplete="off" placeholder="למשל: כלנית מצויה" data-i18n-placeholder="searchPlaceholder" />
-          <button class="primary" type="submit" data-i18n="searchButton">חפש</button>
-        </form>
-      </article>
-
-      <article class="card">
-        <h2 data-i18n="photoTitle">זיהוי לפי תמונה</h2>
-        <p data-i18n="photoText">צלם צמח או בחר תמונה מהגלריה. הזיהוי האוטומטי יחובר בשלב הבא.</p>
-        <label class="upload" for="plantPhoto" data-i18n="photoButton">בחר או צלם תמונה</label>
-        <input id="plantPhoto" type="file" accept="image/*" capture="environment" />
-        <img id="preview" alt="" hidden />
-      </article>
+      <article class="card"><h2 data-i18n="searchTitle">חיפוש לפי שם</h2><p data-i18n="searchText">אפשר לחפש בעברית, באנגלית או בשם המדעי.</p><form id="nameSearchForm"><label for="plantQuery" data-i18n="searchLabel">שם הצמח</label><input id="plantQuery" name="plantQuery" type="search" autocomplete="off" placeholder="למשל: כלנית מצויה" data-i18n-placeholder="searchPlaceholder" /><button class="primary" type="submit" data-i18n="searchButton">חפש</button></form></article>
+      <article class="card"><h2 data-i18n="photoTitle">זיהוי לפי תמונה</h2><p data-i18n="photoText">צלם צמח או בחר תמונה. בפעם הראשונה יורד למכשיר מנוע זיהוי מקומי.</p><label class="upload" for="plantPhoto" data-i18n="photoButton">בחר או צלם תמונה</label><input id="plantPhoto" type="file" accept="image/*" capture="environment" /><img id="preview" alt="" hidden /></article>
     </section>
-
     <section id="result" class="result" aria-live="polite" aria-atomic="true" hidden></section>
-
-    <section class="info" aria-labelledby="plannedTitle">
-      <h2 id="plannedTitle" data-i18n="plannedTitle">מה נחבר בהמשך</h2>
-      <ul>
-        <li>Pl@ntNet — זיהוי לפי תמונה</li>
-        <li>GBIF — טקסונומיה ותפוצה</li>
-        <li>iNaturalist — תצפיות ותמונות מהשטח</li>
-        <li>Wikidata / Wikipedia — מידע משלים בשפה פשוטה</li>
-      </ul>
-    </section>
+    <section class="info" aria-labelledby="plannedTitle"><h2 id="plannedTitle" data-i18n="plannedTitle">מקורות ושירותים</h2><ul><li>PlantNet-300K — זיהוי תמונה ניסיוני מקומי</li><li>GBIF — טקסונומיה ותפוצה</li><li>iNaturalist — תצפיות ותמונות מהשטח</li><li>Wikidata / Wikipedia — מידע משלים</li></ul></section>
   </main>
-
-  <footer>
-    <p data-i18n="footer">גרסת אב־טיפוס ראשונית</p>
-  </footer>
-
+  <footer><p data-i18n="footer">מגדיר צמחים נגיש ורב־לשוני</p></footer>
   <script src="local-name-search.js" defer></script>
+  <script src="image-identification.js" defer></script>
   <script src="app.js" defer></script>
   <script src="install.js" defer></script>
 </body>
