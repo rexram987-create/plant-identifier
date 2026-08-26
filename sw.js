@@ -1,4 +1,4 @@
-const CACHE = 'plant-identifier-v3';
+const CACHE = 'plant-identifier-v4';
 const OFFLINE_ASSETS = ['./', './index.html', './styles.css', './app.js', './manifest.webmanifest'];
 
 self.addEventListener('install', event => {
@@ -22,14 +22,11 @@ self.addEventListener('fetch', event => {
 
   const url = new URL(event.request.url);
 
-  // API requests must always use fresh network data.
-  if (url.hostname === 'api.gbif.org') {
+  if (url.hostname === 'api.gbif.org' || url.hostname.endsWith('.wikipedia.org')) {
     event.respondWith(fetch(event.request));
     return;
   }
 
-  // For the app itself, prefer the network so new deployments are visible
-  // immediately. Fall back to the cache only when offline.
   if (url.origin === self.location.origin) {
     event.respondWith(
       fetch(event.request)
