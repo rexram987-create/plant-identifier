@@ -1,11 +1,26 @@
 {
-  "name": "Plant Identifier",
-  "short_name": "Plants",
+  "name": "מגדיר הצמחים",
+  "short_name": "צמחים",
   "description": "Accessible multilingual plant identification app",
   "start_url": "./",
+  "scope": "./",
   "display": "standalone",
   "background_color": "#0b1510",
   "theme_color": "#10261b",
   "lang": "he",
-  "dir": "rtl"
+  "dir": "rtl",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
 }
