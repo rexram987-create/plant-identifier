@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">مُعرّف النباتات</string>
+    <string name="title">مُعرّف النباتات</string>
+    <string name="subtitle">تعرّف محلي وميسّر على النباتات</string>
+    <string name="choose_photo">اختر صورة من المعرض</string>
+    <string name="status_ready">اختر صورة للبدء.</string>
+    <string name="status_selected">تم اختيار الصورة. سيعمل OpenPlants في الخطوة التالية.</string>
+    <string name="selected_photo">الصورة المختارة</string>
+</resources>
