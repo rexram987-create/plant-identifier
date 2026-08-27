@@ -1,71 +1,173 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#08150F"
-    android:fillViewport="true">
+    android:fillViewport="true"
+    android:overScrollMode="never">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="24dp">
+        android:paddingStart="20dp"
+        android:paddingTop="24dp"
+        android:paddingEnd="20dp"
+        android:paddingBottom="36dp">
 
         <TextView
             android:id="@+id/titleText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="center"
             android:text="@string/title"
-            android:textColor="#F0F7F2"
-            android:textDirection="rtl"
-            android:textSize="32sp"
+            android:textColor="#F3F8F4"
+            android:textDirection="locale"
+            android:textSize="34sp"
             android:textStyle="bold" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
+            android:gravity="center"
             android:text="@string/subtitle"
             android:textColor="#A6E8BD"
-            android:textDirection="rtl"
+            android:textDirection="locale"
             android:textSize="20sp" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/choosePhotoButton"
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="28dp"
-            android:minHeight="64dp"
-            android:text="@string/choose_photo"
-            android:textSize="20sp" />
+            app:cardBackgroundColor="#0F2419"
+            app:cardCornerRadius="28dp"
+            app:cardElevation="0dp"
+            app:strokeColor="#365746"
+            app:strokeWidth="1dp">
 
-        <ImageView
-            android:id="@+id/previewImage"
-            android:layout_width="match_parent"
-            android:layout_height="360dp"
-            android:layout_marginTop="20dp"
-            android:contentDescription="@string/selected_photo"
-            android:scaleType="centerCrop"
-            android:visibility="gone" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="18dp">
 
-        <TextView
-            android:id="@+id/statusText"
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="זיהוי לפי תמונה"
+                    android:textColor="#F3F8F4"
+                    android:textDirection="locale"
+                    android:textSize="24sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:gravity="center"
+                    android:text="בחר תמונה ברורה של צמח. הזיהוי מתבצע במכשיר באמצעות OpenPlants."
+                    android:textColor="#C9D9CF"
+                    android:textDirection="locale"
+                    android:textSize="17sp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/choosePhotoButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:minHeight="62dp"
+                    android:text="@string/choose_photo"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    app:cornerRadius="24dp" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/previewCard"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:background="#10291D"
-            android:padding="20dp"
-            android:text="@string/status_ready"
-            android:textColor="#F0F7F2"
-            android:textDirection="rtl"
-            android:textSize="20sp" />
+            android:visibility="gone"
+            app:cardBackgroundColor="#0F2419"
+            app:cardCornerRadius="28dp"
+            app:cardElevation="0dp"
+            app:strokeColor="#365746"
+            app:strokeWidth="1dp">
+
+            <ImageView
+                android:id="@+id/previewImage"
+                android:layout_width="match_parent"
+                android:layout_height="340dp"
+                android:contentDescription="@string/selected_photo"
+                android:scaleType="centerCrop" />
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            app:cardBackgroundColor="#10291D"
+            app:cardCornerRadius="24dp"
+            app:cardElevation="0dp"
+            app:strokeColor="#365746"
+            app:strokeWidth="1dp">
+
+            <TextView
+                android:id="@+id/statusText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:minHeight="96dp"
+                android:padding="20dp"
+                android:text="@string/status_ready"
+                android:textColor="#F0F7F2"
+                android:textDirection="locale"
+                android:textSize="19sp" />
+        </com.google.android.material.card.MaterialCardView>
+
+        <TextView
+            android:id="@+id/resultsTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="26dp"
+            android:gravity="center"
+            android:text="תוצאות הזיהוי"
+            android:textColor="#F3F8F4"
+            android:textDirection="locale"
+            android:textSize="25sp"
+            android:textStyle="bold"
+            android:visibility="gone" />
 
         <LinearLayout
             android:id="@+id/resultsContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="14dp"
             android:orientation="vertical" />
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="28dp"
+            app:cardBackgroundColor="#0B1D14"
+            app:cardCornerRadius="24dp"
+            app:cardElevation="0dp"
+            app:strokeColor="#294638"
+            app:strokeWidth="1dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="18dp"
+                android:text="OpenPlants — זיהוי מקומי • ללא העלאת התמונה לשרת • תוצאות ניסיוניות שיש לאמת מול מקורות נוספים"
+                android:textColor="#B9C9BF"
+                android:textDirection="locale"
+                android:textSize="15sp" />
+        </com.google.android.material.card.MaterialCardView>
 
     </LinearLayout>
 </ScrollView>
