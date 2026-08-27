@@ -31,7 +31,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:gravity="center"
-            android:text="זיהוי מקומי • מידע מ־Wikipedia, iNaturalist ו־GBIF"
+            android:text="זיהוי מקומי • חיפוש לפי שם • Wikipedia, iNaturalist ו־GBIF"
             android:textColor="#A6E8BD"
             android:textSize="18sp" />
 
@@ -48,6 +48,75 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
+            app:cardBackgroundColor="#0F2419"
+            app:cardCornerRadius="28dp"
+            app:cardElevation="0dp"
+            app:strokeColor="#365746"
+            app:strokeWidth="1dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="18dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="חיפוש לפי שם"
+                    android:textColor="#F3F8F4"
+                    android:textSize="24sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:gravity="center"
+                    android:text="אפשר לחפש בשם עברי, באנגלית או בשם מדעי."
+                    android:textColor="#C9D9CF"
+                    android:textSize="17sp" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:hint="שם הצמח"
+                    app:boxBackgroundMode="outline"
+                    app:boxCornerRadiusBottomEnd="20dp"
+                    app:boxCornerRadiusBottomStart="20dp"
+                    app:boxCornerRadiusTopEnd="20dp"
+                    app:boxCornerRadiusTopStart="20dp">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/nameSearchInput"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:imeOptions="actionSearch"
+                        android:inputType="text"
+                        android:minHeight="58dp"
+                        android:textColor="#F3F8F4"
+                        android:textSize="19sp" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/nameSearchButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="14dp"
+                    android:minHeight="58dp"
+                    android:text="חפש לפי שם"
+                    android:textSize="19sp"
+                    android:textStyle="bold"
+                    app:cornerRadius="22dp" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
             app:cardBackgroundColor="#0F2419"
             app:cardCornerRadius="28dp"
             app:cardElevation="0dp"
@@ -128,7 +197,7 @@
                 android:gravity="center"
                 android:minHeight="88dp"
                 android:padding="20dp"
-                android:text="בחר תמונה כדי להתחיל."
+                android:text="בחר תמונה או חפש לפי שם כדי להתחיל."
                 android:textColor="#F0F7F2"
                 android:textSize="19sp" />
         </com.google.android.material.card.MaterialCardView>
