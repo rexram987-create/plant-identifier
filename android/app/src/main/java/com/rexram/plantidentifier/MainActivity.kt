@@ -1,11 +1,15 @@
 package com.rexram.plantidentifier
 
+import android.graphics.Color
 import android.os.Bundle
+import android.view.Gravity
 import android.view.View
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.material.card.MaterialCardView
 import com.rexram.plantidentifier.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
@@ -17,7 +21,8 @@ class MainActivity : AppCompatActivity() {
         if (uri == null) return@registerForActivityResult
 
         binding.previewImage.setImageURI(uri)
-        binding.previewImage.visibility = View.VISIBLE
+        binding.previewCard.visibility = View.VISIBLE
+        binding.resultsTitle.visibility = View.GONE
         binding.resultsContainer.removeAllViews()
         setStatus("מכין את מנוע OpenPlants…")
         binding.choosePhotoButton.isEnabled = false
@@ -59,27 +64,70 @@ class MainActivity : AppCompatActivity() {
     private fun showPredictions(predictions: List<OpenPlantsClassifier.Prediction>) {
         binding.resultsContainer.removeAllViews()
         if (predictions.isEmpty()) {
+            binding.resultsTitle.visibility = View.GONE
             setStatus("לא התקבלו תוצאות זיהוי.")
             return
         }
 
+        binding.resultsTitle.visibility = View.VISIBLE
         setStatus("הזיהוי הסתיים. אלה שלוש ההתאמות המובילות:")
+
         predictions.forEachIndexed { index, prediction ->
-            val view = TextView(this).apply {
-                text = "${index + 1}. ${prediction.name}\nהתאמה: ${"%.1f".format(prediction.probability * 100)}%"
-                textSize = 20f
-                setTextColor(0xFFF0F7F2.toInt())
-                setBackgroundColor(0xFF10291D.toInt())
-                setPadding(24, 20, 24, 20)
-                contentDescription = text
+            val card = MaterialCardView(this).apply {
+                radius = dp(24).toFloat()
+                cardElevation = 0f
+                setCardBackgroundColor(Color.rgb(16, 41, 29))
+                strokeColor = Color.rgb(54, 87, 70)
+                strokeWidth = dp(1)
+                isFocusable = true
+                importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_YES
             }
-            val params = android.widget.LinearLayout.LayoutParams(
-                android.widget.LinearLayout.LayoutParams.MATCH_PARENT,
-                android.widget.LinearLayout.LayoutParams.WRAP_CONTENT
-            ).apply { bottomMargin = 16 }
-            binding.resultsContainer.addView(view, params)
+
+            val content = LinearLayout(this).apply {
+                orientation = LinearLayout.VERTICAL
+                gravity = Gravity.CENTER_HORIZONTAL
+                setPadding(dp(20), dp(20), dp(20), dp(20))
+            }
+
+            val rank = TextView(this).apply {
+                text = "התאמה ${index + 1}"
+                textSize = 16f
+                setTextColor(Color.rgb(166, 232, 189))
+                gravity = Gravity.CENTER
+            }
+
+            val name = TextView(this).apply {
+                text = prediction.name
+                textSize = 23f
+                setTextColor(Color.rgb(243, 248, 244))
+                gravity = Gravity.CENTER
+                setPadding(0, dp(8), 0, 0)
+            }
+
+            val score = TextView(this).apply {
+                text = "התאמה: ${"%.1f".format(prediction.probability * 100)}%"
+                textSize = 19f
+                setTextColor(Color.rgb(240, 247, 242))
+                gravity = Gravity.CENTER
+                setPadding(0, dp(12), 0, 0)
+            }
+
+            content.addView(rank)
+            content.addView(name)
+            content.addView(score)
+            card.addView(content)
+            card.contentDescription = "התאמה ${index + 1}, ${prediction.name}, ${"%.1f".format(prediction.probability * 100)} אחוז"
+
+            val params = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            ).apply { bottomMargin = dp(14) }
+
+            binding.resultsContainer.addView(card, params)
         }
     }
+
+    private fun dp(value: Int): Int = (value * resources.displayMetrics.density).toInt()
 
     override fun onDestroy() {
         classifier.close()
