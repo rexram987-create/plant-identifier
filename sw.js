@@ -1,4 +1,4 @@
-const CACHE = 'plant-identifier-v16';
+const CACHE = 'plant-identifier-v17';
 const MODEL_CACHE = 'plant-ai-model-v3';
 const OFFLINE_ASSETS = ['./','./index.html','./styles.css','./mobile-fix.css','./inaturalist.css','./wikipedia.css','./local-name-search.js','./image-identification.js','./photo-inputs.js','./app.js','./openplants-ui.js','./inaturalist.js','./wikipedia.js','./install.js','./manifest.webmanifest','./icon-192.png','./icon-512.png'];
 self.addEventListener('install',e=>{e.waitUntil(caches.open(CACHE).then(c=>c.addAll(OFFLINE_ASSETS)));self.skipWaiting()});
