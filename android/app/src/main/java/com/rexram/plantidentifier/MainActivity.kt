@@ -1,7 +1,12 @@
 package com.rexram.plantidentifier
 
+import android.Manifest
+import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Color
+import android.location.Location
+import android.location.LocationManager
 import android.net.Uri
 import android.os.Bundle
 import android.view.Gravity
@@ -12,6 +17,7 @@ import android.widget.TextView
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import com.google.android.material.card.MaterialCardView
 import com.rexram.plantidentifier.databinding.ActivityMainBinding
 
@@ -20,6 +26,10 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var classifier: OpenPlantsClassifier
     private var currentInfo: PlantInfoService.PlantInfo? = null
+
+    private val locationPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestMultiplePermissions()
+    ) { }
 
     private val photoPicker = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
         if (uri == null) return@registerForActivityResult
@@ -37,13 +47,36 @@ class MainActivity : AppCompatActivity() {
             try {
                 classifier.prepare { message -> runOnUiThread { setStatus(message) } }
                 runOnUiThread { setStatus("מזהה את הצמח בתמונה…") }
-                val predictions = classifier.classify(uri, 3)
+
+                // Ask OpenPlants for a few candidates, then use local occurrence
+                // evidence to resolve close visual matches when location is available.
+                val rawPredictions = classifier.classify(uri, 5)
+                val location = getBestLastKnownLocation()
+                val finalPredictions: List<OpenPlantsClassifier.Prediction>
+                val locationAdjusted: Boolean
+
+                if (location != null && rawPredictions.isNotEmpty()) {
+                    runOnUiThread { setStatus("מאמת את התוצאות לפי תצפיות צמחים באזור שלך…") }
+                    val reranked = CandidateReranker.rerank(
+                        rawPredictions,
+                        location.latitude,
+                        location.longitude
+                    ).take(3)
+                    finalPredictions = reranked.map {
+                        OpenPlantsClassifier.Prediction(it.name, it.combinedScore)
+                    }
+                    locationAdjusted = true
+                } else {
+                    finalPredictions = rawPredictions.take(3)
+                    locationAdjusted = false
+                }
+
                 runOnUiThread {
-                    showPredictions(predictions)
+                    showPredictions(finalPredictions, locationAdjusted)
                     binding.choosePhotoButton.isEnabled = true
                 }
-                if (predictions.isNotEmpty()) {
-                    loadPlantInfo(predictions.first().name)
+                if (finalPredictions.isNotEmpty()) {
+                    loadPlantInfo(finalPredictions.first().name)
                 }
             } catch (error: Throwable) {
                 runOnUiThread {
@@ -63,6 +96,8 @@ class MainActivity : AppCompatActivity() {
         classifier = OpenPlantsClassifier(applicationContext)
         binding.versionText.text = "גרסה ${BuildConfig.VERSION_NAME} • Android Native"
 
+        requestLocationPermissionIfNeeded()
+
         binding.choosePhotoButton.setOnClickListener {
             photoPicker.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
         }
@@ -78,6 +113,30 @@ class MainActivity : AppCompatActivity() {
         binding.wikipediaButton.setOnClickListener { currentInfo?.wikipediaUrl?.let(::openUrl) }
         binding.inaturalistButton.setOnClickListener { currentInfo?.iNaturalistUrl?.let(::openUrl) }
         binding.gbifButton.setOnClickListener { currentInfo?.gbifUrl?.let(::openUrl) }
+    }
+
+    private fun requestLocationPermissionIfNeeded() {
+        val fine = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+        val coarse = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
+        if (fine != PackageManager.PERMISSION_GRANTED && coarse != PackageManager.PERMISSION_GRANTED) {
+            locationPermissionLauncher.launch(
+                arrayOf(
+                    Manifest.permission.ACCESS_COARSE_LOCATION,
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                )
+            )
+        }
+    }
+
+    private fun getBestLastKnownLocation(): Location? {
+        val fine = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+        val coarse = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
+        if (fine != PackageManager.PERMISSION_GRANTED && coarse != PackageManager.PERMISSION_GRANTED) return null
+
+        val manager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        return manager.getProviders(true)
+            .mapNotNull { provider -> runCatching { manager.getLastKnownLocation(provider) }.getOrNull() }
+            .maxByOrNull { it.time }
     }
 
     private fun searchByName() {
@@ -129,7 +188,10 @@ class MainActivity : AppCompatActivity() {
         binding.statusText.announceForAccessibility(message)
     }
 
-    private fun showPredictions(predictions: List<OpenPlantsClassifier.Prediction>) {
+    private fun showPredictions(
+        predictions: List<OpenPlantsClassifier.Prediction>,
+        locationAdjusted: Boolean = false
+    ) {
         binding.resultsContainer.removeAllViews()
         if (predictions.isEmpty()) {
             binding.resultsTitle.visibility = View.GONE
@@ -138,7 +200,12 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.resultsTitle.visibility = View.VISIBLE
-        setStatus("הזיהוי הסתיים. אלה שלוש ההתאמות המובילות:")
+        setStatus(
+            if (locationAdjusted)
+                "הזיהוי הסתיים. הדירוג משלב את התמונה עם תפוצת צמחים בקרבתך."
+            else
+                "הזיהוי הסתיים. לא היה מיקום זמין, ולכן הדירוג מבוסס על התמונה בלבד."
+        )
 
         predictions.forEachIndexed { index, prediction ->
             val card = MaterialCardView(this).apply {
@@ -149,13 +216,14 @@ class MainActivity : AppCompatActivity() {
                 strokeWidth = if (index == 0) 4 else 2
                 isFocusable = true
                 isClickable = true
-                contentDescription = "${prediction.name}, התאמה ${"%.1f".format(prediction.probability * 100)} אחוז. לחץ למידע נוסף"
+                contentDescription = "${prediction.name}, ציון ${"%.1f".format(prediction.probability * 100)} אחוז. לחץ למידע נוסף"
                 setOnClickListener { loadPlantInfo(prediction.name) }
             }
 
             val label = if (index == 0) "ההתאמה המובילה" else "אפשרות ${index + 1}"
+            val scoreLabel = if (locationAdjusted) "ציון משולב" else "התאמה"
             val text = TextView(this).apply {
-                this.text = "$label\n${prediction.name}\nהתאמה: ${"%.1f".format(prediction.probability * 100)}%\nלחץ למידע נוסף"
+                this.text = "$label\n${prediction.name}\n$scoreLabel: ${"%.1f".format(prediction.probability * 100)}%\nלחץ למידע נוסף"
                 textSize = 20f
                 setTextColor(Color.rgb(243, 248, 244))
                 gravity = Gravity.CENTER
