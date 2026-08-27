@@ -6,6 +6,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.Gravity
 import android.view.View
+import android.view.inputmethod.EditorInfo
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.activity.result.PickVisualMediaRequest
@@ -66,9 +67,61 @@ class MainActivity : AppCompatActivity() {
             photoPicker.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
         }
 
+        binding.nameSearchButton.setOnClickListener { searchByName() }
+        binding.nameSearchInput.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                searchByName()
+                true
+            } else false
+        }
+
         binding.wikipediaButton.setOnClickListener { currentInfo?.wikipediaUrl?.let(::openUrl) }
         binding.inaturalistButton.setOnClickListener { currentInfo?.iNaturalistUrl?.let(::openUrl) }
         binding.gbifButton.setOnClickListener { currentInfo?.gbifUrl?.let(::openUrl) }
+    }
+
+    private fun searchByName() {
+        val query = binding.nameSearchInput.text?.toString()?.trim().orEmpty()
+        if (query.isBlank()) {
+            setStatus("כתוב שם של צמח כדי לחפש.")
+            return
+        }
+
+        binding.resultsTitle.visibility = View.GONE
+        binding.resultsContainer.removeAllViews()
+        binding.previewCard.visibility = View.GONE
+        binding.infoCard.visibility = View.VISIBLE
+        binding.infoTitle.text = query
+        binding.infoText.text = "מחפש מידע על הצמח…"
+        binding.wikipediaButton.visibility = View.GONE
+        currentInfo = null
+        setStatus("מחפש את $query במקורות המידע…")
+        binding.nameSearchButton.isEnabled = false
+
+        Thread {
+            val info = try {
+                PlantInfoService.load(query)
+            } catch (_: Throwable) {
+                PlantInfoService.PlantInfo(
+                    query,
+                    null,
+                    null,
+                    null,
+                    "https://www.inaturalist.org/taxa/search?q=${Uri.encode(query)}",
+                    "https://www.gbif.org/species/search?q=${Uri.encode(query)}"
+                )
+            }
+            currentInfo = info
+            runOnUiThread {
+                binding.nameSearchButton.isEnabled = true
+                binding.infoTitle.text = info.wikipediaTitle ?: info.scientificName
+                binding.infoText.text = info.wikipediaExtract
+                    ?: "לא נמצא כרגע תקציר בוויקיפדיה. אפשר לבדוק את השם מול iNaturalist ו־GBIF באמצעות הכפתורים למטה."
+                binding.wikipediaButton.visibility = if (info.wikipediaUrl != null) View.VISIBLE else View.GONE
+                setStatus("החיפוש לפי שם הסתיים.")
+                binding.infoCard.announceForAccessibility("נטען מידע על ${info.scientificName}")
+            }
+        }.start()
     }
 
     private fun setStatus(message: String) {
