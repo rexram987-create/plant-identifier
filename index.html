@@ -31,13 +31,14 @@
       <article class="card"><h2 data-i18n="photoTitle">זיהוי לפי תמונה</h2><p data-i18n="photoText">צלם צמח או בחר תמונה. בפעם הראשונה יורד למכשיר מנוע זיהוי מקומי.</p><div class="photo-actions"><label class="upload" for="cameraPhoto">צלם תמונה</label><input id="cameraPhoto" type="file" accept="image/*" capture="environment" /><label class="upload" for="plantPhoto">בחר תמונה מהגלריה</label><input id="plantPhoto" type="file" accept="image/*" /></div><img id="preview" alt="" hidden /></article>
     </section>
     <section id="result" class="result" aria-live="polite" aria-atomic="true" hidden></section>
-    <section class="info" aria-labelledby="plannedTitle"><h2 id="plannedTitle" data-i18n="plannedTitle">מקורות ושירותים</h2><ul><li>PlantNet-300K — זיהוי תמונה ניסיוני מקומי</li><li>GBIF — טקסונומיה ותפוצה</li><li>iNaturalist — תצפיות ותמונות מהשטח</li><li>Wikidata / Wikipedia — מידע משלים</li></ul></section>
+    <section class="info" aria-labelledby="plannedTitle"><h2 id="plannedTitle" data-i18n="plannedTitle">מקורות ושירותים</h2><ul><li>OpenPlants — מנוע הזיהוי המקומי הראשי, עם כיסוי של כ־14,000 מינים</li><li>PlantNet-300K — מנוע גיבוי מקומי במקרה שהמנוע הראשי אינו נטען</li><li>GBIF — טקסונומיה ותפוצה</li><li>iNaturalist — תצפיות ותמונות מהשטח</li><li>Wikidata / Wikipedia — מידע משלים</li></ul></section>
   </main>
   <footer><p data-i18n="footer">מגדיר צמחים נגיש ורב־לשוני</p></footer>
   <script src="local-name-search.js" defer></script>
   <script src="image-identification.js" defer></script>
   <script src="photo-inputs.js" defer></script>
   <script src="app.js" defer></script>
+  <script src="openplants-ui.js" defer></script>
   <script src="inaturalist.js" defer></script>
   <script src="wikipedia.js" defer></script>
   <script src="install.js" defer></script>
