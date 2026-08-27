@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Plant Identifier</string>
+    <string name="title">Plant Identifier</string>
+    <string name="subtitle">Accessible on-device plant identification</string>
+    <string name="choose_photo">Choose photo from gallery</string>
+    <string name="status_ready">Choose a photo to begin.</string>
+    <string name="status_selected">Photo selected. OpenPlants identification will run next.</string>
+    <string name="selected_photo">Selected photo</string>
+</resources>
