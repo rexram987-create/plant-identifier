@@ -1,0 +1,35 @@
+.wiki-info {
+  min-height: 44px;
+  padding: .55rem .8rem;
+  border: 1px solid var(--border);
+  border-radius: .8rem;
+  background: var(--surface);
+  color: var(--text);
+  font-weight: 700;
+}
+
+.wiki-info:hover { background: var(--surface-2); }
+
+.wiki-panel {
+  margin-top: .9rem;
+  padding-top: .9rem;
+  border-top: 2px solid var(--border);
+}
+
+.wiki-panel h4 { margin-bottom: .7rem; }
+
+.wiki-image {
+  display: block;
+  width: 100%;
+  max-height: 360px;
+  object-fit: contain;
+  border: 1px solid var(--border);
+  border-radius: .9rem;
+  background: var(--surface);
+  margin-bottom: .8rem;
+}
+
+.wiki-note {
+  color: var(--muted);
+  font-size: .95rem;
+}
