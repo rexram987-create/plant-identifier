@@ -31,7 +31,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:gravity="center"
-            android:text="זיהוי מקומי • חיפוש לפי שם • Wikipedia, iNaturalist ו־GBIF"
+            android:text="זיהוי מקומי • תוצאות בעברית • חיפוש לפי שם • מצלמה"
             android:textColor="#A6E8BD"
             android:textSize="18sp" />
 
@@ -143,15 +143,26 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:gravity="center"
-                    android:text="בחר תמונה ברורה של הצמח. הזיהוי נעשה במכשיר באמצעות OpenPlants."
+                    android:text="אפשר לבחור תמונה קיימת או לצלם עכשיו. הזיהוי נעשה במכשיר באמצעות OpenPlants."
                     android:textColor="#C9D9CF"
                     android:textSize="17sp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/takePhotoButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:minHeight="62dp"
+                    android:text="צלם תמונה"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    app:cornerRadius="24dp" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/choosePhotoButton"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
+                    android:layout_marginTop="12dp"
                     android:minHeight="62dp"
                     android:text="בחר תמונה מהגלריה"
                     android:textSize="20sp"
@@ -197,7 +208,7 @@
                 android:gravity="center"
                 android:minHeight="88dp"
                 android:padding="20dp"
-                android:text="בחר תמונה או חפש לפי שם כדי להתחיל."
+                android:text="בחר תמונה, צלם תמונה או חפש לפי שם כדי להתחיל."
                 android:textColor="#F0F7F2"
                 android:textSize="19sp" />
         </com.google.android.material.card.MaterialCardView>
