@@ -12,38 +12,50 @@ object PlantInfoService {
         val wikipediaExtract: String?,
         val wikipediaUrl: String?,
         val iNaturalistUrl: String,
-        val gbifUrl: String
+        val gbifUrl: String,
+        val hebrewName: String? = null
     )
 
     fun load(scientificName: String): PlantInfo {
         val encoded = URLEncoder.encode(scientificName, "UTF-8")
-        val wiki = loadWikipedia(scientificName)
+        val hebrewWiki = loadWikipediaForLanguage("he", scientificName)
+        val fallbackWiki = hebrewWiki ?: loadWikipediaForLanguage("en", scientificName)
         return PlantInfo(
             scientificName = scientificName,
-            wikipediaTitle = wiki?.first,
-            wikipediaExtract = wiki?.second,
-            wikipediaUrl = wiki?.third,
+            wikipediaTitle = fallbackWiki?.first,
+            wikipediaExtract = fallbackWiki?.second,
+            wikipediaUrl = fallbackWiki?.third,
             iNaturalistUrl = "https://www.inaturalist.org/taxa/search?q=$encoded",
-            gbifUrl = "https://www.gbif.org/species/search?q=$encoded"
+            gbifUrl = "https://www.gbif.org/species/search?q=$encoded",
+            hebrewName = hebrewWiki?.first
         )
     }
 
-    private fun loadWikipedia(name: String): Triple<String, String, String>? {
-        val languages = listOf("he", "en")
-        for (language in languages) {
-            try {
-                val title = searchWikipedia(language, name) ?: continue
-                val summary = fetchWikipediaSummary(language, title) ?: continue
-                return Triple(title, summary, "https://$language.wikipedia.org/wiki/${URLEncoder.encode(title.replace(' ', '_'), "UTF-8")}")
-            } catch (_: Throwable) {
-                // Try the next language or return no summary.
-            }
+    fun findHebrewName(scientificName: String): String? {
+        return try {
+            loadWikipediaForLanguage("he", scientificName)?.first
+        } catch (_: Throwable) {
+            null
         }
-        return null
+    }
+
+    private fun loadWikipediaForLanguage(language: String, name: String): Triple<String, String, String>? {
+        return try {
+            val title = searchWikipedia(language, name) ?: return null
+            val summary = fetchWikipediaSummary(language, title) ?: return null
+            Triple(
+                title,
+                summary,
+                "https://$language.wikipedia.org/wiki/${URLEncoder.encode(title.replace(' ', '_'), "UTF-8")}"
+            )
+        } catch (_: Throwable) {
+            null
+        }
     }
 
     private fun searchWikipedia(language: String, query: String): String? {
-        val url = "https://$language.wikipedia.org/w/api.php?action=query&list=search&srsearch=${URLEncoder.encode(query, "UTF-8")}&format=json&utf8=1&srlimit=1&origin=*"
+        val encoded = URLEncoder.encode("\"$query\"", "UTF-8")
+        val url = "https://$language.wikipedia.org/w/api.php?action=query&list=search&srsearch=$encoded&format=json&utf8=1&srlimit=1&origin=*"
         val json = JSONObject(get(url))
         val results = json.getJSONObject("query").getJSONArray("search")
         return if (results.length() > 0) results.getJSONObject(0).getString("title") else null
@@ -60,7 +72,10 @@ object PlantInfoService {
         connection.connectTimeout = 10000
         connection.readTimeout = 10000
         connection.requestMethod = "GET"
-        connection.setRequestProperty("User-Agent", "PlantIdentifierAndroid/0.4")
+        connection.setRequestProperty("User-Agent", "PlantIdentifierAndroid/0.7")
+        if (connection.responseCode !in 200..299) {
+            throw IllegalStateException("HTTP ${connection.responseCode}")
+        }
         connection.inputStream.bufferedReader().use { return it.readText() }
     }
 }
