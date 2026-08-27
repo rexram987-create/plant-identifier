@@ -2,11 +2,11 @@
 // served with this PWA; fall back to the smaller PlantNet-300K model if needed.
 (() => {
   const ORT_URL = 'https://cdn.jsdelivr.net/npm/onnxruntime-web@1.22.0/dist/ort.min.js';
-  const MODEL_CACHE = 'plant-ai-model-v2';
+  const MODEL_CACHE = 'plant-ai-model-v3';
   const PRIMARY = {
     name: 'OpenPlants',
-    modelUrl: new URL('models/openplants/model-int8.onnx', document.baseURI).href,
-    labelsUrl: new URL('models/openplants/labels.json', document.baseURI).href,
+    modelUrl: new URL('models/openplants/model-int8.onnx?v=dynamic-v2', document.baseURI).href,
+    labelsUrl: new URL('models/openplants/labels.json?v=dynamic-v2', document.baseURI).href,
     mean: [0.5, 0.5, 0.5],
     std: [0.5, 0.5, 0.5],
     resizeMode: 'stretch'
@@ -38,7 +38,7 @@
     const cache = await caches.open(MODEL_CACHE);
     let response = await cache.match(url);
     if (!response) {
-      response = await fetch(url, { mode: 'cors' });
+      response = await fetch(url, { mode: 'cors', cache: 'no-store' });
       if (!response.ok) throw new Error(`Download failed: ${response.status}`);
       await cache.put(url, response.clone());
     }
