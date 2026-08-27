@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">מגדיר הצמחים</string>
+    <string name="title">מגדיר הצמחים</string>
+    <string name="subtitle">זיהוי צמחים מקומי ונגיש</string>
+    <string name="choose_photo">בחר תמונה מהגלריה</string>
+    <string name="status_ready">בחר תמונה כדי להתחיל.</string>
+    <string name="status_selected">התמונה נבחרה. בשלב הבא נחבר את מודל OpenPlants.</string>
+    <string name="selected_photo">תמונה שנבחרה</string>
+</resources>
