@@ -39,6 +39,7 @@ class MainActivity : AppCompatActivity() {
             } catch (error: Throwable) {
                 runOnUiThread {
                     setStatus("הזיהוי נכשל: ${error.message ?: error.javaClass.simpleName}")
+                    binding.resultsTitle.visibility = View.GONE
                     binding.choosePhotoButton.isEnabled = true
                 }
             }
@@ -50,6 +51,8 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         classifier = OpenPlantsClassifier(applicationContext)
+
+        binding.versionText.text = "גרסה ${BuildConfig.VERSION_NAME}"
 
         binding.choosePhotoButton.setOnClickListener {
             photoPicker.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
@@ -74,60 +77,32 @@ class MainActivity : AppCompatActivity() {
 
         predictions.forEachIndexed { index, prediction ->
             val card = MaterialCardView(this).apply {
-                radius = dp(24).toFloat()
+                radius = 28f
                 cardElevation = 0f
-                setCardBackgroundColor(Color.rgb(16, 41, 29))
+                setCardBackgroundColor(Color.rgb(15, 36, 25))
                 strokeColor = Color.rgb(54, 87, 70)
-                strokeWidth = dp(1)
+                strokeWidth = 2
                 isFocusable = true
-                importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_YES
             }
 
-            val content = LinearLayout(this).apply {
-                orientation = LinearLayout.VERTICAL
-                gravity = Gravity.CENTER_HORIZONTAL
-                setPadding(dp(20), dp(20), dp(20), dp(20))
-            }
-
-            val rank = TextView(this).apply {
-                text = "התאמה ${index + 1}"
-                textSize = 16f
-                setTextColor(Color.rgb(166, 232, 189))
-                gravity = Gravity.CENTER
-            }
-
-            val name = TextView(this).apply {
-                text = prediction.name
-                textSize = 23f
+            val text = TextView(this).apply {
+                this.text = "${index + 1}. ${prediction.name}\nהתאמה: ${"%.1f".format(prediction.probability * 100)}%"
+                textSize = 20f
                 setTextColor(Color.rgb(243, 248, 244))
                 gravity = Gravity.CENTER
-                setPadding(0, dp(8), 0, 0)
+                setPadding(28, 26, 28, 26)
+                textDirection = View.TEXT_DIRECTION_LOCALE
+                contentDescription = this.text
             }
-
-            val score = TextView(this).apply {
-                text = "התאמה: ${"%.1f".format(prediction.probability * 100)}%"
-                textSize = 19f
-                setTextColor(Color.rgb(240, 247, 242))
-                gravity = Gravity.CENTER
-                setPadding(0, dp(12), 0, 0)
-            }
-
-            content.addView(rank)
-            content.addView(name)
-            content.addView(score)
-            card.addView(content)
-            card.contentDescription = "התאמה ${index + 1}, ${prediction.name}, ${"%.1f".format(prediction.probability * 100)} אחוז"
+            card.addView(text)
 
             val params = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
-            ).apply { bottomMargin = dp(14) }
-
+            ).apply { bottomMargin = 18 }
             binding.resultsContainer.addView(card, params)
         }
     }
-
-    private fun dp(value: Int): Int = (value * resources.displayMetrics.density).toInt()
 
     override fun onDestroy() {
         classifier.close()
