@@ -5,9 +5,7 @@ html, body {
   overflow-x: clip;
 }
 
-body {
-  position: relative;
-}
+body { position: relative; }
 
 .topbar, main, footer {
   inline-size: min(1100px, calc(100% - 1rem));
@@ -37,19 +35,9 @@ h1, h2, h3, h4, h5, p, li, dt, dd, button, label, select, input, a {
   word-break: normal;
 }
 
-h1 {
-  font-size: clamp(1.8rem, 8vw, 2.5rem);
-  line-height: 1.2;
-}
-
-h2 {
-  font-size: clamp(1.35rem, 6vw, 2rem);
-  line-height: 1.3;
-}
-
-.eyebrow {
-  font-size: clamp(.95rem, 4.5vw, 1.15rem);
-}
+h1 { font-size: clamp(1.8rem, 8vw, 2.5rem); line-height: 1.2; }
+h2 { font-size: clamp(1.35rem, 6vw, 2rem); line-height: 1.3; }
+.eyebrow { font-size: clamp(.95rem, 4.5vw, 1.15rem); }
 
 .toolbar {
   display: grid;
@@ -74,6 +62,21 @@ h2 {
   inline-size: 100%;
 }
 
+.result-photo-actions { margin-block: 1rem; }
+
+.confidence-warning {
+  margin-block: 1rem;
+  padding: .9rem;
+  border: 2px solid var(--border);
+  border-radius: 1rem;
+  background: var(--surface-2);
+}
+
+.confidence-warning p { margin: .45rem 0 0; }
+.confidence-low { border-style: dashed; }
+.confidence-medium { border-width: 2px; }
+.confidence-high { border-width: 3px; }
+
 #plantPhoto,
 #cameraPhoto {
   position: absolute;
@@ -85,46 +88,20 @@ h2 {
 }
 
 @media (max-width: 760px) {
-  :root[data-large-text="true"] {
-    font-size: 18px;
-  }
-
-  .topbar {
-    display: block;
-  }
-
-  .topbar > div:first-child {
-    margin-bottom: 1rem;
-  }
-
-  .hero,
-  .card,
-  .info,
-  .result {
-    padding: .9rem;
-  }
+  :root[data-large-text="true"] { font-size: 18px; }
+  .topbar { display: block; }
+  .topbar > div:first-child { margin-bottom: 1rem; }
+  .hero, .card, .info, .result { padding: .9rem; }
 }
 
 @media (max-width: 420px) {
   :root,
-  :root[data-large-text="true"] {
-    font-size: 17px;
-  }
-
+  :root[data-large-text="true"] { font-size: 17px; }
   .topbar, main, footer {
     inline-size: calc(100% - .75rem);
     max-inline-size: calc(100% - .75rem);
   }
-
-  h1 {
-    font-size: clamp(1.7rem, 9vw, 2.1rem);
-  }
-
-  h2 {
-    font-size: clamp(1.25rem, 6.5vw, 1.65rem);
-  }
-
-  button, select, input, .upload {
-    padding: .65rem .75rem;
-  }
+  h1 { font-size: clamp(1.7rem, 9vw, 2.1rem); }
+  h2 { font-size: clamp(1.25rem, 6.5vw, 1.65rem); }
+  button, select, input, .upload { padding: .65rem .75rem; }
 }
