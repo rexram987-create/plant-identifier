@@ -31,6 +31,22 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Restore OpenPlants model cache
+        id: openplants-cache
+        uses: actions/cache/restore@v4
+        with:
+          path: models/openplants
+          key: openplants-int8-dynamic-v2
+
+      - name: Verify and bundle OpenPlants model
+        run: |
+          test -s ../models/openplants/model-int8.onnx
+          test -s ../models/openplants/labels.json
+          mkdir -p app/src/main/assets/openplants
+          cp ../models/openplants/model-int8.onnx app/src/main/assets/openplants/model-int8.onnx
+          cp ../models/openplants/labels.json app/src/main/assets/openplants/labels.json
+          ls -lh app/src/main/assets/openplants
+
       - name: Set up Java 17
         uses: actions/setup-java@v4
         with:
