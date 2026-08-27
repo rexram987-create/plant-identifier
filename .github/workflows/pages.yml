@@ -20,9 +20,55 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
+    timeout-minutes: 45
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Restore OpenPlants web model
+        id: openplants-cache
+        uses: actions/cache@v4
+        with:
+          path: models/openplants
+          key: openplants-int8-qdq-v1
+
+      - name: Set up Python for model build
+        if: steps.openplants-cache.outputs.cache-hit != 'true'
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install model conversion dependencies
+        if: steps.openplants-cache.outputs.cache-hit != 'true'
+        run: |
+          python -m pip install --upgrade pip
+          pip install --index-url https://download.pytorch.org/whl/cpu 'torch==2.5.1'
+          pip install 'transformers==4.46.3' 'optimum[onnxruntime]==1.23.3' 'onnx==1.17.0' 'onnxruntime==1.20.1' 'numpy==2.1.3' 'safetensors>=0.4.5,<1'
+
+      - name: Build OpenPlants ONNX INT8 web model
+        if: steps.openplants-cache.outputs.cache-hit != 'true'
+        env:
+          HF_HUB_DISABLE_TELEMETRY: '1'
+        run: |
+          optimum-cli export onnx \
+            --model domai-tb/OpenPlants-Identification-ViT-Base-Patch16-224 \
+            --task image-classification \
+            --opset 17 \
+            openplants-onnx
+          python scripts/export_openplants.py
+          mkdir -p models/openplants
+          cp openplants-onnx/model-int8.onnx models/openplants/model-int8.onnx
+          cp openplants-onnx/labels.json models/openplants/labels.json
+          cp openplants-onnx/config.json models/openplants/config.json
+          cp openplants-onnx/conversion-summary.json models/openplants/conversion-summary.json
+          rm -rf openplants-onnx
+          ls -lh models/openplants
+
+      - name: Verify model files
+        run: |
+          test -s models/openplants/model-int8.onnx
+          test -s models/openplants/labels.json
+          du -h models/openplants/model-int8.onnx
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
