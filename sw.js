@@ -1,4 +1,4 @@
-const CACHE = 'plant-identifier-v10';
+const CACHE = 'plant-identifier-v11';
 const OFFLINE_ASSETS = ['./','./index.html','./styles.css','./mobile-fix.css','./local-name-search.js','./image-identification.js','./photo-inputs.js','./app.js','./install.js','./manifest.webmanifest','./icon-192.png','./icon-512.png'];
 self.addEventListener('install',e=>{e.waitUntil(caches.open(CACHE).then(c=>c.addAll(OFFLINE_ASSETS)));self.skipWaiting()});
 self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE&&k!=='plant-ai-model-v1').map(k=>caches.delete(k)))));self.clients.claim()});
