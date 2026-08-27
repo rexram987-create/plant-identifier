@@ -1,0 +1,63 @@
+name: Build OpenPlants ONNX INT8
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/build-openplants-onnx.yml'
+      - 'scripts/export_openplants.py'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  convert:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+
+      - name: Install conversion dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install 'torch>=2.3,<3' 'transformers>=4.45,<5' 'optimum[onnxruntime]>=1.22,<2' 'onnx>=1.16,<2' 'onnxruntime>=1.19,<2' 'numpy<3' safetensors
+
+      - name: Export OpenPlants to ONNX FP32
+        env:
+          HF_HUB_DISABLE_TELEMETRY: '1'
+        run: |
+          optimum-cli export onnx \
+            --model domai-tb/OpenPlants-Identification-ViT-Base-Patch16-224 \
+            --task image-classification \
+            --opset 17 \
+            openplants-onnx
+          ls -lh openplants-onnx
+
+      - name: Quantize to INT8 and validate
+        env:
+          HF_HUB_DISABLE_TELEMETRY: '1'
+        run: python scripts/export_openplants.py
+
+      - name: Show conversion summary
+        run: cat openplants-onnx/conversion-summary.json
+
+      - name: Upload converted model artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: openplants-onnx-int8
+          path: |
+            openplants-onnx/model-int8.onnx
+            openplants-onnx/labels.json
+            openplants-onnx/preprocessor_config.json
+            openplants-onnx/config.json
+            openplants-onnx/conversion-summary.json
+          compression-level: 0
+          retention-days: 7
