@@ -9,8 +9,6 @@ import ai.onnxruntime.OrtEnvironment
 import ai.onnxruntime.OrtSession
 import org.json.JSONObject
 import java.io.File
-import java.net.HttpURLConnection
-import java.net.URL
 import java.nio.FloatBuffer
 import kotlin.math.exp
 
@@ -27,20 +25,21 @@ class OpenPlantsClassifier(private val context: Context) : AutoCloseable {
     private val labelsFile = File(modelDir, "labels.json")
 
     companion object {
-        private const val MODEL_URL = "https://rexram987-create.github.io/plant-identifier/models/openplants/model-int8.onnx?v=dynamic-v2"
-        private const val LABELS_URL = "https://rexram987-create.github.io/plant-identifier/models/openplants/labels.json?v=dynamic-v2"
+        private const val MODEL_ASSET = "openplants/model-int8.onnx"
+        private const val LABELS_ASSET = "openplants/labels.json"
         private const val SIZE = 224
     }
 
     fun prepare(progress: (String) -> Unit = {}) {
         modelDir.mkdirs()
+
         if (!modelFile.exists() || modelFile.length() < 50_000_000L) {
-            progress("מוריד את מנוע OpenPlants בפעם הראשונה…")
-            download(MODEL_URL, modelFile)
+            progress("מכין את מנוע OpenPlants המקומי…")
+            copyAsset(MODEL_ASSET, modelFile)
         }
         if (!labelsFile.exists() || labelsFile.length() < 1_000L) {
-            progress("מוריד את רשימת מיני הצמחים…")
-            download(LABELS_URL, labelsFile)
+            progress("מכין את רשימת מיני הצמחים…")
+            copyAsset(LABELS_ASSET, labelsFile)
         }
 
         if (labels.isEmpty()) labels = readLabels(labelsFile)
@@ -70,6 +69,17 @@ class OpenPlantsClassifier(private val context: Context) : AutoCloseable {
                 val output = result[0].value as Array<FloatArray>
                 return softmaxTop(output[0], topK)
             }
+        }
+    }
+
+    private fun copyAsset(assetPath: String, destination: File) {
+        val temp = File(destination.parentFile, destination.name + ".part")
+        context.assets.open(assetPath).use { input ->
+            temp.outputStream().buffered().use { output -> input.copyTo(output) }
+        }
+        if (!temp.renameTo(destination)) {
+            temp.copyTo(destination, overwrite = true)
+            temp.delete()
         }
     }
 
@@ -115,27 +125,6 @@ class OpenPlantsClassifier(private val context: Context) : AutoCloseable {
             .sortedBy { it.first }
             .map { it.second }
             .toList()
-    }
-
-    private fun download(url: String, destination: File) {
-        val temp = File(destination.parentFile, destination.name + ".part")
-        val connection = URL(url).openConnection() as HttpURLConnection
-        connection.connectTimeout = 20_000
-        connection.readTimeout = 120_000
-        connection.instanceFollowRedirects = true
-        connection.setRequestProperty("User-Agent", "PlantIdentifier-Android/0.1")
-        try {
-            if (connection.responseCode !in 200..299) error("Download failed: HTTP ${connection.responseCode}")
-            connection.inputStream.use { input ->
-                temp.outputStream().buffered().use { output -> input.copyTo(output) }
-            }
-            if (!temp.renameTo(destination)) {
-                temp.copyTo(destination, overwrite = true)
-                temp.delete()
-            }
-        } finally {
-            connection.disconnect()
-        }
     }
 
     override fun close() {
