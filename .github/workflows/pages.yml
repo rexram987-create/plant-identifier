@@ -30,7 +30,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: models/openplants
-          key: openplants-int8-qdq-v1
+          key: openplants-int8-dynamic-v2
 
       - name: Set up Python for model build
         if: steps.openplants-cache.outputs.cache-hit != 'true'
@@ -69,6 +69,7 @@ jobs:
           test -s models/openplants/model-int8.onnx
           test -s models/openplants/labels.json
           du -h models/openplants/model-int8.onnx
+          cat models/openplants/conversion-summary.json
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
