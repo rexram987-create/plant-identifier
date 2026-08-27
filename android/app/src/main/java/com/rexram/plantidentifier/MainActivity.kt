@@ -1,6 +1,8 @@
 package com.rexram.plantidentifier
 
+import android.content.Intent
 import android.graphics.Color
+import android.net.Uri
 import android.os.Bundle
 import android.view.Gravity
 import android.view.View
@@ -16,6 +18,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var classifier: OpenPlantsClassifier
+    private var currentInfo: PlantInfoService.PlantInfo? = null
 
     private val photoPicker = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
         if (uri == null) return@registerForActivityResult
@@ -24,6 +27,8 @@ class MainActivity : AppCompatActivity() {
         binding.previewCard.visibility = View.VISIBLE
         binding.resultsTitle.visibility = View.GONE
         binding.resultsContainer.removeAllViews()
+        binding.infoCard.visibility = View.GONE
+        currentInfo = null
         setStatus("מכין את מנוע OpenPlants…")
         binding.choosePhotoButton.isEnabled = false
 
@@ -36,10 +41,14 @@ class MainActivity : AppCompatActivity() {
                     showPredictions(predictions)
                     binding.choosePhotoButton.isEnabled = true
                 }
+                if (predictions.isNotEmpty()) {
+                    loadPlantInfo(predictions.first().name)
+                }
             } catch (error: Throwable) {
                 runOnUiThread {
                     setStatus("הזיהוי נכשל: ${error.message ?: error.javaClass.simpleName}")
                     binding.resultsTitle.visibility = View.GONE
+                    binding.infoCard.visibility = View.GONE
                     binding.choosePhotoButton.isEnabled = true
                 }
             }
@@ -51,12 +60,15 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         classifier = OpenPlantsClassifier(applicationContext)
-
-        binding.versionText.text = "גרסה ${BuildConfig.VERSION_NAME}"
+        binding.versionText.text = "גרסה ${BuildConfig.VERSION_NAME} • Android Native"
 
         binding.choosePhotoButton.setOnClickListener {
             photoPicker.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
         }
+
+        binding.wikipediaButton.setOnClickListener { currentInfo?.wikipediaUrl?.let(::openUrl) }
+        binding.inaturalistButton.setOnClickListener { currentInfo?.iNaturalistUrl?.let(::openUrl) }
+        binding.gbifButton.setOnClickListener { currentInfo?.gbifUrl?.let(::openUrl) }
     }
 
     private fun setStatus(message: String) {
@@ -80,19 +92,22 @@ class MainActivity : AppCompatActivity() {
                 radius = 28f
                 cardElevation = 0f
                 setCardBackgroundColor(Color.rgb(15, 36, 25))
-                strokeColor = Color.rgb(54, 87, 70)
-                strokeWidth = 2
+                strokeColor = if (index == 0) Color.rgb(166, 232, 189) else Color.rgb(54, 87, 70)
+                strokeWidth = if (index == 0) 4 else 2
                 isFocusable = true
+                isClickable = true
+                contentDescription = "${prediction.name}, התאמה ${"%.1f".format(prediction.probability * 100)} אחוז. לחץ למידע נוסף"
+                setOnClickListener { loadPlantInfo(prediction.name) }
             }
 
+            val label = if (index == 0) "ההתאמה המובילה" else "אפשרות ${index + 1}"
             val text = TextView(this).apply {
-                this.text = "${index + 1}. ${prediction.name}\nהתאמה: ${"%.1f".format(prediction.probability * 100)}%"
+                this.text = "$label\n${prediction.name}\nהתאמה: ${"%.1f".format(prediction.probability * 100)}%\nלחץ למידע נוסף"
                 textSize = 20f
                 setTextColor(Color.rgb(243, 248, 244))
                 gravity = Gravity.CENTER
                 setPadding(28, 26, 28, 26)
                 textDirection = View.TEXT_DIRECTION_LOCALE
-                contentDescription = this.text
             }
             card.addView(text)
 
@@ -102,6 +117,40 @@ class MainActivity : AppCompatActivity() {
             ).apply { bottomMargin = 18 }
             binding.resultsContainer.addView(card, params)
         }
+    }
+
+    private fun loadPlantInfo(scientificName: String) {
+        runOnUiThread {
+            binding.infoCard.visibility = View.VISIBLE
+            binding.infoTitle.text = scientificName
+            binding.infoText.text = "טוען מידע ממקורות נוספים…"
+            binding.wikipediaButton.visibility = View.GONE
+        }
+
+        Thread {
+            val info = try { PlantInfoService.load(scientificName) } catch (_: Throwable) {
+                PlantInfoService.PlantInfo(
+                    scientificName,
+                    null,
+                    null,
+                    null,
+                    "https://www.inaturalist.org/taxa/search?q=${Uri.encode(scientificName)}",
+                    "https://www.gbif.org/species/search?q=${Uri.encode(scientificName)}"
+                )
+            }
+            currentInfo = info
+            runOnUiThread {
+                binding.infoTitle.text = info.wikipediaTitle ?: info.scientificName
+                binding.infoText.text = info.wikipediaExtract
+                    ?: "לא נמצא כרגע תקציר בוויקיפדיה. אפשר לבדוק את המין מול iNaturalist ו־GBIF באמצעות הכפתורים למטה."
+                binding.wikipediaButton.visibility = if (info.wikipediaUrl != null) View.VISIBLE else View.GONE
+                binding.infoCard.announceForAccessibility("נטען מידע נוסף על ${info.scientificName}")
+            }
+        }.start()
+    }
+
+    private fun openUrl(url: String) {
+        startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
     }
 
     override fun onDestroy() {
