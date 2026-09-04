@@ -27,6 +27,8 @@ object PlantInfoService {
         "בזיליקום" to KnownPlant("Ocimum basilicum", "ריחן"),
         "ריחן" to KnownPlant("Ocimum basilicum", "ריחן"),
         "רוזמרין" to KnownPlant("Salvia rosmarinus", "רוזמרין רפואי"),
+        "סוקולנט" to KnownPlant("succulent", "סוקולנטים"),
+        "סוקולנטים" to KnownPlant("succulent", "סוקולנטים"),
         "קקטוס" to KnownPlant("Cactaceae", "קקטוסיים"),
         "קקטוסים" to KnownPlant("Cactaceae", "קקטוסיים"),
         "בוגנוויליה" to KnownPlant("Bougainvillea", "בוגנוויליה"),
@@ -116,7 +118,7 @@ object PlantInfoService {
         connection.connectTimeout = 10000
         connection.readTimeout = 10000
         connection.requestMethod = "GET"
-        connection.setRequestProperty("User-Agent", "PlantIdentifierAndroid/0.7.1")
+        connection.setRequestProperty("User-Agent", "PlantIdentifierAndroid/0.7.2")
         if (connection.responseCode !in 200..299) {
             throw IllegalStateException("HTTP ${connection.responseCode}")
         }
