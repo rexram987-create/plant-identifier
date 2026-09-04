@@ -216,8 +216,9 @@ class MainActivity : AppCompatActivity() {
             runOnUiThread {
                 binding.nameSearchButton.isEnabled = true
                 binding.infoTitle.text = info.hebrewName ?: info.wikipediaTitle ?: "מידע על הצמח"
-                binding.infoText.text = info.wikipediaExtract
+                val baseText = info.wikipediaExtract
                     ?: "לא נמצא כרגע תיאור עברי מאומת בוויקיפדיה. השם המדעי הוא ${info.scientificName}. אפשר לבדוק מידע נוסף ב־iNaturalist וב־GBIF."
+                binding.infoText.text = appendGrowingGuide(info.scientificName, baseText)
                 binding.wikipediaButton.visibility = if (info.wikipediaUrl != null) View.VISIBLE else View.GONE
                 setStatus("החיפוש לפי שם הסתיים.")
                 binding.infoCard.announceForAccessibility("נטען מידע על ${info.hebrewName ?: info.scientificName}")
@@ -307,12 +308,20 @@ class MainActivity : AppCompatActivity() {
             currentInfo = info
             runOnUiThread {
                 binding.infoTitle.text = info.hebrewName ?: "שם עברי לא נמצא"
-                binding.infoText.text = info.wikipediaExtract
+                val baseText = info.wikipediaExtract
                     ?: "לא נמצא כרגע תיאור עברי מאומת בוויקיפדיה. השם המדעי הוא ${info.scientificName}. אפשר לאמת את הזיהוי מול iNaturalist ו־GBIF באמצעות הכפתורים למטה."
+                binding.infoText.text = appendGrowingGuide(info.scientificName, baseText)
                 binding.wikipediaButton.visibility = if (info.wikipediaUrl != null) View.VISIBLE else View.GONE
                 binding.infoCard.announceForAccessibility("נטען מידע נוסף על ${info.hebrewName ?: info.scientificName}")
             }
         }.start()
+    }
+
+    private fun appendGrowingGuide(scientificName: String, baseText: String): String {
+        val guide = runCatching {
+            GrowingGuideRepository.find(applicationContext, scientificName)
+        }.getOrNull() ?: return baseText
+        return baseText + GrowingGuideRepository.formatHebrew(guide)
     }
 
     private fun openUrl(url: String) {
