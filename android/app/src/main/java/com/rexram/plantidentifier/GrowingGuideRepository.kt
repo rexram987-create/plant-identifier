@@ -42,8 +42,8 @@ object GrowingGuideRepository {
     }
 
     fun formatHebrew(guide: Guide): String = buildString {
-        append("\n\nאיך מגדלים?\n")
-        append("אור: ").append(guide.light).append("\n")
+
+        append("אור: ").append(guide.light).append("\n\n")
         append("השקיה: ").append(guide.watering).append("\n")
         append("מצע וניקוז: ").append(guide.soil).append("\n")
         append("דישון: ").append(guide.feeding).append("\n")
