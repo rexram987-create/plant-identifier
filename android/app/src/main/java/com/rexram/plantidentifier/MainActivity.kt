@@ -195,6 +195,7 @@ class MainActivity : AppCompatActivity() {
         binding.infoTitle.text = query
         binding.infoText.text = "מחפש מידע על הצמח…"
         binding.wikipediaButton.visibility = View.GONE
+        hideGrowingGuide()
         currentInfo = null
         setStatus("מחפש את $query במקורות המידע…")
         binding.nameSearchButton.isEnabled = false
@@ -218,7 +219,8 @@ class MainActivity : AppCompatActivity() {
                 binding.infoTitle.text = info.hebrewName ?: info.wikipediaTitle ?: "מידע על הצמח"
                 val baseText = info.wikipediaExtract
                     ?: "לא נמצא כרגע תיאור עברי מאומת בוויקיפדיה. השם המדעי הוא ${info.scientificName}. אפשר לבדוק מידע נוסף ב־iNaturalist וב־GBIF."
-                binding.infoText.text = appendGrowingGuide(info.scientificName, baseText)
+                binding.infoText.text = baseText
+                showGrowingGuide(info.scientificName)
                 binding.wikipediaButton.visibility = if (info.wikipediaUrl != null) View.VISIBLE else View.GONE
                 setStatus("החיפוש לפי שם הסתיים.")
                 binding.infoCard.announceForAccessibility("נטען מידע על ${info.hebrewName ?: info.scientificName}")
@@ -292,6 +294,7 @@ class MainActivity : AppCompatActivity() {
             binding.infoTitle.text = "טוען מידע…"
             binding.infoText.text = "טוען מידע בעברית ממקורות נוספים…"
             binding.wikipediaButton.visibility = View.GONE
+            hideGrowingGuide()
         }
 
         Thread {
@@ -310,18 +313,31 @@ class MainActivity : AppCompatActivity() {
                 binding.infoTitle.text = info.hebrewName ?: "שם עברי לא נמצא"
                 val baseText = info.wikipediaExtract
                     ?: "לא נמצא כרגע תיאור עברי מאומת בוויקיפדיה. השם המדעי הוא ${info.scientificName}. אפשר לאמת את הזיהוי מול iNaturalist ו־GBIF באמצעות הכפתורים למטה."
-                binding.infoText.text = appendGrowingGuide(info.scientificName, baseText)
+                binding.infoText.text = baseText
+                showGrowingGuide(info.scientificName)
                 binding.wikipediaButton.visibility = if (info.wikipediaUrl != null) View.VISIBLE else View.GONE
                 binding.infoCard.announceForAccessibility("נטען מידע נוסף על ${info.hebrewName ?: info.scientificName}")
             }
         }.start()
     }
 
-    private fun appendGrowingGuide(scientificName: String, baseText: String): String {
+    private fun showGrowingGuide(scientificName: String) {
         val guide = runCatching {
             GrowingGuideRepository.find(applicationContext, scientificName)
-        }.getOrNull() ?: return baseText
-        return baseText + GrowingGuideRepository.formatHebrew(guide)
+        }.getOrNull()
+        if (guide == null) {
+            hideGrowingGuide()
+            return
+        }
+        binding.growingGuideTitle.visibility = View.VISIBLE
+        binding.growingGuideText.visibility = View.VISIBLE
+        binding.growingGuideText.text = GrowingGuideRepository.formatHebrew(guide)
+    }
+
+    private fun hideGrowingGuide() {
+        binding.growingGuideTitle.visibility = View.GONE
+        binding.growingGuideText.visibility = View.GONE
+        binding.growingGuideText.text = ""
     }
 
     private fun openUrl(url: String) {
