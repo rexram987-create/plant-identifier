@@ -31,13 +31,43 @@
       <article class="card"><h2 data-i18n="photoTitle">זיהוי לפי תמונה</h2><p data-i18n="photoText">צלם צמח או בחר תמונה. בפעם הראשונה יורד למכשיר מנוע זיהוי מקומי.</p><div class="photo-actions"><label class="upload" for="cameraPhoto">צלם תמונה</label><input id="cameraPhoto" type="file" accept="image/*" capture="environment" /><label class="upload" for="plantPhoto">בחר תמונה מהגלריה</label><input id="plantPhoto" type="file" accept="image/*" /></div><img id="preview" alt="" hidden /></article>
     </section>
     <section id="result" class="result" aria-live="polite" aria-atomic="true" hidden></section>
+    <section class="info balcony-plants" aria-labelledby="balconyTitle">
+      <h2 id="balconyTitle">צמחי מרפסת נפוצים בישראל</h2>
+      <p>רשימה שימושית של צמחים שסביר לפגוש במרפסות בישראל. לחצו על צמח כדי לחפש עליו מידע במגדיר.</p>
+      <div class="balcony-plant-list">
+        <button type="button" data-balcony-search="Pelargonium">גרניום / פלרגוניום</button>
+        <button type="button" data-balcony-search="Mentha">נענע</button>
+        <button type="button" data-balcony-search="Petunia">פטוניה</button>
+        <button type="button" data-balcony-search="Ocimum basilicum">בזיליקום</button>
+        <button type="button" data-balcony-search="Salvia rosmarinus">רוזמרין</button>
+        <button type="button" data-balcony-search="succulent">סוקולנטים</button>
+        <button type="button" data-balcony-search="Cactaceae">קקטוסים</button>
+        <button type="button" data-balcony-search="Bougainvillea">בוגנוויליה</button>
+        <button type="button" data-balcony-search="Epipremnum aureum">פוטוס</button>
+        <button type="button" data-balcony-search="Lavandula">לבנדר</button>
+      </div>
+      <h3>איך מגדלים אותם?</h3>
+      <div class="growing-guide">
+        <p><strong>גרניום / פלרגוניום:</strong> שמש ישירה או חצי־צל, השקיה כשהשכבה העליונה מתייבשת וניקוז טוב. להסיר פרחים יבשים לעידוד פריחה.</p>
+        <p><strong>נענע:</strong> אור רב עד חצי־צל ואדמה לחה באופן עקבי. מומלץ לגדל בעציץ נפרד כי היא מתפשטת במהירות.</p>
+        <p><strong>פטוניה:</strong> זקוקה להרבה שמש, השקיה סדירה וניקוז מצוין. דישון מתון והסרת פרחים נבולים מסייעים לפריחה.</p>
+        <p><strong>בזיליקום:</strong> הרבה אור ושמש בוקר, אדמה לחה אך לא מוצפת. קטימת קצות הצמיחה מעודדת הסתעפות; רגיש לקור.</p>
+        <p><strong>רוזמרין:</strong> שמש מלאה, מצע מנוקז היטב והשקיה מתונה בלבד לאחר התבססות. לא להשאיר מים עומדים בתחתית העציץ.</p>
+        <p><strong>סוקולנטים:</strong> אור חזק, מעט מים ומצע מנוקז מאוד. להשקות היטב ורק לאחר שהמצע התייבש.</p>
+        <p><strong>קקטוסים:</strong> אור חזק עד שמש, השקיה מועטה מאוד ומצע קקטוסים מנוקז. בחורף בדרך כלל מצמצמים השקיה.</p>
+        <p><strong>בוגנוויליה:</strong> שמש מלאה ככל האפשר, עציץ גדול וניקוז מצוין. השקיה עמוקה אך לא תכופה מדי; עודף מים עלול להפחית פריחה.</p>
+        <p><strong>פוטוס:</strong> מתאים בעיקר למרפסת מוצלת ומוגנת משמש צהריים ישירה. להשקות לאחר שהחלק העליון של המצע מתייבש.</p>
+        <p><strong>לבנדר:</strong> שמש מלאה, אוורור טוב ומצע מנוקז מאוד. להשקות במתינות ולהימנע מאדמה רטובה לאורך זמן.</p>
+      </div>
+      <p class="balcony-note"><strong>חשוב:</strong> תנאי המרפסת משתנים מאוד לפי כיוון, שעות שמש, רוח ועונה. ההנחיות הן נקודת התחלה ויש להתאים את ההשקיה לתנאים בפועל.</p>
+    </section>
     <section class="info" aria-labelledby="plannedTitle"><h2 id="plannedTitle" data-i18n="plannedTitle">מקורות ושירותים</h2><ul><li>OpenPlants — מנוע הזיהוי המקומי הראשי, עם כיסוי של כ־14,000 מינים</li><li>PlantNet-300K — מנוע גיבוי מקומי במקרה שהמנוע הראשי אינו נטען</li><li>GBIF — טקסונומיה ותפוצה</li><li>iNaturalist — תצפיות ותמונות מהשטח</li><li>Wikidata / Wikipedia — מידע משלים</li></ul></section>
   </main>
   <footer><p data-i18n="footer">מגדיר צמחים נגיש ורב־לשוני</p></footer>
   <script src="local-name-search.js?v=18" defer></script>
   <script src="image-identification.js?v=18" defer></script>
   <script src="photo-inputs.js?v=18" defer></script>
-  <script src="app.js?v=18" defer></script>
+  <script src="app.js?v=19" defer></script>
   <script src="openplants-ui.js?v=18" defer></script>
   <script src="inaturalist.js?v=18" defer></script>
   <script src="wikipedia.js?v=18" defer></script>

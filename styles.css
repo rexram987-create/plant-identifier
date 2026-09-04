@@ -200,3 +200,11 @@ footer { padding-block: 2rem; color: var(--muted); }
   .toolbar label { grid-column: auto; }
   .hero, .card, .info, .result { padding: .9rem; border-radius: 1rem; }
 }
+
+
+.balcony-plant-list { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:.6rem; margin:1rem 0 1.4rem; }
+.balcony-plant-list button { background:var(--surface-2); font-weight:700; }
+.growing-guide { display:grid; gap:.7rem; }
+.growing-guide p { margin:0; padding:.8rem; background:var(--surface-2); border:1px solid var(--border); border-radius:.8rem; }
+.balcony-note { margin-top:1rem; color:var(--muted); }
+@media (max-width:760px){ .balcony-plant-list { grid-template-columns:minmax(0,1fr); } }
