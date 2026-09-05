@@ -218,9 +218,6 @@ class MainActivity : AppCompatActivity() {
             val ministryInfo = runCatching {
                 MinistryWaterPlantsService.lookup(query, info.hebrewName, info.scientificName)
             }.getOrNull()
-            val ministryInfo = runCatching {
-                MinistryWaterPlantsService.lookup(info.hebrewName, info.scientificName)
-            }.getOrNull()
             currentInfo = info
             runOnUiThread {
                 binding.nameSearchButton.isEnabled = true
@@ -318,6 +315,9 @@ class MainActivity : AppCompatActivity() {
                     "https://www.gbif.org/species/search?q=${Uri.encode(scientificName)}"
                 )
             }
+            val ministryInfo = runCatching {
+                MinistryWaterPlantsService.lookup(info.hebrewName, info.scientificName)
+            }.getOrNull()
             currentInfo = info
             runOnUiThread {
                 binding.infoTitle.text = info.hebrewName ?: "שם עברי לא נמצא"
