@@ -290,6 +290,36 @@
                     android:textSize="18sp"
                     android:visibility="gone" />
 
+                <TextView
+                    android:id="@+id/ministryTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:gravity="center"
+                    android:text="משרד החקלאות"
+                    android:textColor="#A6E8BD"
+                    android:textSize="23sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/ministryText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:lineSpacingExtra="6dp"
+                    android:textColor="#D6E2DA"
+                    android:textSize="17sp"
+                    android:visibility="gone" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/ministryButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:text="פתח מאגר משרד החקלאות"
+                    android:visibility="gone" />
+
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/wikipediaButton"
                     android:layout_width="match_parent"

@@ -81,6 +81,7 @@ class MainActivity : AppCompatActivity() {
         binding.wikipediaButton.setOnClickListener { currentInfo?.wikipediaUrl?.let(::openUrl) }
         binding.inaturalistButton.setOnClickListener { currentInfo?.iNaturalistUrl?.let(::openUrl) }
         binding.gbifButton.setOnClickListener { currentInfo?.gbifUrl?.let(::openUrl) }
+        binding.ministryButton.setOnClickListener { openUrl(MinistryWaterPlantsService.SOURCE_URL) }
     }
 
     private fun createCameraUri(): Uri {
@@ -196,6 +197,7 @@ class MainActivity : AppCompatActivity() {
         binding.infoText.text = "מחפש מידע על הצמח…"
         binding.wikipediaButton.visibility = View.GONE
         hideGrowingGuide()
+        hideMinistryInfo()
         currentInfo = null
         setStatus("מחפש את $query במקורות המידע…")
         binding.nameSearchButton.isEnabled = false
@@ -213,6 +215,12 @@ class MainActivity : AppCompatActivity() {
                     "https://www.gbif.org/species/search?q=${Uri.encode(query)}"
                 )
             }
+            val ministryInfo = runCatching {
+                MinistryWaterPlantsService.lookup(query, info.hebrewName, info.scientificName)
+            }.getOrNull()
+            val ministryInfo = runCatching {
+                MinistryWaterPlantsService.lookup(info.hebrewName, info.scientificName)
+            }.getOrNull()
             currentInfo = info
             runOnUiThread {
                 binding.nameSearchButton.isEnabled = true
@@ -221,6 +229,7 @@ class MainActivity : AppCompatActivity() {
                     ?: "לא נמצא כרגע תיאור עברי מאומת בוויקיפדיה. השם המדעי הוא ${info.scientificName}. אפשר לבדוק מידע נוסף ב־iNaturalist וב־GBIF."
                 binding.infoText.text = baseText
                 showGrowingGuide(info.scientificName)
+                showMinistryInfo(ministryInfo)
                 binding.wikipediaButton.visibility = if (info.wikipediaUrl != null) View.VISIBLE else View.GONE
                 setStatus("החיפוש לפי שם הסתיים.")
                 binding.infoCard.announceForAccessibility("נטען מידע על ${info.hebrewName ?: info.scientificName}")
@@ -295,6 +304,7 @@ class MainActivity : AppCompatActivity() {
             binding.infoText.text = "טוען מידע בעברית ממקורות נוספים…"
             binding.wikipediaButton.visibility = View.GONE
             hideGrowingGuide()
+            hideMinistryInfo()
         }
 
         Thread {
@@ -315,6 +325,7 @@ class MainActivity : AppCompatActivity() {
                     ?: "לא נמצא כרגע תיאור עברי מאומת בוויקיפדיה. השם המדעי הוא ${info.scientificName}. אפשר לאמת את הזיהוי מול iNaturalist ו־GBIF באמצעות הכפתורים למטה."
                 binding.infoText.text = baseText
                 showGrowingGuide(info.scientificName)
+                showMinistryInfo(ministryInfo)
                 binding.wikipediaButton.visibility = if (info.wikipediaUrl != null) View.VISIBLE else View.GONE
                 binding.infoCard.announceForAccessibility("נטען מידע נוסף על ${info.hebrewName ?: info.scientificName}")
             }
@@ -338,6 +349,24 @@ class MainActivity : AppCompatActivity() {
         binding.growingGuideTitle.visibility = View.GONE
         binding.growingGuideText.visibility = View.GONE
         binding.growingGuideText.text = ""
+    }
+
+    private fun showMinistryInfo(item: MinistryWaterPlantsService.WaterPlant?) {
+        if (item == null) {
+            hideMinistryInfo()
+            return
+        }
+        binding.ministryTitle.visibility = View.VISIBLE
+        binding.ministryText.visibility = View.VISIBLE
+        binding.ministryButton.visibility = View.VISIBLE
+        binding.ministryText.text = MinistryWaterPlantsService.formatHebrew(item)
+    }
+
+    private fun hideMinistryInfo() {
+        binding.ministryTitle.visibility = View.GONE
+        binding.ministryText.visibility = View.GONE
+        binding.ministryButton.visibility = View.GONE
+        binding.ministryText.text = ""
     }
 
     private fun openUrl(url: String) {
