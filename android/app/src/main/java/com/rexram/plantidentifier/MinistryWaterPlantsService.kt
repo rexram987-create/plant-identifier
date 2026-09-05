@@ -26,12 +26,16 @@ object MinistryWaterPlantsService {
 
         for (query in queries) {
             val result = search(query)
-            val exact = result.firstOrNull {
-                normalize(it.plantName) == normalize(query) ||
-                normalize(it.scientificName) == normalize(query)
+
+            val scientificExact = result.firstOrNull {
+                scientificMatches(it.scientificName, query)
             }
-            if (exact != null) return exact
-            if (result.isNotEmpty()) return result.first()
+            if (scientificExact != null) return scientificExact
+
+            val hebrewExact = result.firstOrNull {
+                normalize(it.plantName) == normalize(query)
+            }
+            if (hebrewExact != null) return hebrewExact
         }
         return null
     }
@@ -69,6 +73,31 @@ object MinistryWaterPlantsService {
         if (item.moreInfo.isNotBlank()) append("הערת המשרד: ").append(item.moreInfo)
     }.trim()
 
+    private fun scientificMatches(value: String, query: String): Boolean {
+        val left = canonicalScientificName(value) ?: return false
+        val right = canonicalScientificName(query) ?: return false
+        return left == right
+    }
+
+    private fun canonicalScientificName(value: String): String? {
+        val normalized = value
+            .trim()
+            .lowercase()
+            .replace('×', ' ')
+            .replace(Regex("[=(),;:]"), " ")
+            .replace(Regex("\\s+"), " ")
+
+        val words = normalized.split(" ").filter { token ->
+            token.matches(Regex("[a-z][a-z.-]*"))
+        }
+        if (words.size < 2) return null
+
+        val genus = words[0].trimEnd('.')
+        val species = words[1].trimEnd('.')
+        if (genus.length < 2 || species.length < 2) return null
+        return "$genus $species"
+    }
+
     private fun normalize(value: String): String =
         value.trim().lowercase().replace("-", " ").replace("־", " ").replace(Regex("\\s+"), " ")
 
@@ -78,7 +107,7 @@ object MinistryWaterPlantsService {
         connection.readTimeout = 10000
         connection.requestMethod = "GET"
         connection.setRequestProperty("Accept", "application/json")
-        connection.setRequestProperty("User-Agent", "PlantIdentifierAndroid/0.7.4")
+        connection.setRequestProperty("User-Agent", "PlantIdentifierAndroid/0.7.5")
         if (connection.responseCode !in 200..299) {
             throw IllegalStateException("HTTP ${connection.responseCode}")
         }
