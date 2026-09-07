@@ -82,6 +82,7 @@ class MainActivity : AppCompatActivity() {
         binding.inaturalistButton.setOnClickListener { currentInfo?.iNaturalistUrl?.let(::openUrl) }
         binding.gbifButton.setOnClickListener { currentInfo?.gbifUrl?.let(::openUrl) }
         binding.ministryButton.setOnClickListener { openUrl(MinistryWaterPlantsService.SOURCE_URL) }
+        binding.ornamentalListButton.setOnClickListener { openUrl(OrnamentalPlantsListSource.SOURCE_URL) }
     }
 
     private fun createCameraUri(): Uri {
@@ -198,6 +199,7 @@ class MainActivity : AppCompatActivity() {
         binding.wikipediaButton.visibility = View.GONE
         hideGrowingGuide()
         hideMinistryInfo()
+        showOrnamentalListSource()
         currentInfo = null
         setStatus("מחפש את $query במקורות המידע…")
         binding.nameSearchButton.isEnabled = false
@@ -302,6 +304,7 @@ class MainActivity : AppCompatActivity() {
             binding.wikipediaButton.visibility = View.GONE
             hideGrowingGuide()
             hideMinistryInfo()
+            showOrnamentalListSource()
         }
 
         Thread {
@@ -367,6 +370,13 @@ class MainActivity : AppCompatActivity() {
         binding.ministryText.visibility = View.GONE
         binding.ministryButton.visibility = View.GONE
         binding.ministryText.text = ""
+    }
+
+    private fun showOrnamentalListSource() {
+        binding.ornamentalListTitle.visibility = View.VISIBLE
+        binding.ornamentalListText.visibility = View.VISIBLE
+        binding.ornamentalListButton.visibility = View.VISIBLE
+        binding.ornamentalListText.text = OrnamentalPlantsListSource.SUMMARY_HE
     }
 
     private fun openUrl(url: String) {
