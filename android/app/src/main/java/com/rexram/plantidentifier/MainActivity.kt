@@ -229,6 +229,7 @@ class MainActivity : AppCompatActivity() {
                 binding.infoText.text = baseText
                 showGrowingGuide(info.scientificName)
                 showMinistryInfo(ministryInfo)
+                showOrnamentalListMatch(info.scientificName, info.hebrewName ?: query)
                 binding.wikipediaButton.visibility = if (info.wikipediaUrl != null) View.VISIBLE else View.GONE
                 setStatus("החיפוש לפי שם הסתיים.")
                 binding.infoCard.announceForAccessibility("נטען מידע על ${info.hebrewName ?: info.scientificName}")
@@ -329,6 +330,7 @@ class MainActivity : AppCompatActivity() {
                 binding.infoText.text = baseText
                 showGrowingGuide(info.scientificName)
                 showMinistryInfo(ministryInfo)
+                showOrnamentalListMatch(info.scientificName, info.hebrewName)
                 binding.wikipediaButton.visibility = if (info.wikipediaUrl != null) View.VISIBLE else View.GONE
                 binding.infoCard.announceForAccessibility("נטען מידע נוסף על ${info.hebrewName ?: info.scientificName}")
             }
@@ -377,6 +379,26 @@ class MainActivity : AppCompatActivity() {
         binding.ornamentalListText.visibility = View.VISIBLE
         binding.ornamentalListButton.visibility = View.VISIBLE
         binding.ornamentalListText.text = OrnamentalPlantsListSource.SUMMARY_HE
+    }
+
+    private fun showOrnamentalListMatch(scientificName: String?, hebrewName: String?) {
+        val match = runCatching {
+            OrnamentalPlantsRepository.find(
+                applicationContext,
+                scientificName = scientificName,
+                hebrewName = hebrewName
+            )
+        }.getOrNull()
+
+        binding.ornamentalListTitle.visibility = View.VISIBLE
+        binding.ornamentalListText.visibility = View.VISIBLE
+        binding.ornamentalListButton.visibility = View.VISIBLE
+        binding.ornamentalListText.text = if (match != null) {
+            OrnamentalPlantsRepository.formatHebrew(match)
+        } else {
+            OrnamentalPlantsListSource.SUMMARY_HE +
+                "\n\nהצמח לא נמצא עדיין בדגימת האינדקס המקומי. אפשר לפתוח את הרשימה הרשמית לבדיקה."
+        }
     }
 
     private fun openUrl(url: String) {
