@@ -1,0 +1,308 @@
+[
+  {
+    "hebrewName": "אבוטילון דו-גוני",
+    "scientificName": "Abutilon megapotamicum",
+    "familyHebrew": "חלמיתיים",
+    "familyScientific": "Malvaceae",
+    "growthForm": "שיח",
+    "hybrid": false,
+    "sourcePage": 7
+  },
+  {
+    "hebrewName": "אבוטילון כלאיים",
+    "scientificName": "Abutilon hybridum",
+    "familyHebrew": "חלמיתיים",
+    "familyScientific": "Malvaceae",
+    "growthForm": "שיח",
+    "hybrid": true,
+    "sourcePage": 7
+  },
+  {
+    "hebrewName": "אבוטילון מצויר",
+    "scientificName": "Abutilon pictum",
+    "familyHebrew": "חלמיתיים",
+    "familyScientific": "Malvaceae",
+    "growthForm": "שיח",
+    "hybrid": false,
+    "sourcePage": 7
+  },
+  {
+    "hebrewName": "אבליה גדולת-פרחים",
+    "scientificName": "Abelia x grandiflora",
+    "familyHebrew": "יערתיים",
+    "familyScientific": "Caprifoliaceae",
+    "growthForm": "שיח",
+    "hybrid": true,
+    "sourcePage": 7
+  },
+  {
+    "hebrewName": "אבליה קטנת-עלים",
+    "scientificName": "Abelia parvifolia",
+    "familyHebrew": "יערתיים",
+    "familyScientific": "Caprifoliaceae",
+    "growthForm": "שיח",
+    "hybrid": false,
+    "sourcePage": 7
+  },
+  {
+    "hebrewName": "אגבה אמריקנית",
+    "scientificName": "Agave americana",
+    "familyHebrew": "אספרגיים",
+    "familyScientific": "Asparagaceae",
+    "growthForm": "סוקולנט סיבי",
+    "hybrid": false,
+    "sourcePage": 7
+  },
+  {
+    "hebrewName": "אגבה זקופה",
+    "scientificName": "Agave stricta",
+    "familyHebrew": "אספרגיים",
+    "familyScientific": "Asparagaceae",
+    "growthForm": "סוקולנט סיבי",
+    "hybrid": false,
+    "sourcePage": 7
+  },
+  {
+    "hebrewName": "אגבה רכה",
+    "scientificName": "Agave attenuata",
+    "familyHebrew": "אספרגיים",
+    "familyScientific": "Asparagaceae",
+    "growthForm": "סוקולנט סיבי",
+    "hybrid": false,
+    "sourcePage": 7
+  },
+  {
+    "hebrewName": "אגבת המלכה ויקטוריה",
+    "scientificName": "Agave reginae-victoriae",
+    "familyHebrew": "אספרגיים",
+    "familyScientific": "Asparagaceae",
+    "growthForm": "סוקולנט סיבי",
+    "hybrid": false,
+    "sourcePage": 7
+  },
+  {
+    "hebrewName": "אגוז שחור",
+    "scientificName": "Juglans nigra",
+    "familyHebrew": "אגוזיים",
+    "familyScientific": "Juglandaceae",
+    "growthForm": "עץ רחב-עלים, נשיר",
+    "hybrid": false,
+    "sourcePage": 7
+  },
+  {
+    "hebrewName": "אגס סורי",
+    "scientificName": "Pyrus syriaca",
+    "familyHebrew": "ורדיים",
+    "familyScientific": "Rosaceae",
+    "growthForm": "עץ רחב-עלים נשיר",
+    "hybrid": false,
+    "sourcePage": 8
+  },
+  {
+    "hebrewName": "אגפנתוס אפריקני",
+    "scientificName": "Agapanthus africanus",
+    "familyHebrew": "נרקיסיים",
+    "familyScientific": "Amaryllidaceae",
+    "growthForm": "גיאופיט ירוק-עד",
+    "hybrid": false,
+    "sourcePage": 8
+  },
+  {
+    "hebrewName": "אדמונית החורש",
+    "scientificName": "Paeonia mascula",
+    "familyHebrew": "אדמוניתיים",
+    "familyScientific": "Paeoniaceae",
+    "growthForm": "גיאופיט נשיר",
+    "hybrid": false,
+    "sourcePage": 8
+  },
+  {
+    "hebrewName": "אדניון נפוח",
+    "scientificName": "Adenium obesum",
+    "familyHebrew": "הרדופיים",
+    "familyScientific": "Apocynaceae",
+    "growthForm": "שיח",
+    "hybrid": false,
+    "sourcePage": 8
+  },
+  {
+    "hebrewName": "אדר הסוכר",
+    "scientificName": "Acer saccharum",
+    "familyHebrew": "סבונניים",
+    "familyScientific": "Sapindaceae",
+    "growthForm": "עץ רחב-עלים נשיר",
+    "hybrid": false,
+    "sourcePage": 8
+  },
+  {
+    "hebrewName": "אדר כפני",
+    "scientificName": "Acer palmatum",
+    "familyHebrew": "סבונניים",
+    "familyScientific": "Sapindaceae",
+    "growthForm": "עץ רחב-עלים נשיר",
+    "hybrid": false,
+    "sourcePage": 8
+  },
+  {
+    "hebrewName": "אדר מצוי",
+    "scientificName": "Acer campestre",
+    "familyHebrew": "סבונניים",
+    "familyScientific": "Sapindaceae",
+    "growthForm": "עץ רחב-עלים נשיר",
+    "hybrid": false,
+    "sourcePage": 9
+  },
+  {
+    "hebrewName": "אדר סורי",
+    "scientificName": "Acer obtusifolium",
+    "familyHebrew": "סבונניים",
+    "familyScientific": "Sapindaceae",
+    "growthForm": "עץ רחב-עלים ירוק-עד",
+    "hybrid": false,
+    "sourcePage": 9
+  },
+  {
+    "hebrewName": "אוג הבורסקאים",
+    "scientificName": "Rhus coriaria",
+    "familyHebrew": "אלתיים",
+    "familyScientific": "Anacardiaceae",
+    "growthForm": "שיח",
+    "hybrid": false,
+    "sourcePage": 9
+  },
+  {
+    "hebrewName": "אוג קטיפני",
+    "scientificName": "Rhus typhina",
+    "familyHebrew": "אלתיים",
+    "familyScientific": "Anacardiaceae",
+    "growthForm": "עץ רחב-עלים, נשיר",
+    "hybrid": false,
+    "sourcePage": 9
+  },
+  {
+    "hebrewName": "אוכנה יפה",
+    "scientificName": "Ochna pulchra",
+    "familyHebrew": "אוכניים",
+    "familyScientific": "Ochnaceae",
+    "growthForm": "שיח",
+    "hybrid": false,
+    "sourcePage": 9
+  },
+  {
+    "hebrewName": "אולמוס אמריקני",
+    "scientificName": "Ulmus americana",
+    "familyHebrew": "אולמוסיים",
+    "familyScientific": "Ulmaceae",
+    "growthForm": "עץ רחב-עלים, נשיר",
+    "hybrid": false,
+    "sourcePage": 9
+  },
+  {
+    "hebrewName": "אולמוס קרח",
+    "scientificName": "Ulmus glabra",
+    "familyHebrew": "אולמוסיים",
+    "familyScientific": "Ulmaceae",
+    "growthForm": "עץ רחב-עלים, נשיר",
+    "hybrid": false,
+    "sourcePage": 10
+  },
+  {
+    "hebrewName": "אורן ברוטיה",
+    "scientificName": "Pinus brutia",
+    "familyHebrew": "אורניים",
+    "familyScientific": "Pinaceae",
+    "growthForm": "עץ מחטני ירוק עד",
+    "hybrid": false,
+    "sourcePage": 10
+  },
+  {
+    "hebrewName": "אורן הגלעין",
+    "scientificName": "Pinus pinea",
+    "familyHebrew": "אורניים",
+    "familyScientific": "Pinaceae",
+    "growthForm": "עץ מחטני ירוק עד",
+    "hybrid": false,
+    "sourcePage": 10
+  },
+  {
+    "hebrewName": "אורן ירושלים",
+    "scientificName": "Pinus halepensis",
+    "familyHebrew": "אורניים",
+    "familyScientific": "Pinaceae",
+    "growthForm": "עץ מחטני ירוק עד",
+    "hybrid": false,
+    "sourcePage": 10
+  },
+  {
+    "hebrewName": "אזוב מצוי",
+    "scientificName": "Origanum syriacum",
+    "familyHebrew": "שפתניים",
+    "familyScientific": "Lamiaceae",
+    "growthForm": "בן-שיח",
+    "hybrid": false,
+    "sourcePage": 10
+  },
+  {
+    "hebrewName": "אזוביון דגול",
+    "scientificName": "Lavandula stoechas",
+    "familyHebrew": "שפתניים",
+    "familyScientific": "Lamiaceae",
+    "growthForm": "בן-שיח",
+    "hybrid": false,
+    "sourcePage": 10
+  },
+  {
+    "hebrewName": "אזוביון רפואי",
+    "scientificName": "Lavandula angustifolia",
+    "familyHebrew": "שפתניים",
+    "familyScientific": "Lamiaceae",
+    "growthForm": "בן-שיח",
+    "hybrid": false,
+    "sourcePage": 11
+  },
+  {
+    "hebrewName": "איגניית הפיטנגה",
+    "scientificName": "Eugenia uniflora",
+    "familyHebrew": "הדסיים",
+    "familyScientific": "Myrtaceae",
+    "growthForm": "שיח",
+    "hybrid": false,
+    "sourcePage": 11
+  },
+  {
+    "hebrewName": "אילנתה בלוטית",
+    "scientificName": "Ailanthus altissima",
+    "familyHebrew": "סימרוביים",
+    "familyScientific": "Simaroubaceae",
+    "growthForm": "עץ רחב-עלים נשיר",
+    "hybrid": false,
+    "sourcePage": 11
+  },
+  {
+    "hebrewName": "איקליפטוס אגסי",
+    "scientificName": "Eucalyptus pyriformis",
+    "familyHebrew": "הדסיים",
+    "familyScientific": "Myrtaceae",
+    "growthForm": "עץ רחב-עלים ירוק-עד",
+    "hybrid": false,
+    "sourcePage": 12
+  },
+  {
+    "hebrewName": "איקליפטוס גדול",
+    "scientificName": "Eucalyptus grandis",
+    "familyHebrew": "הדסיים",
+    "familyScientific": "Myrtaceae",
+    "growthForm": "עץ רחב-עלים ירוק-עד",
+    "hybrid": false,
+    "sourcePage": 12
+  },
+  {
+    "hebrewName": "איקליפטוס המקור",
+    "scientificName": "Eucalyptus camaldulensis",
+    "familyHebrew": "הדסיים",
+    "familyScientific": "Myrtaceae",
+    "growthForm": "עץ רחב-עלים ירוק-עד",
+    "hybrid": false,
+    "sourcePage": 12
+  }
+]
