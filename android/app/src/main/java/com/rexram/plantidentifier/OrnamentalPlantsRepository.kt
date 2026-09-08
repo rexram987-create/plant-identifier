@@ -19,7 +19,12 @@ object OrnamentalPlantsRepository {
     private fun all(context: Context): List<Plant> {
         return cache ?: synchronized(this) {
             cache ?: run {
-                val text = context.assets.open("ornamental_plants_sample.json")
+                val assetName = runCatching {
+                    context.assets.open("ornamental_plants.json").close()
+                    "ornamental_plants.json"
+                }.getOrElse { "ornamental_plants_sample.json" }
+
+                val text = context.assets.open(assetName)
                     .bufferedReader()
                     .use { it.readText() }
                 val array = JSONArray(text)
@@ -48,6 +53,7 @@ object OrnamentalPlantsRepository {
             .trim()
             .lowercase()
             .replace('×', 'x')
+            .replace(Regex("[\\u0591-\\u05C7]"), "")
             .replace(Regex("\\s+"), " ")
 
     fun find(
