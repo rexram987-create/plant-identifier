@@ -9,6 +9,8 @@ import ai.onnxruntime.OrtEnvironment
 import ai.onnxruntime.OrtSession
 import org.json.JSONObject
 import java.io.File
+import java.net.HttpURLConnection
+import java.net.URL
 import java.nio.FloatBuffer
 import kotlin.math.exp
 
@@ -25,17 +27,19 @@ class OpenPlantsClassifier(private val context: Context) : AutoCloseable {
     private val labelsFile = File(modelDir, "labels.json")
 
     companion object {
-        private const val MODEL_ASSET = "openplants/model-int8.onnx"
+        private const val MODEL_URL =
+            "https://github.com/rexram987-create/plant-identifier/releases/download/v1.0.2/OpenPlants-model-int8.onnx"
         private const val LABELS_ASSET = "openplants/labels.json"
+        private const val MIN_MODEL_SIZE = 50_000_000L
         private const val SIZE = 224
     }
 
     fun prepare(progress: (String) -> Unit = {}) {
         modelDir.mkdirs()
 
-        if (!modelFile.exists() || modelFile.length() < 50_000_000L) {
-            progress("מכין את מנוע OpenPlants המקומי…")
-            copyAsset(MODEL_ASSET, modelFile)
+        if (!modelFile.exists() || modelFile.length() < MIN_MODEL_SIZE) {
+            progress("מוריד את מודל OpenPlants בפעם הראשונה… ההורדה עשויה להימשך כמה דקות.")
+            downloadModel()
         }
         if (!labelsFile.exists() || labelsFile.length() < 1_000L) {
             progress("מכין את רשימת מיני הצמחים…")
@@ -69,6 +73,46 @@ class OpenPlantsClassifier(private val context: Context) : AutoCloseable {
                 val output = result[0].value as Array<FloatArray>
                 return softmaxTop(output[0], topK)
             }
+        }
+    }
+
+    private fun downloadModel() {
+        val temp = File(modelDir, "model-int8.onnx.part")
+        if (temp.exists()) temp.delete()
+
+        val connection = (URL(MODEL_URL).openConnection() as HttpURLConnection).apply {
+            instanceFollowRedirects = true
+            connectTimeout = 30_000
+            readTimeout = 120_000
+            requestMethod = "GET"
+            setRequestProperty("User-Agent", "Plant-Identifier-Android/" + BuildConfig.VERSION_NAME)
+        }
+
+        try {
+            val code = connection.responseCode
+            if (code !in 200..299) error("הורדת המודל נכשלה (HTTP $code)")
+
+            connection.inputStream.use { input ->
+                temp.outputStream().buffered().use { output -> input.copyTo(output) }
+            }
+
+            if (temp.length() < MIN_MODEL_SIZE) {
+                temp.delete()
+                error("קובץ המודל שהורד אינו שלם")
+            }
+
+            if (!temp.renameTo(modelFile)) {
+                temp.copyTo(modelFile, overwrite = true)
+                temp.delete()
+            }
+        } catch (error: Throwable) {
+            temp.delete()
+            throw IllegalStateException(
+                "לא ניתן להוריד את מודל הזיהוי. בדוק חיבור לאינטרנט ונסה שוב.",
+                error
+            )
+        } finally {
+            connection.disconnect()
         }
     }
 
