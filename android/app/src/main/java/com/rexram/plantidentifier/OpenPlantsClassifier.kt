@@ -28,7 +28,7 @@ class OpenPlantsClassifier(private val context: Context) : AutoCloseable {
 
     companion object {
         private const val MODEL_URL =
-            "https://github.com/rexram987-create/plant-identifier/releases/download/v1.0.2/OpenPlants-model-int8.onnx"
+            "https://github.com/rexram987-create/plant-identifier/releases/download/v1.0.2/model-int8.onnx"
         private const val LABELS_ASSET = "openplants/labels.json"
         private const val MIN_MODEL_SIZE = 50_000_000L
         private const val SIZE = 224
