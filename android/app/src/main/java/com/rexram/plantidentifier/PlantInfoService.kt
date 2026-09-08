@@ -34,7 +34,12 @@ object PlantInfoService {
         "בוגנוויליה" to KnownPlant("Bougainvillea", "בוגנוויליה"),
         "בוגנווילאה" to KnownPlant("Bougainvillea", "בוגנוויליה"),
         "פוטוס" to KnownPlant("Epipremnum aureum", "פוטוס זהוב"),
-        "לבנדר" to KnownPlant("Lavandula", "אזוביון")
+        "לבנדר" to KnownPlant("Lavandula", "אזוביון"),
+        // "פסיפלורה" is a common name for the genus, not only Passiflora edulis.
+        // Keep genus-level searches at genus level instead of silently selecting the edible species.
+        "פסיפלורה" to KnownPlant("Passiflora", "שעונית"),
+        "שעונית" to KnownPlant("Passiflora", "שעונית"),
+        "שעונית נאכלת" to KnownPlant("Passiflora edulis", "שעונית נאכלת")
     )
 
     fun load(name: String): PlantInfo {
