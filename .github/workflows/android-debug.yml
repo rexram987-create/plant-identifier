@@ -15,12 +15,18 @@ on:
       - 'android/**'
       - '.github/workflows/android-debug.yml'
   workflow_dispatch:
+  workflow_run:
+    workflows:
+      - "Build ornamental plants index"
+    types:
+      - completed
 
 permissions:
   contents: read
 
 jobs:
   build:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     timeout-minutes: 30
     defaults:
@@ -30,6 +36,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          ref: main
 
       - name: Restore OpenPlants model cache
         id: openplants-cache
