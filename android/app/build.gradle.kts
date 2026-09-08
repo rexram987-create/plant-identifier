@@ -11,8 +11,8 @@ android {
         applicationId = "com.rexram.plantidentifier"
         minSdk = 26
         targetSdk = 35
-        versionCode = 16
-        versionName = "1.0.2"
+        versionCode = 17
+        versionName = "1.0.3"
 
         // The app is distributed directly for modern Android phones.
         // Keeping only arm64-v8a avoids bundling unused x86/x86_64 ONNX Runtime
