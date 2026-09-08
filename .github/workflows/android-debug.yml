@@ -111,10 +111,12 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          cp app/build/outputs/apk/release/app-release.apk             app/build/outputs/apk/release/Plant-Identifier-v1.0.2.apk
+          APK="app/build/outputs/apk/release/Plant-Identifier-v1.0.2.apk"
+          MODEL="../models/openplants/model-int8.onnx"
+          cp app/build/outputs/apk/release/app-release.apk "$APK"
 
           if gh release view v1.0.2 >/dev/null 2>&1; then
-            gh release upload v1.0.2               app/build/outputs/apk/release/Plant-Identifier-v1.0.2.apk               --clobber
+            gh release upload v1.0.2 "$APK" "$MODEL#OpenPlants-model-int8.onnx" --clobber
           else
-            gh release create v1.0.2               app/build/outputs/apk/release/Plant-Identifier-v1.0.2.apk               --target main               --title "Plant Identifier v1.0.2"               --notes "גרסה יציבה של Plant Identifier לאנדרואיד, כולל מאגר צמחי הנוי המלא. גרסה 1.0.1 כוללת APK קטן יותר המותאם לטלפוני Android מודרניים עם arm64-v8a."
+            gh release create v1.0.2               "$APK"               "$MODEL#OpenPlants-model-int8.onnx"               --target main               --title "Plant Identifier v1.0.2"               --notes "גרסה 1.0.2 כוללת את מאגר צמחי הנוי המלא, APK קטן משמעותית, והורדה חד-פעמית של מודל OpenPlants מתוך האפליקציה בעת הזיהוי הראשון."
           fi
