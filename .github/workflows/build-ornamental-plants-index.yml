@@ -6,6 +6,7 @@ on:
     paths:
       - ".github/workflows/build-ornamental-plants-index.yml"
       - "scripts/extract_ornamental_plants.py"
+      - "android/app/src/main/java/com/rexram/plantidentifier/OrnamentalPlantsRepository.kt"
 
 permissions:
   contents: write
@@ -27,20 +28,39 @@ jobs:
 
       - name: Download official Ministry PDF
         run: |
-          curl --fail --location             "https://www.gov.il/BlobFolder/reports/list-of-ornamental-plants-ini-srael/he/Professional_information_books_list-of-ornamental-plants-ini-srael.pdf"             --output ornamental-plants.pdf
+          curl --fail --location \
+            "https://www.gov.il/BlobFolder/reports/list-of-ornamental-plants-ini-srael/he/Professional_information_books_list-of-ornamental-plants-ini-srael.pdf" \
+            --output ornamental-plants.pdf
 
       - name: Extract and cross-check both indexes
         run: |
-          python scripts/extract_ornamental_plants.py             ornamental-plants.pdf             android/app/src/main/assets/ornamental_plants.json
+          python scripts/extract_ornamental_plants.py \
+            ornamental-plants.pdf \
+            android/app/src/main/assets/ornamental_plants.json
+
+      - name: Validate generated index
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p = Path('android/app/src/main/assets/ornamental_plants.json')
+          data = json.loads(p.read_text(encoding='utf-8'))
+          assert len(data) > 3000, f'Unexpectedly small index: {len(data)}'
+          required = {'hebrewName','scientificName','familyHebrew','familyScientific','growthForm','hybrid','sourcePage'}
+          for i, row in enumerate(data[:100]):
+              missing = required - set(row)
+              assert not missing, f'Row {i} missing {missing}'
+          print(f'Validated {len(data)} ornamental plant records')
+          PY
 
       - name: Commit generated index
         run: |
-          if git diff --quiet -- android/app/src/main/assets/ornamental_plants.json android/app/src/main/assets/ornamental_plants.report.json; then
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -f android/app/src/main/assets/ornamental_plants.json android/app/src/main/assets/ornamental_plants.report.json
+          if git diff --cached --quiet; then
             echo "No generated changes."
             exit 0
           fi
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add android/app/src/main/assets/ornamental_plants.json android/app/src/main/assets/ornamental_plants.report.json
           git commit -m "Generate full ornamental plants index"
           git push
