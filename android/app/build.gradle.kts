@@ -11,8 +11,15 @@ android {
         applicationId = "com.rexram.plantidentifier"
         minSdk = 26
         targetSdk = 35
-        versionCode = 14
-        versionName = "0.7.7"
+        versionCode = 15
+        versionName = "1.0.1"
+
+        // The app is distributed directly for modern Android phones.
+        // Keeping only arm64-v8a avoids bundling unused x86/x86_64 ONNX Runtime
+        // native libraries and substantially reduces the APK size.
+        ndk {
+            abiFilters += listOf("arm64-v8a")
+        }
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -29,7 +36,8 @@ android {
     buildTypes {
         release {
             signingConfig = signingConfigs.getByName("stableRelease")
-            isMinifyEnabled = false
+            isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
