@@ -46,12 +46,12 @@ jobs:
           path: models/openplants
           key: openplants-int8-dynamic-v2
 
-      - name: Verify and bundle OpenPlants model
+      - name: Verify OpenPlants files and bundle labels only
         run: |
           test -s ../models/openplants/model-int8.onnx
           test -s ../models/openplants/labels.json
           mkdir -p app/src/main/assets/openplants
-          cp ../models/openplants/model-int8.onnx app/src/main/assets/openplants/model-int8.onnx
+          rm -f app/src/main/assets/openplants/model-int8.onnx
           cp ../models/openplants/labels.json app/src/main/assets/openplants/labels.json
 
       - name: Set up Java 17
@@ -106,15 +106,15 @@ jobs:
           path: android/app/build/outputs/apk/release/app-release.apk
           if-no-files-found: error
 
-      - name: Publish GitHub Release v1.0.1
+      - name: Publish GitHub Release v1.0.2
         if: github.event_name != 'pull_request'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          cp app/build/outputs/apk/release/app-release.apk             app/build/outputs/apk/release/Plant-Identifier-v1.0.1.apk
+          cp app/build/outputs/apk/release/app-release.apk             app/build/outputs/apk/release/Plant-Identifier-v1.0.2.apk
 
-          if gh release view v1.0.1 >/dev/null 2>&1; then
-            gh release upload v1.0.1               app/build/outputs/apk/release/Plant-Identifier-v1.0.1.apk               --clobber
+          if gh release view v1.0.2 >/dev/null 2>&1; then
+            gh release upload v1.0.2               app/build/outputs/apk/release/Plant-Identifier-v1.0.2.apk               --clobber
           else
-            gh release create v1.0.1               app/build/outputs/apk/release/Plant-Identifier-v1.0.1.apk               --target main               --title "Plant Identifier v1.0.1"               --notes "גרסה יציבה של Plant Identifier לאנדרואיד, כולל מאגר צמחי הנוי המלא. גרסה 1.0.1 כוללת APK קטן יותר המותאם לטלפוני Android מודרניים עם arm64-v8a."
+            gh release create v1.0.2               app/build/outputs/apk/release/Plant-Identifier-v1.0.2.apk               --target main               --title "Plant Identifier v1.0.2"               --notes "גרסה יציבה של Plant Identifier לאנדרואיד, כולל מאגר צמחי הנוי המלא. גרסה 1.0.1 כוללת APK קטן יותר המותאם לטלפוני Android מודרניים עם arm64-v8a."
           fi
