@@ -6,8 +6,8 @@ const OFFLINE_ASSETS = [
   './app.js?v=21', './inaturalist.js?v=21', './wikipedia.js?v=21', './install.js?v=21',
   './manifest.webmanifest', './icon-192.png', './icon-512.png',
   './vendor/onnxruntime-1.22.0/ort.min.js',
-  './vendor/onnxruntime-1.22.0/ort-wasm-simd-threaded.mjs',
-  './vendor/onnxruntime-1.22.0/ort-wasm-simd-threaded.wasm'
+  './vendor/onnxruntime-1.22.0/ort-wasm-simd-threaded.jsep.mjs',
+  './vendor/onnxruntime-1.22.0/ort-wasm-simd-threaded.jsep.wasm'
 ];
 self.addEventListener('install', event => {
   event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(OFFLINE_ASSETS)).then(() => self.skipWaiting()));
