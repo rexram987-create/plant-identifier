@@ -16,22 +16,27 @@
   function esc(v) { return String(v ?? '').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'",'&#039;'); }
 
   async function wikiSearch(name, code) {
-    const url = `https://${code}.wikipedia.org/w/api.php?action=query&generator=search&gsrsearch=${encodeURIComponent(name)}&gsrnamespace=0&gsrlimit=3&prop=extracts|pageimages&exintro=1&explaintext=1&piprop=thumbnail&pithumbsize=900&format=json&origin=*`;
-    const r = await fetch(url);
-    if (!r.ok) return null;
-    const data = await r.json();
-    const pages = data?.query?.pages ? Object.values(data.query.pages) : [];
-    if (!pages.length) return null;
-    const needle = name.toLowerCase();
-    const page = pages.find(p => (p.title || '').toLowerCase() === needle) || pages.find(p => p.extract) || pages[0];
+    // Resolve an exact scientific taxon first, then follow its language sitelink.
+    const search = await fetch('https://www.wikidata.org/w/api.php?action=wbsearchentities&search=' + encodeURIComponent(name) + '&language=en&type=item&limit=8&format=json&origin=*');
+    if (!search.ok) return null;
+    const entities = (await search.json()).search || [];
+    if (!entities.length) return null;
+    const ids = entities.map(e => e.id).join('|');
+    const response = await fetch('https://www.wikidata.org/w/api.php?action=wbgetentities&ids=' + encodeURIComponent(ids) + '&props=claims|sitelinks&format=json&origin=*');
+    if (!response.ok) return null;
+    const data = await response.json();
+    const wanted = name.trim().toLowerCase();
+    const entity = Object.values(data.entities || {}).find(e =>
+      (e.claims?.P225 || []).some(c => String(c.mainsnak?.datavalue?.value || '').trim().toLowerCase() === wanted)
+    );
+    const title = entity?.sitelinks?.[code + 'wiki']?.title;
+    if (!title) return null;
+    const article = await fetch('https://' + code + '.wikipedia.org/w/api.php?action=query&titles=' + encodeURIComponent(title) + '&redirects=1&prop=extracts|pageimages&exintro=1&explaintext=1&piprop=thumbnail&pithumbsize=900&format=json&origin=*');
+    if (!article.ok) return null;
+    const pages = (await article.json()).query?.pages || {};
+    const page = Object.values(pages).find(p => p.pageid > 0);
     if (!page) return null;
-    return {
-      title: page.title || name,
-      extract: page.extract || '',
-      image: page.thumbnail?.source || '',
-      url: `https://${code}.wikipedia.org/?curid=${page.pageid}`,
-      language: code
-    };
+    return {title: page.title, extract: page.extract || '', image: page.thumbnail?.source || '', url: 'https://' + code + '.wikipedia.org/?curid=' + page.pageid, language: code};
   }
 
   async function fetchArticle(name) {
@@ -49,11 +54,7 @@
   }
 
   function scientificName(card) {
-    const em = card.querySelector('h3 em');
-    if (em?.textContent.trim()) return em.textContent.trim();
-    const h3 = card.querySelector('h3');
-    if (h3?.textContent.trim()) return h3.textContent.trim().replace(/^\d+\.\s*/, '');
-    return '';
+    return card.dataset.scientificName || '';
   }
 
   async function showWikipedia(button, name) {

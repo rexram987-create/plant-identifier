@@ -88,15 +88,15 @@ h2 { font-size: clamp(1.35rem, 6vw, 2rem); line-height: 1.3; }
 }
 
 @media (max-width: 760px) {
-  :root[data-large-text="true"] { font-size: 18px; }
+  :root[data-large-text="true"] { font-size: 22px; }
   .topbar { display: block; }
   .topbar > div:first-child { margin-bottom: 1rem; }
   .hero, .card, .info, .result { padding: .9rem; }
 }
 
 @media (max-width: 420px) {
-  :root,
-  :root[data-large-text="true"] { font-size: 17px; }
+  :root { font-size: 17px; }
+  :root[data-large-text="true"] { font-size: 22px; }
   .topbar, main, footer {
     inline-size: calc(100% - .75rem);
     max-inline-size: calc(100% - .75rem);

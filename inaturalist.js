@@ -14,11 +14,11 @@
   function esc(v) { return String(v ?? '').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'",'&#039;'); }
 
   async function findTaxon(name) {
-    const r = await fetch(`${API}/taxa?q=${encodeURIComponent(name)}&rank=species&per_page=8`);
+    const r = await fetch(`${API}/taxa?q=${encodeURIComponent(name)}&per_page=8`);
     if (!r.ok) throw new Error(`iNaturalist taxa ${r.status}`);
     const rows = (await r.json()).results || [];
     const exact = rows.find(x => (x.name || '').toLowerCase() === name.toLowerCase());
-    return exact || rows[0] || null;
+    return exact || null;
   }
 
   async function observations(taxonId) {
@@ -78,9 +78,8 @@
 
   function enhance() {
     result.querySelectorAll('.plant-result-card').forEach(card => {
-      const em = card.querySelector('h3 em');
-      if (!em || card.querySelector('[data-inat-compare]')) return;
-      const name = em.textContent.trim();
+      if (card.querySelector('[data-inat-compare]')) return;
+      const name = card.dataset.scientificName || '';
       if (!name) return;
       const b = document.createElement('button');
       b.type = 'button';

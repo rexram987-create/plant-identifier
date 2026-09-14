@@ -71,13 +71,37 @@ jobs:
           du -h models/openplants/model-int8.onnx
           cat models/openplants/conversion-summary.json
 
+      - name: Prepare local browser runtime
+        run: |
+          mkdir -p vendor/onnxruntime-1.22.0
+          for file in ort.min.js ort-wasm-simd-threaded.mjs ort-wasm-simd-threaded.wasm; do
+            curl --fail --location --retry 3 "https://cdn.jsdelivr.net/npm/onnxruntime-web@1.22.0/dist/$file" -o "vendor/onnxruntime-1.22.0/$file"
+            test -s "vendor/onnxruntime-1.22.0/$file"
+          done
+
+      - name: Check web regressions
+        run: node scripts/test-web.cjs
+
+      - name: Stage public web files
+        run: |
+          mkdir -p _site
+          cp index.html *.js *.css *.png manifest.webmanifest _site/
+          cp -R models vendor _site/
+
+      - name: Browser smoke test
+        timeout-minutes: 8
+        run: |
+          npm install --prefix /tmp/plant-browser-check --no-save --package-lock=false playwright@1.55.0
+          /tmp/plant-browser-check/node_modules/.bin/playwright install chromium --with-deps
+          NODE_PATH=/tmp/plant-browser-check/node_modules node scripts/browser-smoke.cjs
+
       - name: Setup Pages
         uses: actions/configure-pages@v5
 
       - name: Upload static site
         uses: actions/upload-pages-artifact@v3
         with:
-          path: .
+          path: _site
 
       - name: Deploy to GitHub Pages
         id: deployment

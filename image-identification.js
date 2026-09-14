@@ -1,7 +1,8 @@
 // On-device plant identification. Prefer the larger OpenPlants ViT INT8 model
 // served with this PWA; fall back to the smaller PlantNet-300K model if needed.
 (() => {
-  const ORT_URL = 'https://cdn.jsdelivr.net/npm/onnxruntime-web@1.22.0/dist/ort.min.js';
+  const ORT_BASE = new URL('vendor/onnxruntime-1.22.0/', document.baseURI).href;
+  const ORT_URL = ORT_BASE + 'ort.min.js';
   const MODEL_CACHE = 'plant-ai-model-v3';
   const PRIMARY = {
     name: 'OpenPlants',
@@ -21,6 +22,15 @@
   };
 
   let enginePromise;
+  function status(key, name = '') {
+    const code = document.documentElement.lang;
+    const messages = {
+      he: {prepare: 'מכין את מנוע הזיהוי {name}…', fallback: 'המנוע הראשי לא נטען. מנסה את מנוע הגיבוי…', analyse: 'מנתח את התמונה במכשיר באמצעות {name}…'},
+      en: {prepare: 'Preparing the {name} identification engine…', fallback: 'The primary engine did not load. Trying the fallback…', analyse: 'Analysing the image on your device with {name}…'},
+      ar: {prepare: 'جارٍ إعداد محرك التعرف {name}…', fallback: 'تعذر تحميل المحرك الأساسي. جارٍ تجربة المحرك البديل…', analyse: 'جارٍ تحليل الصورة على جهازك بواسطة {name}…'}
+    };
+    return (messages[code] || messages.he)[key].replace('{name}', name);
+  }
 
   function loadScript(src) {
     if (window.ort) return Promise.resolve();
@@ -28,19 +38,30 @@
       const script = document.createElement('script');
       script.src = src;
       script.crossOrigin = 'anonymous';
-      script.onload = resolve;
-      script.onerror = () => reject(new Error('Could not load ONNX Runtime Web'));
+      const timer = setTimeout(() => { script.remove(); reject(new Error('Runtime load timed out')); }, 60000);
+      script.onload = () => { clearTimeout(timer); resolve(); };
+      script.onerror = () => { clearTimeout(timer); script.remove(); reject(new Error('Could not load ONNX Runtime Web')); };
       document.head.appendChild(script);
     });
   }
 
   async function cachedArrayBuffer(url) {
-    const cache = await caches.open(MODEL_CACHE);
-    let response = await cache.match(url);
+    let cache;
+    try { cache = await caches.open(MODEL_CACHE); } catch (error) { console.warn('Model cache unavailable', error); }
+    let response = cache ? await cache.match(url) : null;
     if (!response) {
-      response = await fetch(url, { mode: 'cors', cache: 'no-store' });
-      if (!response.ok) throw new Error(`Download failed: ${response.status}`);
-      await cache.put(url, response.clone());
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), 180000);
+      try {
+        response = await fetch(url, {mode: 'cors', cache: 'no-store', signal: controller.signal});
+        if (!response.ok) throw new Error('Download failed: ' + response.status);
+        const bytes = await response.arrayBuffer();
+        if (cache) {
+          try { await cache.put(url, new Response(bytes, {headers: {'Content-Type': response.headers.get('Content-Type') || 'application/octet-stream'}})); }
+          catch (error) { console.warn('Model could not be saved for offline use', error); }
+        }
+        return bytes;
+      } finally { clearTimeout(timer); }
     }
     return response.arrayBuffer();
   }
@@ -58,7 +79,7 @@
   }
 
   async function buildEngine(definition, onStatus) {
-    onStatus?.(`מוריד ומכין את מנוע ${definition.name} בפעם הראשונה…`);
+    onStatus?.(status('prepare', definition.name));
     const [bytes, labels] = await Promise.all([
       cachedArrayBuffer(definition.modelUrl),
       loadLabels(definition.labelsUrl)
@@ -70,18 +91,23 @@
   async function getEngine(onStatus) {
     if (!enginePromise) enginePromise = (async () => {
       await loadScript(ORT_URL);
+      window.ort.env.wasm.wasmPaths = ORT_BASE;
+      window.ort.env.wasm.numThreads = 1;
       try {
         const engine = await buildEngine(PRIMARY, onStatus);
         console.info(`Plant identifier using ${engine.name} (${engine.labels.length} labels)`);
         return engine;
       } catch (primaryError) {
         console.warn('OpenPlants could not be loaded; using PlantNet fallback.', primaryError);
-        onStatus?.('המנוע הרחב לא נטען. עובר למנוע הגיבוי…');
+        onStatus?.(status('fallback'));
         const engine = await buildEngine(FALLBACK, onStatus);
         console.info(`Plant identifier fallback: ${engine.name} (${engine.labels.length} labels)`);
         return engine;
       }
-    })();
+    })().catch(error => {
+      enginePromise = null;
+      throw error;
+    });
     return enginePromise;
   }
 
@@ -135,7 +161,7 @@
   window.PlantLocalAI = {
     async identify(file, onStatus) {
       const engine = await getEngine(onStatus);
-      onStatus?.(`מנתח את התמונה במכשיר באמצעות ${engine.name}…`);
+      onStatus?.(status('analyse', engine.name));
       const tensor = await imageTensor(file, engine);
       const inputName = engine.session.inputNames[0];
       const output = await engine.session.run({ [inputName]: tensor });

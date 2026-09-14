@@ -1,6 +1,50 @@
-const CACHE = 'plant-identifier-v18';
+const CACHE = 'plant-identifier-v21';
 const MODEL_CACHE = 'plant-ai-model-v3';
-const OFFLINE_ASSETS = ['./','./index.html','./styles.css','./mobile-fix.css','./inaturalist.css','./wikipedia.css','./local-name-search.js?v=18','./image-identification.js?v=18','./photo-inputs.js?v=18','./app.js?v=18','./openplants-ui.js?v=18','./inaturalist.js?v=18','./wikipedia.js?v=18','./install.js?v=18','./manifest.webmanifest','./icon-192.png','./icon-512.png'];
-self.addEventListener('install',e=>{e.waitUntil(caches.open(CACHE).then(c=>c.addAll(OFFLINE_ASSETS)));self.skipWaiting()});
-self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE&&k!==MODEL_CACHE).map(k=>caches.delete(k)))));self.clients.claim()});
-self.addEventListener('fetch',e=>{if(e.request.method!=='GET')return;const u=new URL(e.request.url);if(u.hostname==='api.gbif.org'||u.hostname==='api.inaturalist.org'||u.hostname==='www.wikidata.org'||u.hostname.endsWith('.wikipedia.org')){e.respondWith(fetch(e.request));return}if(u.origin===self.location.origin)e.respondWith(fetch(e.request).then(r=>{if(r?.ok&&!u.pathname.endsWith('/model-int8.onnx')){const copy=r.clone();caches.open(CACHE).then(c=>c.put(e.request,copy))}return r}).catch(async()=>await caches.match(e.request)||(e.request.mode==='navigate'?caches.match('./index.html'):Promise.reject(Error('offline')))))});
+const OFFLINE_ASSETS = [
+  './', './index.html', './styles.css', './mobile-fix.css', './inaturalist.css', './wikipedia.css',
+  './local-name-search.js?v=21', './translations-extra.js?v=21', './image-identification.js?v=21',
+  './app.js?v=21', './inaturalist.js?v=21', './wikipedia.js?v=21', './install.js?v=21',
+  './manifest.webmanifest', './icon-192.png', './icon-512.png',
+  './vendor/onnxruntime-1.22.0/ort.min.js',
+  './vendor/onnxruntime-1.22.0/ort-wasm-simd-threaded.mjs',
+  './vendor/onnxruntime-1.22.0/ort-wasm-simd-threaded.wasm'
+];
+self.addEventListener('install', event => {
+  event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(OFFLINE_ASSETS)).then(() => self.skipWaiting()));
+});
+self.addEventListener('activate', event => {
+  event.waitUntil((async () => {
+    const keys = await caches.keys();
+    await Promise.all(keys.filter(key => key.startsWith('plant-identifier-') && key !== CACHE).map(key => caches.delete(key)));
+    await self.clients.claim();
+  })());
+});
+self.addEventListener('fetch', event => {
+  if (event.request.method !== 'GET') return;
+  const url = new URL(event.request.url);
+  if (url.origin !== self.location.origin || !url.pathname.startsWith(new URL(self.registration.scope).pathname)) return;
+  // The model has its own cache; avoid retaining a second 100 MB copy.
+  if (url.pathname.endsWith('/model-int8.onnx')) return;
+  event.respondWith((async () => {
+    const cache = await caches.open(CACHE);
+    // Versioned scripts and the pinned runtime are immutable for this release.
+    const cached = await cache.match(event.request);
+    if (cached && (url.searchParams.get('v') === '21' || url.pathname.includes('/vendor/onnxruntime-1.22.0/'))) return cached;
+    try {
+      const response = await fetch(event.request);
+      if (response.ok) {
+        try { await cache.put(event.request, response.clone()); } catch {}
+        return response;
+      }
+      if (cached && response.status >= 500) return cached;
+      return response;
+    } catch {
+      if (cached) return cached;
+      if (event.request.mode === 'navigate') {
+        const page = await cache.match('./index.html');
+        if (page) return page;
+      }
+      return Response.error();
+    }
+  })());
+});

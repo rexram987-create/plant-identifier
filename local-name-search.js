@@ -1,6 +1,15 @@
 (() => {
-  const originalFetch = window.fetch.bind(window);
-  const CACHE_KEY = 'plant-local-name-map-v2';
+  const originalFetch = async (url) => {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 8000);
+    try {
+      const response = await window.fetch(url, {signal: controller.signal});
+      // Read within the deadline, including the response body.
+      const body = await response.text();
+      return new Response(body, {status: response.status, headers: response.headers});
+    } finally { clearTimeout(timer); }
+  };
+  const CACHE_KEY = 'plant-local-name-map-v3';
 
   const KNOWN_LOCAL_NAMES = {
     he: {
@@ -21,7 +30,7 @@
       'פוטוס': 'Epipremnum aureum',
       'לבנדר': 'Lavandula'
     },
-    ar: {}
+    ar: {'النعناع':'Mentha','نعناع':'Mentha','الريحان':'Ocimum basilicum','ريحان':'Ocimum basilicum','إكليل الجبل':'Salvia rosmarinus','الخزامى':'Lavandula','الجهنمية':'Bougainvillea'}
   };
 
   function normalize(text) {
@@ -66,7 +75,7 @@
         normalize(row.canonicalName) === wanted ||
         normalize(row.scientificName) === wanted
       );
-      return exact?.canonicalName || exact?.scientificName || plants[0]?.canonicalName || plants[0]?.scientificName || scientific;
+      return exact?.canonicalName || exact?.scientificName || null;
     } catch {
       return null;
     }
@@ -78,7 +87,7 @@
       const response = await originalFetch(searchUrl);
       if (!response.ok) return null;
       const data = await response.json();
-      const pages = data?.query?.pages ? Object.values(data.query.pages) : [];
+      const pages = data?.query?.pages ? Object.values(data.query.pages).sort((a, b) => (a.index || 0) - (b.index || 0)) : [];
       for (const page of pages) {
         const entityId = page?.pageprops?.wikibase_item;
         const scientific = await wikidataScientificName(entityId);
@@ -121,44 +130,5 @@
     return scientific;
   }
 
-  window.fetch = async function(input, init) {
-    const requestUrl = typeof input === 'string' ? input : input?.url;
-    if (!requestUrl) return originalFetch(input, init);
-
-    let url;
-    try { url = new URL(requestUrl, window.location.href); }
-    catch { return originalFetch(input, init); }
-
-    if (url.hostname !== 'api.gbif.org' || !url.pathname.endsWith('/v1/species/search')) {
-      return originalFetch(input, init);
-    }
-
-    const query = url.searchParams.get('q') || '';
-    const lang = detectLanguage(query);
-    if (!lang) return originalFetch(input, init);
-
-    const scientific = await resolveLocalName(query, lang);
-    if (!scientific) return originalFetch(input, init);
-
-    const translatedUrl = new URL(url.toString());
-    translatedUrl.searchParams.set('q', scientific);
-    const response = await originalFetch(translatedUrl.toString(), init);
-    if (!response.ok) return response;
-
-    try {
-      const data = await response.clone().json();
-      if (Array.isArray(data.results) && data.results.length) {
-        data.results = data.results.map((row, index) => index === 0 ? { ...row, vernacularName: row.vernacularName || query } : row);
-      }
-      const headers = new Headers(response.headers);
-      headers.set('content-type', 'application/json; charset=utf-8');
-      return new Response(JSON.stringify(data), {
-        status: response.status,
-        statusText: response.statusText,
-        headers
-      });
-    } catch {
-      return response;
-    }
-  };
+  window.PlantNameSearch = {resolveLocalName, detectLanguage};
 })();
