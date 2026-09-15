@@ -27,12 +27,20 @@ const server = http.createServer((req, res) => {
     page.on('pageerror', error => errors.push(error.message));
     const url = 'http://127.0.0.1:' + server.address().port + '/plant-identifier/';
     await page.goto(url);
+    assert.equal(await page.locator('.settings-panel').getAttribute('open'), null);
+    assert.equal(await page.locator('.balcony-plants').getAttribute('open'), null);
+    assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), 'No horizontal overflow');
+    assert(await page.evaluate(() => document.documentElement.scrollHeight < 1600), 'Compact initial mobile screen');
+    await page.locator('.settings-panel > summary').click();
     const initialSize = await page.evaluate(() => parseFloat(getComputedStyle(document.documentElement).fontSize));
     await page.locator('#fontToggle').click();
     const largeSize = await page.evaluate(() => parseFloat(getComputedStyle(document.documentElement).fontSize));
     assert(largeSize > initialSize, 'Mobile large-text button must increase font size');
     await page.locator('#languageSelect').selectOption('en');
-    await page.locator('[data-i18n="balconyTitle"]').getByText('Common balcony plants in Israel').waitFor();
+    assert.equal(await page.locator('[data-i18n="balconyTitle"]').textContent(), 'Common balcony plants in Israel');
+    await page.locator('.balcony-plants > summary').click();
+    await page.locator('.plant-guide > summary').first().click();
+    assert(await page.locator('.plant-guide p').first().isVisible(), 'Growing advice remains accessible');
     assert.equal(await page.locator('[data-photo-input="cameraPhoto"]').textContent(), 'Take a photo');
     await page.evaluate(async () => { await navigator.serviceWorker.ready; });
     await page.reload();
@@ -55,6 +63,7 @@ const server = http.createServer((req, res) => {
     assert(online.finite);
     await context.setOffline(true);
     await page.reload();
+    await page.locator('.settings-panel > summary').click();
     await page.locator('#languageSelect').selectOption('ar');
     assert.equal(await page.locator('html').getAttribute('dir'), 'rtl');
     const offline = await page.evaluate(async () => {

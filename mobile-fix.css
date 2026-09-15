@@ -105,3 +105,89 @@ h2 { font-size: clamp(1.35rem, 6vw, 2rem); line-height: 1.3; }
   h2 { font-size: clamp(1.25rem, 6.5vw, 1.65rem); }
   button, select, input, .upload { padding: .65rem .75rem; }
 }
+
+/* App-style layout: a centered, full-width column and compact optional content. */
+:root {
+  --bg: #07170f;
+  --surface: #10271b;
+  --surface-2: #173325;
+  --accent: #a3e7bf;
+  --border: #355543;
+}
+:root[data-theme="light"] {
+  --bg: #eef5f0;
+  --surface: #ffffff;
+  --surface-2: #e4efe7;
+  --accent: #235d39;
+  --border: #9cb4a5;
+}
+.topbar, main, footer {
+  width: min(680px, calc(100% - 2rem));
+  inline-size: min(680px, calc(100% - 2rem));
+  max-width: calc(100% - 2rem);
+  max-inline-size: calc(100% - 2rem);
+}
+.topbar { display: block; padding-block: 1.25rem .8rem; text-align: center; }
+.topbar > div:first-child { margin-bottom: .65rem; }
+h1 { font-size: 2rem; line-height: 1.2; margin: 0 0 .45rem; }
+.eyebrow { font-size: 1rem; font-weight: 400; line-height: 1.5; }
+.settings-panel { text-align: start; }
+.settings-panel > summary {
+  width: fit-content;
+  margin-inline: auto;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: .45rem 1.1rem;
+  color: var(--accent);
+}
+summary { cursor: pointer; min-height: 44px; font-weight: 700; overflow-wrap: anywhere; }
+summary:focus-visible { outline: 3px solid var(--focus); outline-offset: 4px; }
+.settings-panel[open] > summary { margin-bottom: .75rem; }
+.toolbar {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 1.25rem;
+  padding: .8rem;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.toolbar label { grid-column: 1 / -1; }
+.grid { grid-template-columns: minmax(0, 1fr); gap: 1rem; }
+.card {
+  border-radius: 1.6rem;
+  padding: 1.25rem;
+  text-align: center;
+}
+.card h2 { font-size: 1.45rem; line-height: 1.3; margin-bottom: .65rem; }
+.card > p { color: var(--muted); line-height: 1.5; margin-bottom: 1rem; }
+.card form { gap: .65rem; }
+.card form > label { text-align: start; }
+.card input { border-radius: 1.2rem; padding: .8rem; }
+.card .primary, .card .upload {
+  border-radius: 1.3rem;
+  background: var(--accent);
+  border-color: transparent;
+  color: #082012;
+  font-weight: 800;
+  padding: .65rem .9rem;
+}
+.card .primary:hover, .card .upload:hover { background: var(--accent-strong); }
+:root[data-theme="light"] .card .primary,
+:root[data-theme="light"] .card .upload { color: #ffffff; }
+.photo-actions { gap: .65rem; }
+.download-note { margin-top: .8rem; color: var(--muted); text-align: start; font-size: .9rem; }
+.download-note summary { display: list-item; padding-block: .35rem; }
+.download-note p { margin: .4rem 0 0; }
+details.info { padding: .85rem 1rem; border-radius: 1.3rem; }
+details.info > summary { font-size: 1.05rem; padding-block: .25rem; }
+details.info[open] > summary { margin-bottom: .8rem; }
+.balcony-plant-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.plant-guide { border: 1px solid var(--border); border-radius: .8rem; background: var(--surface-2); padding: .5rem .75rem; }
+.plant-guide summary { padding-block: .35rem; }
+.growing-guide .plant-guide p { border: 0; padding: .5rem 0; }
+footer { text-align: center; font-size: .9rem; padding-block: 1.25rem; }
+@media (max-width: 360px) {
+  .topbar, main, footer { width: calc(100% - 1.25rem); inline-size: calc(100% - 1.25rem); }
+  .card { padding: 1rem; }
+  .toolbar { grid-template-columns: minmax(0, 1fr); }
+}

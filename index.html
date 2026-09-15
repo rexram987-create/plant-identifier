@@ -7,8 +7,8 @@
   <meta name="description" content="Accessible multilingual plant identification app" />
   <link rel="manifest" href="manifest.webmanifest" />
   <link rel="apple-touch-icon" href="icon-192.png" />
-  <link rel="stylesheet" href="styles.css" />
-  <link rel="stylesheet" href="mobile-fix.css" />
+  <link rel="stylesheet" href="styles.css?v=22" />
+  <link rel="stylesheet" href="mobile-fix.css?v=22" />
   <link rel="stylesheet" href="inaturalist.css" />
   <link rel="stylesheet" href="wikipedia.css" />
   <title>מגדיר הצמחים</title>
@@ -16,23 +16,22 @@
 <body>
   <a class="skip-link" data-i18n="skip" href="#main">דלג לתוכן הראשי</a>
   <header class="topbar">
-    <div><p class="eyebrow" data-i18n="eyebrow">מגדיר צמחים נגיש ורב־לשוני</p><h1 data-i18n="title">מגדיר הצמחים</h1></div>
-    <div class="toolbar" data-i18n-aria="displaySettings" aria-label="הגדרות תצוגה">
+    <div class="app-heading"><h1 data-i18n="title">מגדיר הצמחים</h1><p class="eyebrow" data-i18n="appSubtitle">זיהוי מקומי • חיפוש לפי שם • מצלמה</p></div>
+    <details class="settings-panel"><summary data-i18n="settings">הגדרות</summary><div class="toolbar" data-i18n-aria="displaySettings" aria-label="הגדרות תצוגה">
       <label><span data-i18n="language">שפה</span><select id="languageSelect" data-i18n-aria="chooseLanguage" aria-label="בחר שפה"><option value="he">עברית</option><option value="en">English</option><option value="ar">العربية</option></select></label>
       <button id="themeToggle" type="button" aria-pressed="true" data-i18n="theme">מצב כהה</button>
       <button id="fontToggle" type="button" aria-pressed="false" data-i18n="font">טקסט גדול</button>
       <button id="installButton" type="button" hidden>התקן יישומון</button>
-    </div>
+    </div></details>
   </header>
   <main id="main" tabindex="-1">
-    <section class="hero" aria-labelledby="heroTitle"><div><h2 id="heroTitle" data-i18n="heroTitle">זהה צמח או חפש מידע לפי שם</h2><p data-i18n="heroText">חיפוש לפי שם וזיהוי תמונה ניסיוני מקומי.</p></div></section>
     <section class="grid" data-i18n-aria="searchOptions" aria-label="אפשרויות חיפוש">
       <article class="card"><h2 data-i18n="searchTitle">חיפוש לפי שם</h2><p data-i18n="searchText">אפשר לחפש בעברית, באנגלית או בשם המדעי.</p><form id="nameSearchForm"><label for="plantQuery" data-i18n="searchLabel">שם הצמח</label><input id="plantQuery" name="plantQuery" type="search" autocomplete="off" placeholder="למשל: כלנית מצויה" data-i18n-placeholder="searchPlaceholder" /><button class="primary" type="submit" data-i18n="searchButton">חפש</button></form></article>
-      <article class="card"><h2 data-i18n="photoTitle">זיהוי לפי תמונה</h2><p data-i18n="photoText">צלם צמח או בחר תמונה. בפעם הראשונה יורד למכשיר מנוע זיהוי מקומי.</p><div class="photo-actions"><button class="upload" type="button" data-photo-input="cameraPhoto" data-i18n="camera">צלם תמונה</button><input id="cameraPhoto" tabindex="-1" aria-hidden="true" type="file" accept="image/*" capture="environment" /><button class="upload" type="button" data-photo-input="plantPhoto" data-i18n="gallery">בחר תמונה מהגלריה</button><input id="plantPhoto" tabindex="-1" aria-hidden="true" type="file" accept="image/*" /></div><img id="preview" alt="" hidden /></article>
+      <article class="card"><h2 data-i18n="photoTitle">זיהוי לפי תמונה</h2><p data-i18n="photoShort">צלם צמח או בחר תמונה. הזיהוי נעשה במכשיר.</p><div class="photo-actions"><button class="upload" type="button" data-photo-input="cameraPhoto" data-i18n="camera">צלם תמונה</button><input id="cameraPhoto" tabindex="-1" aria-hidden="true" type="file" accept="image/*" capture="environment" /><button class="upload" type="button" data-photo-input="plantPhoto" data-i18n="gallery">בחר תמונה מהגלריה</button><input id="plantPhoto" tabindex="-1" aria-hidden="true" type="file" accept="image/*" /></div><details class="download-note"><summary data-i18n="firstUse">מידע לשימוש ראשון</summary><p data-i18n="photoText"></p></details><img id="preview" alt="" hidden /></article>
     </section>
     <section id="result" class="result" aria-live="polite" aria-atomic="true" hidden></section>
-    <section class="info balcony-plants" aria-labelledby="balconyTitle">
-      <h2 id="balconyTitle" data-i18n="balconyTitle">צמחי מרפסת נפוצים בישראל</h2>
+    <details class="info balcony-plants">
+      <summary id="balconyTitle" data-i18n="balconyTitle">צמחי מרפסת נפוצים בישראל</summary>
       <p data-i18n="balconyIntro">רשימה שימושית של צמחים שסביר לפגוש במרפסות בישראל. לחצו על צמח כדי לחפש עליו מידע במגדיר.</p>
       <div class="balcony-plant-list">
         <button type="button" data-i18n="plant0" data-balcony-search="Pelargonium">גרניום / פלרגוניום</button>
@@ -48,25 +47,25 @@
       </div>
       <h3 data-i18n="growingTitle">איך מגדלים אותם?</h3>
       <div class="growing-guide">
-        <p><strong data-i18n="guideName0">גרניום / פלרגוניום:</strong><span data-i18n="guide0"> שמש ישירה או חצי־צל, השקיה כשהשכבה העליונה מתייבשת וניקוז טוב. להסיר פרחים יבשים לעידוד פריחה.</span></p>
-        <p><strong data-i18n="guideName1">נענע:</strong><span data-i18n="guide1"> אור רב עד חצי־צל ואדמה לחה באופן עקבי. מומלץ לגדל בעציץ נפרד כי היא מתפשטת במהירות.</span></p>
-        <p><strong data-i18n="guideName2">פטוניה:</strong><span data-i18n="guide2"> זקוקה להרבה שמש, השקיה סדירה וניקוז מצוין. דישון מתון והסרת פרחים נבולים מסייעים לפריחה.</span></p>
-        <p><strong data-i18n="guideName3">בזיליקום:</strong><span data-i18n="guide3"> הרבה אור ושמש בוקר, אדמה לחה אך לא מוצפת. קטימת קצות הצמיחה מעודדת הסתעפות; רגיש לקור.</span></p>
-        <p><strong data-i18n="guideName4">רוזמרין:</strong><span data-i18n="guide4"> שמש מלאה, מצע מנוקז היטב והשקיה מתונה בלבד לאחר התבססות. לא להשאיר מים עומדים בתחתית העציץ.</span></p>
-        <p><strong data-i18n="guideName5">סוקולנטים:</strong><span data-i18n="guide5"> אור חזק, מעט מים ומצע מנוקז מאוד. להשקות היטב ורק לאחר שהמצע התייבש.</span></p>
-        <p><strong data-i18n="guideName6">קקטוסים:</strong><span data-i18n="guide6"> אור חזק עד שמש, השקיה מועטה מאוד ומצע קקטוסים מנוקז. בחורף בדרך כלל מצמצמים השקיה.</span></p>
-        <p><strong data-i18n="guideName7">בוגנוויליה:</strong><span data-i18n="guide7"> שמש מלאה ככל האפשר, עציץ גדול וניקוז מצוין. השקיה עמוקה אך לא תכופה מדי; עודף מים עלול להפחית פריחה.</span></p>
-        <p><strong data-i18n="guideName8">פוטוס:</strong><span data-i18n="guide8"> מתאים בעיקר למרפסת מוצלת ומוגנת משמש צהריים ישירה. להשקות לאחר שהחלק העליון של המצע מתייבש.</span></p>
-        <p><strong data-i18n="guideName9">לבנדר:</strong><span data-i18n="guide9"> שמש מלאה, אוורור טוב ומצע מנוקז מאוד. להשקות במתינות ולהימנע מאדמה רטובה לאורך זמן.</span></p>
+        <details class="plant-guide"><summary data-i18n="plant0">גרניום / פלרגוניום</summary><p data-i18n="guide0"> שמש ישירה או חצי־צל, השקיה כשהשכבה העליונה מתייבשת וניקוז טוב. להסיר פרחים יבשים לעידוד פריחה.</p></details>
+        <details class="plant-guide"><summary data-i18n="plant1">נענע</summary><p data-i18n="guide1"> אור רב עד חצי־צל ואדמה לחה באופן עקבי. מומלץ לגדל בעציץ נפרד כי היא מתפשטת במהירות.</p></details>
+        <details class="plant-guide"><summary data-i18n="plant2">פטוניה</summary><p data-i18n="guide2"> זקוקה להרבה שמש, השקיה סדירה וניקוז מצוין. דישון מתון והסרת פרחים נבולים מסייעים לפריחה.</p></details>
+        <details class="plant-guide"><summary data-i18n="plant3">בזיליקום</summary><p data-i18n="guide3"> הרבה אור ושמש בוקר, אדמה לחה אך לא מוצפת. קטימת קצות הצמיחה מעודדת הסתעפות; רגיש לקור.</p></details>
+        <details class="plant-guide"><summary data-i18n="plant4">רוזמרין</summary><p data-i18n="guide4"> שמש מלאה, מצע מנוקז היטב והשקיה מתונה בלבד לאחר התבססות. לא להשאיר מים עומדים בתחתית העציץ.</p></details>
+        <details class="plant-guide"><summary data-i18n="plant5">סוקולנטים</summary><p data-i18n="guide5"> אור חזק, מעט מים ומצע מנוקז מאוד. להשקות היטב ורק לאחר שהמצע התייבש.</p></details>
+        <details class="plant-guide"><summary data-i18n="plant6">קקטוסים</summary><p data-i18n="guide6"> אור חזק עד שמש, השקיה מועטה מאוד ומצע קקטוסים מנוקז. בחורף בדרך כלל מצמצמים השקיה.</p></details>
+        <details class="plant-guide"><summary data-i18n="plant7">בוגנוויליה</summary><p data-i18n="guide7"> שמש מלאה ככל האפשר, עציץ גדול וניקוז מצוין. השקיה עמוקה אך לא תכופה מדי; עודף מים עלול להפחית פריחה.</p></details>
+        <details class="plant-guide"><summary data-i18n="plant8">פוטוס</summary><p data-i18n="guide8"> מתאים בעיקר למרפסת מוצלת ומוגנת משמש צהריים ישירה. להשקות לאחר שהחלק העליון של המצע מתייבש.</p></details>
+        <details class="plant-guide"><summary data-i18n="plant9">לבנדר</summary><p data-i18n="guide9"> שמש מלאה, אוורור טוב ומצע מנוקז מאוד. להשקות במתינות ולהימנע מאדמה רטובה לאורך זמן.</p></details>
       </div>
       <p class="balcony-note" data-i18n="balconyNote"><strong>חשוב:</strong> תנאי המרפסת משתנים מאוד לפי כיוון, שעות שמש, רוח ועונה. ההנחיות הן נקודת התחלה ויש להתאים את ההשקיה לתנאים בפועל.</p>
-    </section>
-    <section class="info" aria-labelledby="plannedTitle"><h2 id="plannedTitle" data-i18n="plannedTitle">מקורות ושירותים</h2><ul><li data-i18n="source0">OpenPlants — מנוע הזיהוי המקומי הראשי, עם כיסוי של כ־14,000 מינים</li><li data-i18n="source1">PlantNet-300K — מנוע גיבוי מקומי במקרה שהמנוע הראשי אינו נטען</li><li data-i18n="source2">GBIF — טקסונומיה ותפוצה</li><li data-i18n="source3">iNaturalist — תצפיות ותמונות מהשטח</li><li data-i18n="source4">Wikidata / Wikipedia — מידע משלים</li></ul></section>
+    </details>
+    <details class="info sources"><summary id="plannedTitle" data-i18n="plannedTitle">מקורות ושירותים</summary><ul><li data-i18n="source0">OpenPlants — מנוע הזיהוי המקומי הראשי, עם כיסוי של כ־14,000 מינים</li><li data-i18n="source1">PlantNet-300K — מנוע גיבוי מקומי במקרה שהמנוע הראשי אינו נטען</li><li data-i18n="source2">GBIF — טקסונומיה ותפוצה</li><li data-i18n="source3">iNaturalist — תצפיות ותמונות מהשטח</li><li data-i18n="source4">Wikidata / Wikipedia — מידע משלים</li></ul></details>
   </main>
   <footer><p data-i18n="footer">מגדיר צמחים נגיש ורב־לשוני</p></footer>
   <script src="local-name-search.js?v=21" defer></script>
   <script src="image-identification.js?v=21" defer></script>
-  <script src="translations-extra.js?v=21" defer></script>
+  <script src="translations-extra.js?v=22" defer></script>
   <script src="app.js?v=21" defer></script>
   <script src="inaturalist.js?v=21" defer></script>
   <script src="wikipedia.js?v=21" defer></script>

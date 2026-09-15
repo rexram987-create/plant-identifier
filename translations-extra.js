@@ -29,7 +29,7 @@ window.PlantTranslationsExtra = {
     "searchTitle": "חיפוש לפי שם",
     "searchText": "אפשר לחפש בעברית, באנגלית או בשם המדעי.",
     "searchLabel": "שם הצמח",
-    "searchButton": "חפש",
+    "searchButton": "חפש לפי שם",
     "photoTitle": "זיהוי לפי תמונה",
     "balconyTitle": "צמחי מרפסת נפוצים בישראל",
     "balconyIntro": "רשימה שימושית של צמחים שסביר לפגוש במרפסות בישראל. לחצו על צמח כדי לחפש עליו מידע במגדיר.",
@@ -71,7 +71,11 @@ window.PlantTranslationsExtra = {
     "plant6": "קקטוסים",
     "plant7": "בוגנוויליה",
     "plant8": "פוטוס",
-    "plant9": "לבנדר"
+    "plant9": "לבנדר",
+    "appSubtitle": "זיהוי מקומי • חיפוש לפי שם • מצלמה",
+    "settings": "הגדרות",
+    "photoShort": "צלם צמח או בחר תמונה. הזיהוי נעשה במכשיר.",
+    "firstUse": "מידע לשימוש ראשון"
   },
   "en": {
     "camera": "Take a photo",
@@ -131,7 +135,12 @@ window.PlantTranslationsExtra = {
     "source1": "PlantNet-300K — local fallback if the primary model cannot load",
     "source2": "GBIF — taxonomy and distribution",
     "source3": "iNaturalist — field observations and photos",
-    "source4": "Wikidata / Wikipedia — supplementary information"
+    "source4": "Wikidata / Wikipedia — supplementary information",
+    "appSubtitle": "On-device identification • Name search • Camera",
+    "settings": "Settings",
+    "photoShort": "Take or choose a photo. Identification runs on your device.",
+    "firstUse": "First-use information",
+    "searchButton": "Search by name"
   },
   "ar": {
     "camera": "التقط صورة",
@@ -191,6 +200,11 @@ window.PlantTranslationsExtra = {
     "source1": "PlantNet-300K — محرك محلي بديل إذا تعذر تحميل المحرك الأساسي",
     "source2": "GBIF — التصنيف والانتشار",
     "source3": "iNaturalist — مشاهدات وصور ميدانية",
-    "source4": "Wikidata / Wikipedia — معلومات إضافية"
+    "source4": "Wikidata / Wikipedia — معلومات إضافية",
+    "appSubtitle": "تعرف محلي • بحث بالاسم • كاميرا",
+    "settings": "الإعدادات",
+    "photoShort": "التقط صورة أو اختر صورة. يتم التعرف على جهازك.",
+    "firstUse": "معلومات الاستخدام الأول",
+    "searchButton": "ابحث بالاسم"
   }
 };
