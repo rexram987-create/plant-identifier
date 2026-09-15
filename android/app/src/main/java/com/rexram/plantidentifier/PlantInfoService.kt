@@ -2,8 +2,9 @@ package com.rexram.plantidentifier
 
 import org.json.JSONObject
 import java.net.HttpURLConnection
-import java.net.URLEncoder
 import java.net.URL
+import java.net.URLEncoder
+import java.util.concurrent.ConcurrentHashMap
 
 object PlantInfoService {
     data class PlantInfo(
@@ -13,120 +14,95 @@ object PlantInfoService {
         val wikipediaUrl: String?,
         val iNaturalistUrl: String,
         val gbifUrl: String,
-        val hebrewName: String? = null
+        val hebrewName: String? = null,
+        val imageUrl: String? = null,
+        val articleLanguage: String? = null
     )
-
-    private data class KnownPlant(val scientific: String, val hebrewTitle: String)
-
-    private val knownHebrewPlants = mapOf(
-        "נענע" to KnownPlant("Mentha", "נענע"),
-        "מנטה" to KnownPlant("Mentha", "נענע"),
-        "גרניום" to KnownPlant("Pelargonium", "פלרגוניום"),
-        "פלרגוניום" to KnownPlant("Pelargonium", "פלרגוניום"),
-        "פטוניה" to KnownPlant("Petunia", "פטוניה"),
-        "בזיליקום" to KnownPlant("Ocimum basilicum", "ריחן"),
-        "ריחן" to KnownPlant("Ocimum basilicum", "ריחן"),
-        "רוזמרין" to KnownPlant("Salvia rosmarinus", "רוזמרין רפואי"),
-        "סוקולנט" to KnownPlant("succulent", "סוקולנטים"),
-        "סוקולנטים" to KnownPlant("succulent", "סוקולנטים"),
-        "קקטוס" to KnownPlant("Cactaceae", "קקטוסיים"),
-        "קקטוסים" to KnownPlant("Cactaceae", "קקטוסיים"),
-        "בוגנוויליה" to KnownPlant("Bougainvillea", "בוגנוויליה"),
-        "בוגנווילאה" to KnownPlant("Bougainvillea", "בוגנוויליה"),
-        "פוטוס" to KnownPlant("Epipremnum aureum", "פוטוס זהוב"),
-        "לבנדר" to KnownPlant("Lavandula", "אזוביון"),
-        // "פסיפלורה" is a common name for the genus, not only Passiflora edulis.
-        // Keep genus-level searches at genus level instead of silently selecting the edible species.
-        "פסיפלורה" to KnownPlant("Passiflora", "שעונית"),
-        "שעונית" to KnownPlant("Passiflora", "שעונית"),
-        "שעונית נאכלת" to KnownPlant("Passiflora edulis", "שעונית נאכלת")
+    private val cache = ConcurrentHashMap<String, PlantInfo>()
+    private val known = mapOf(
+        "נענע" to "Mentha", "מנטה" to "Mentha", "نعناع" to "Mentha", "النعناع" to "Mentha",
+        "גרניום" to "Pelargonium", "פלרגוניום" to "Pelargonium", "פטוניה" to "Petunia",
+        "בזיליקום" to "Ocimum basilicum", "ריחן" to "Ocimum basilicum", "ريحان" to "Ocimum basilicum",
+        "רוזמרין" to "Salvia rosmarinus", "إكليل الجبل" to "Salvia rosmarinus",
+        "קקטוס" to "Cactaceae", "קקטוסים" to "Cactaceae", "בוגנוויליה" to "Bougainvillea",
+        "בוגנווילאה" to "Bougainvillea", "פוטוס" to "Epipremnum aureum", "לבנדר" to "Lavandula",
+        "פסיפלורה" to "Passiflora", "שעונית" to "Passiflora", "שעונית נאכלת" to "Passiflora edulis"
     )
+    fun encode(value: String): String = URLEncoder.encode(value, "UTF-8")
 
-    fun load(name: String): PlantInfo {
-        val normalized = name.trim()
-        val known = knownHebrewPlants[normalized]
-        val scientificName = known?.scientific ?: normalized
-        val encoded = URLEncoder.encode(scientificName, "UTF-8")
-        val hebrewWiki = if (known != null) {
-            loadWikipediaExactTitle("he", known.hebrewTitle)
-                ?: loadWikipediaForLanguage("he", scientificName)
-        } else {
-            loadWikipediaForLanguage("he", scientificName)
+    fun json(url: String): JSONObject {
+        val connection = (URL(url).openConnection() as HttpURLConnection).apply {
+            connectTimeout = 8000
+            readTimeout = 8000
+            setRequestProperty("User-Agent", "PlantIdentifierAndroid/" + BuildConfig.VERSION_NAME)
         }
-        val fallbackWiki = hebrewWiki ?: loadWikipediaForLanguage("en", scientificName)
-        return PlantInfo(
-            scientificName = scientificName,
-            wikipediaTitle = fallbackWiki?.first,
-            wikipediaExtract = fallbackWiki?.second,
-            wikipediaUrl = fallbackWiki?.third,
-            iNaturalistUrl = "https://www.inaturalist.org/taxa/search?q=$encoded",
-            gbifUrl = "https://www.gbif.org/species/search?q=$encoded",
-            hebrewName = known?.hebrewTitle ?: hebrewWiki?.first
-        )
-    }
-
-    fun findHebrewName(scientificName: String): String? {
-        val known = knownHebrewPlants.values.firstOrNull {
-            it.scientific.equals(scientificName.trim(), ignoreCase = true)
-        }
-        if (known != null) return known.hebrewTitle
         return try {
-            loadWikipediaForLanguage("he", scientificName)?.first
-        } catch (_: Throwable) {
-            null
+            check(connection.responseCode in 200..299) { "HTTP " + connection.responseCode }
+            JSONObject(connection.inputStream.bufferedReader().use { it.readText() })
+        } finally { connection.disconnect() }
+    }
+
+    private fun exactPlant(name: String): JSONObject? {
+        val rows = json("https://api.gbif.org/v1/species/search?q=" + encode(name) + "&highertaxon_key=6&limit=30").optJSONArray("results")
+        return (0 until (rows?.length() ?: 0)).map { rows!!.getJSONObject(it) }.firstOrNull {
+            (it.optString("kingdom") == "Plantae" || it.optInt("kingdomKey") == 6) &&
+                (it.optString("canonicalName").equals(name, true) || it.optString("scientificName").equals(name, true))
         }
     }
 
-    private fun loadWikipediaExactTitle(language: String, title: String): Triple<String, String, String>? {
-        return try {
-            val summary = fetchWikipediaSummary(language, title) ?: return null
-            Triple(
-                title,
-                summary,
-                "https://$language.wikipedia.org/wiki/${URLEncoder.encode(title.replace(' ', '_'), "UTF-8")}"
-            )
-        } catch (_: Throwable) {
-            null
+    private fun entities(query: String, language: String): List<JSONObject> {
+        val found = json("https://www.wikidata.org/w/api.php?action=wbsearchentities&search=" +
+            encode(query) + "&language=$language&type=item&limit=6&format=json").optJSONArray("search") ?: return emptyList()
+        val ids = (0 until found.length()).map { found.getJSONObject(it).getString("id") }
+        if (ids.isEmpty()) return emptyList()
+        val data = json("https://www.wikidata.org/w/api.php?action=wbgetentities&ids=" +
+            encode(ids.joinToString("|")) + "&props=claims|sitelinks|labels|aliases&format=json").optJSONObject("entities") ?: return emptyList()
+        return ids.mapNotNull { data.optJSONObject(it) }
+    }
+
+    private fun scientific(entity: JSONObject): String? =
+        entity.optJSONObject("claims")?.optJSONArray("P225")?.optJSONObject(0)
+            ?.optJSONObject("mainsnak")?.optJSONObject("datavalue")?.optString("value")?.takeIf { it.isNotBlank() }
+
+    private fun localMatch(entity: JSONObject, query: String, language: String): Boolean {
+        val label = entity.optJSONObject("labels")?.optJSONObject(language)?.optString("value")
+        val title = entity.optJSONObject("sitelinks")?.optJSONObject(language + "wiki")?.optString("title")
+        if (label.equals(query, true) || title.equals(query, true)) return true
+        val aliases = entity.optJSONObject("aliases")?.optJSONArray(language)
+        return (0 until (aliases?.length() ?: 0)).any { aliases!!.getJSONObject(it).optString("value").equals(query, true) }
+    }
+
+    fun load(name: String, language: String = "he", scientificInput: Boolean = false): PlantInfo {
+        val query = name.trim()
+        val key = "$language:$query"
+        cache[key]?.let { return it }
+        var resolved = known[query] ?: query
+        var entity: JSONObject? = null
+        if (!scientificInput && exactPlant(resolved) == null) {
+            val searchLanguage = when {
+                query.any { it in '\u0590'..'\u05ff' } -> "he"
+                query.any { it in '\u0600'..'\u06ff' } -> "ar"
+                else -> "en"
+            }
+            entity = entities(query, searchLanguage).firstOrNull {
+                localMatch(it, query, searchLanguage) && scientific(it)?.let(::exactPlant) != null
+            }
+            resolved = entity?.let(::scientific) ?: throw NoSuchElementException("No verified plant match")
         }
+        if (entity == null) entity = runCatching {
+            entities(resolved, "en").firstOrNull { scientific(it).equals(resolved, true) }
+        }.getOrNull()
+        val sites = entity?.optJSONObject("sitelinks")
+        val lang = if (sites?.has(language + "wiki") == true) language else "en"
+        val title = sites?.optJSONObject(lang + "wiki")?.optString("title")
+        val summary = title?.let { runCatching { json("https://$lang.wikipedia.org/api/rest_v1/page/summary/" + encode(it.replace(' ', '_'))) }.getOrNull() }
+        val encoded = encode(resolved)
+        return PlantInfo(resolved, summary?.optString("title"), summary?.optString("extract")?.takeIf { it.isNotBlank() },
+            if (summary != null && title != null) "https://$lang.wikipedia.org/wiki/" + encode(title.replace(' ', '_')) else null,
+            "https://www.inaturalist.org/taxa/search?q=$encoded", "https://www.gbif.org/species/search?q=$encoded",
+            entity?.optJSONObject("labels")?.optJSONObject("he")?.optString("value"),
+            summary?.optJSONObject("thumbnail")?.optString("source"), if (summary != null) lang else null
+        ).also { if (summary != null) cache[key] = it }
     }
-
-    private fun loadWikipediaForLanguage(language: String, name: String): Triple<String, String, String>? {
-        return try {
-            val title = searchWikipedia(language, name) ?: return null
-            val summary = fetchWikipediaSummary(language, title) ?: return null
-            Triple(
-                title,
-                summary,
-                "https://$language.wikipedia.org/wiki/${URLEncoder.encode(title.replace(' ', '_'), "UTF-8")}"
-            )
-        } catch (_: Throwable) {
-            null
-        }
-    }
-
-    private fun searchWikipedia(language: String, query: String): String? {
-        val encoded = URLEncoder.encode("\"$query\"", "UTF-8")
-        val url = "https://$language.wikipedia.org/w/api.php?action=query&list=search&srsearch=$encoded&format=json&utf8=1&srlimit=1&origin=*"
-        val json = JSONObject(get(url))
-        val results = json.getJSONObject("query").getJSONArray("search")
-        return if (results.length() > 0) results.getJSONObject(0).getString("title") else null
-    }
-
-    private fun fetchWikipediaSummary(language: String, title: String): String? {
-        val url = "https://$language.wikipedia.org/api/rest_v1/page/summary/${URLEncoder.encode(title.replace(' ', '_'), "UTF-8")}"
-        val json = JSONObject(get(url))
-        return json.optString("extract").takeIf { it.isNotBlank() }
-    }
-
-    private fun get(urlString: String): String {
-        val connection = URL(urlString).openConnection() as HttpURLConnection
-        connection.connectTimeout = 10000
-        connection.readTimeout = 10000
-        connection.requestMethod = "GET"
-        connection.setRequestProperty("User-Agent", "PlantIdentifierAndroid/0.7.2")
-        if (connection.responseCode !in 200..299) {
-            throw IllegalStateException("HTTP ${connection.responseCode}")
-        }
-        connection.inputStream.bufferedReader().use { return it.readText() }
-    }
+    fun findHebrewName(name: String): String? = runCatching { load(name, "he", true).hebrewName }.getOrNull()
 }

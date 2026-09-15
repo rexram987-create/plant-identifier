@@ -11,8 +11,8 @@ android {
         applicationId = "com.rexram.plantidentifier"
         minSdk = 26
         targetSdk = 35
-        versionCode = 17
-        versionName = "1.0.3"
+        versionCode = 18
+        versionName = "1.0.4"
 
         // The app is distributed directly for modern Android phones.
         // Keeping only arm64-v8a avoids bundling unused x86/x86_64 ONNX Runtime
@@ -58,12 +58,16 @@ android {
         buildConfig = true
     }
 
+    testOptions { unitTests.isIncludeAndroidResources = true }
+
     packaging {
         resources.excludes += setOf("META-INF/DEPENDENCIES", "META-INF/LICENSE*", "META-INF/NOTICE*")
     }
 }
 
 dependencies {
+    testImplementation("junit:junit:4.13.2")
+    testImplementation("org.robolectric:robolectric:4.14.1")
     implementation("androidx.core:core-ktx:1.15.0")
     implementation("androidx.appcompat:appcompat:1.7.0")
     implementation("androidx.activity:activity-ktx:1.10.0")

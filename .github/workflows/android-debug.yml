@@ -36,8 +36,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        with:
-          ref: main
 
       - name: Restore OpenPlants model cache
         id: openplants-cache
@@ -64,6 +62,9 @@ jobs:
         uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: '8.10.2'
+
+      - name: Test native settings and ranking
+        run: gradle :app:testDebugUnitTest --stacktrace
 
       - name: Prepare stable signing key
         if: github.event_name != 'pull_request'
@@ -106,17 +107,21 @@ jobs:
           path: android/app/build/outputs/apk/release/app-release.apk
           if-no-files-found: error
 
-      - name: Publish GitHub Release v1.0.2
-        if: github.event_name != 'pull_request'
+      - name: Publish GitHub Release v1.0.4
+        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          APK="app/build/outputs/apk/release/Plant-Identifier-v1.0.2.apk"
-          MODEL="../models/openplants/model-int8.onnx"
+          APK="app/build/outputs/apk/release/Plant-Identifier-v1.0.4.apk"
           cp app/build/outputs/apk/release/app-release.apk "$APK"
-
-          if gh release view v1.0.2 >/dev/null 2>&1; then
-            gh release upload v1.0.2 "$APK" "$MODEL#OpenPlants-model-int8.onnx" --clobber
+          cat > "$RUNNER_TEMP/android-release-notes.md" <<'NOTES'
+          גרסה 1.0.4: ממשק מקוצר עם הגדרות ומדריכים מתקפלים, עברית/אנגלית/ערבית, מצב בהיר וכהה, הגדלת כתב ושמירת העדפות.
+          נוספו מדריכי גידול לצמחי מרפסת, תמונות להשוואה וקישורי מקורות. חיפוש שמות מאמת התאמה לצמח; דירוג אזורי אינו משנה את ציון המודל.
+          הזיהוי בתמונה פועל במכשיר לאחר הורדת המודל הראשונה. חיפוש מידע ותמונות נוספים דורש אינטרנט.
+          התקינו את קובץ ה-APK כעדכון ליישומון הקיים.
+          NOTES
+          if gh release view v1.0.4 >/dev/null 2>&1; then
+            gh release upload v1.0.4 "$APK" --clobber
           else
-            gh release create v1.0.2               "$APK"               "$MODEL#OpenPlants-model-int8.onnx"               --target main               --title "Plant Identifier v1.0.2"               --notes "גרסה 1.0.2 כוללת את מאגר צמחי הנוי המלא, APK קטן משמעותית, והורדה חד-פעמית של מודל OpenPlants מתוך האפליקציה בעת הזיהוי הראשון."
+            gh release create v1.0.4 "$APK" --target "$GITHUB_SHA" --title "Plant Identifier v1.0.4" --notes-file "$RUNNER_TEMP/android-release-notes.md"
           fi

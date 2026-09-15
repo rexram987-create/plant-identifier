@@ -27,6 +27,7 @@ class OpenPlantsClassifier(private val context: Context) : AutoCloseable {
     private val labelsFile = File(modelDir, "labels.json")
 
     companion object {
+        private val modelLock = Any()
         private const val MODEL_URL =
             "https://github.com/rexram987-create/plant-identifier/releases/download/v1.0.2/model-int8.onnx"
         private const val LABELS_ASSET = "openplants/labels.json"
@@ -34,7 +35,7 @@ class OpenPlantsClassifier(private val context: Context) : AutoCloseable {
         private const val SIZE = 224
     }
 
-    fun prepare(progress: (String) -> Unit = {}) {
+    fun prepare(progress: (String) -> Unit = {}) = synchronized(modelLock) {
         modelDir.mkdirs()
 
         if (!modelFile.exists() || modelFile.length() < MIN_MODEL_SIZE) {
@@ -49,15 +50,24 @@ class OpenPlantsClassifier(private val context: Context) : AutoCloseable {
         if (labels.isEmpty()) labels = readLabels(labelsFile)
         if (session == null) {
             progress("טוען את מנוע הזיהוי המקומי…")
-            session = env.createSession(modelFile.absolutePath, OrtSession.SessionOptions())
+            session = OrtSession.SessionOptions().use { options ->
+                try { env.createSession(modelFile.absolutePath, options) }
+                catch (error: Exception) { modelFile.delete(); throw error }
+            }
         }
     }
 
     fun classify(uri: Uri, topK: Int = 3): List<Prediction> {
         prepare()
+        val bounds = BitmapFactory.Options().apply { inJustDecodeBounds = true }
+        context.contentResolver.openInputStream(uri).use { BitmapFactory.decodeStream(it,null,bounds) }
+        val options = BitmapFactory.Options().apply {
+            inSampleSize = 1
+            while (maxOf(bounds.outWidth,bounds.outHeight) / inSampleSize > 1024) inSampleSize *= 2
+        }
         val bitmap = context.contentResolver.openInputStream(uri).use { stream ->
             requireNotNull(stream) { "לא ניתן לקרוא את התמונה" }
-            BitmapFactory.decodeStream(stream)
+            BitmapFactory.decodeStream(stream,null,options)
         } ?: error("לא ניתן לפענח את התמונה")
 
         val scaled = Bitmap.createScaledBitmap(bitmap, SIZE, SIZE, true)
@@ -96,7 +106,7 @@ class OpenPlantsClassifier(private val context: Context) : AutoCloseable {
                 temp.outputStream().buffered().use { output -> input.copyTo(output) }
             }
 
-            if (temp.length() < MIN_MODEL_SIZE) {
+            if (temp.length() < MIN_MODEL_SIZE || (connection.contentLengthLong > 0 && temp.length() != connection.contentLengthLong)) {
                 temp.delete()
                 error("קובץ המודל שהורד אינו שלם")
             }
