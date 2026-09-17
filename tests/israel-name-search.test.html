@@ -15,6 +15,18 @@
   ];
   const lines = [];
   let failures = 0;
+
+  if (typeof window.PlantNameSearch.syncAgricultureNames !== 'function') {
+    failures++;
+    lines.push('FAIL syncAgricultureNames is missing');
+  } else {
+    const synced = await window.PlantNameSearch.syncAgricultureNames();
+    const actual = await window.PlantNameSearch.resolveLocalName('חרציתן מאפיר', 'he');
+    const ok = synced > 400 && actual === 'Chrysanthemoides incana';
+    if (!ok) failures++;
+    lines.push(`${ok ? 'PASS' : 'FAIL'} DataGov sync: ${synced} names; חרציתן מאפיר => ${actual || 'null'}`);
+  }
+
   for (const [name, expected] of cases) {
     const actual = await window.PlantNameSearch.resolveLocalName(name, 'he');
     const ok = actual === expected;
