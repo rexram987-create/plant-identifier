@@ -1,8 +1,8 @@
-const CACHE = 'plant-identifier-v22';
+const CACHE = 'plant-identifier-v23';
 const MODEL_CACHE = 'plant-ai-model-v3';
 const OFFLINE_ASSETS = [
   './', './index.html', './styles.css?v=22', './mobile-fix.css?v=22', './inaturalist.css', './wikipedia.css',
-  './local-name-search.js?v=21', './translations-extra.js?v=22', './image-identification.js?v=21',
+  './local-name-search.js?v=23', './translations-extra.js?v=22', './image-identification.js?v=21',
   './app.js?v=21', './inaturalist.js?v=21', './wikipedia.js?v=21', './install.js?v=21',
   './manifest.webmanifest', './icon-192.png', './icon-512.png',
   './vendor/onnxruntime-1.22.0/ort.min.js',
@@ -23,13 +23,11 @@ self.addEventListener('fetch', event => {
   if (event.request.method !== 'GET') return;
   const url = new URL(event.request.url);
   if (url.origin !== self.location.origin || !url.pathname.startsWith(new URL(self.registration.scope).pathname)) return;
-  // The model has its own cache; avoid retaining a second 100 MB copy.
   if (url.pathname.endsWith('/model-int8.onnx')) return;
   event.respondWith((async () => {
     const cache = await caches.open(CACHE);
-    // Versioned scripts and the pinned runtime are immutable for this release.
     const cached = await cache.match(event.request);
-    if (cached && (['21', '22'].includes(url.searchParams.get('v')) || url.pathname.includes('/vendor/onnxruntime-1.22.0/'))) return cached;
+    if (cached && (['21', '22', '23'].includes(url.searchParams.get('v')) || url.pathname.includes('/vendor/onnxruntime-1.22.0/'))) return cached;
     try {
       const response = await fetch(event.request);
       if (response.ok) {

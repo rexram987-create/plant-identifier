@@ -4,37 +4,46 @@
     const timer = setTimeout(() => controller.abort(), 8000);
     try {
       const response = await window.fetch(url, {signal: controller.signal});
-      // Read within the deadline, including the response body.
       const body = await response.text();
       return new Response(body, {status: response.status, headers: response.headers});
     } finally { clearTimeout(timer); }
   };
-  const CACHE_KEY = 'plant-local-name-map-v3';
 
+  const CACHE_KEY = 'plant-local-name-map-v5';
+  const AGRICULTURE_CACHE_KEY = 'israel-agriculture-plant-names-v1';
+  const AGRICULTURE_RESOURCE_ID = '94b22c64-5c80-4eb4-b5e5-79cc9bb89814';
+  const AGRICULTURE_API = `https://data.gov.il/api/3/action/datastore_search?resource_id=${AGRICULTURE_RESOURCE_ID}&limit=1000`;
+  let agricultureSyncPromise = null;
+
+  // Fast built-in aliases used even before the government dataset has been cached.
   const KNOWN_LOCAL_NAMES = {
     he: {
-      'נענע': 'Mentha',
-      'מנטה': 'Mentha',
-      'גרניום': 'Pelargonium',
-      'פלרגוניום': 'Pelargonium',
-      'פטוניה': 'Petunia',
-      'בזיליקום': 'Ocimum basilicum',
-      'ריחן': 'Ocimum basilicum',
-      'רוזמרין': 'Salvia rosmarinus',
-      'סוקולנט': 'succulent',
-      'סוקולנטים': 'succulent',
-      'קקטוס': 'Cactaceae',
-      'קקטוסים': 'Cactaceae',
-      'בוגנוויליה': 'Bougainvillea',
-      'בוגנווילאה': 'Bougainvillea',
-      'פוטוס': 'Epipremnum aureum',
-      'לבנדר': 'Lavandula'
+      'נענע': 'Mentha', 'מנטה': 'Mentha', 'גרניום': 'Pelargonium', 'פלרגוניום': 'Pelargonium',
+      'פטוניה': 'Petunia', 'בזיליקום': 'Ocimum basilicum', 'ריחן': 'Ocimum basilicum',
+      'רוזמרין': 'Salvia rosmarinus', 'סוקולנט': 'succulent', 'סוקולנטים': 'succulent',
+      'קקטוס': 'Cactaceae', 'קקטוסים': 'Cactaceae', 'בוגנוויליה': 'Bougainvillea',
+      'בוגנווילאה': 'Bougainvillea', 'פוטוס': 'Epipremnum aureum', 'לבנדר': 'Lavandula',
+      'אירוס ספרדי': 'Iris xiphium', 'אלביציה ורדה': 'Albizzia julibrissin',
+      'אלביציה צהבה': 'Albizzia lebbeck', 'אלה אטלנטית': 'Pistacia atlantica',
+      'אלה ארץ-ישראלית': 'Pistacia palaestina', 'אלה סינית': 'Pistacia chinensis',
+      'אלוי אמיתי': 'Aloe vera', 'אלוי נמוך': 'Aloe humilis', 'אלוי סבוני': 'Aloe saponaria',
+      'אלוי עצי': 'Aloe arborescens', 'אלוי ריסני': 'Aloe ciliaris', 'אלון הגלעין': 'Quercus ilex',
+      'אלון השעם': 'Quercus suber', 'אלון התבור': 'Quercus ithaburensis', 'אלון התולע': 'Quercus boissieri',
+      'הרדוף הנחלים': 'Nerium oleander', 'וסטרינגיה שיחנית': 'Westringia fruticosa',
+      'ורד הכלב': 'Rosa canina', 'ושינגטוניה חוטית': 'Washingtonia filifera',
+      'ושינגטוניה חסונה': 'Washingtonia robusta', 'זיפנוצה מחוספסת': 'Pennisetum divisum',
+      'זית אירופי': 'Olea europaea', 'זלזלת מנצה': 'Clematis flammula', 'חרוב מצוי': 'Ceratonia siliqua',
+      'טטרקליניס מפריק': 'Tetraclinis articulata', 'טיון בשרני': 'Inula crithmoides',
+      'טלמון ריסני': 'Drosanthemum hispidum', 'יוקה אלואית': 'Yucca aloifolia',
+      'יוקה סיבית': 'Yucca filamentosa', 'יוקה פילית': 'Yucca elephantipes',
+      'ינבוט המסקיטו': 'Prosopis juliflora', 'ינבוט לבן': 'Prosopis alba',
+      'יסמין גדול-פרחים': 'Jasminum mesnyi', 'יסמין נמוך': 'Jasminum humile', 'יסמין שיחני': 'Jasminum fruticans'
     },
     ar: {'النعناع':'Mentha','نعناع':'Mentha','الريحان':'Ocimum basilicum','ريحان':'Ocimum basilicum','إكليل الجبل':'Salvia rosmarinus','الخزامى':'Lavandula','الجهنمية':'Bougainvillea'}
   };
 
   function normalize(text) {
-    return String(text || '').trim().toLowerCase().replace(/\s+/g, ' ');
+    return String(text || '').trim().toLowerCase().replace(/[־–—]/g, '-').replace(/\s+/g, ' ');
   }
 
   function detectLanguage(text) {
@@ -43,13 +52,42 @@
     return null;
   }
 
-  function readCache() {
-    try { return JSON.parse(localStorage.getItem(CACHE_KEY) || '{}'); }
+  function readJson(key) {
+    try { return JSON.parse(localStorage.getItem(key) || '{}'); }
     catch { return {}; }
   }
 
-  function writeCache(cache) {
-    try { localStorage.setItem(CACHE_KEY, JSON.stringify(cache)); } catch {}
+  function writeJson(key, value) {
+    try { localStorage.setItem(key, JSON.stringify(value)); } catch {}
+  }
+
+  function readCache() { return readJson(CACHE_KEY); }
+  function writeCache(cache) { writeJson(CACHE_KEY, cache); }
+  function readAgricultureNames() { return readJson(AGRICULTURE_CACHE_KEY); }
+
+  async function syncAgricultureNames() {
+    if (agricultureSyncPromise) return agricultureSyncPromise;
+    agricultureSyncPromise = (async () => {
+      try {
+        const response = await originalFetch(AGRICULTURE_API);
+        if (!response.ok) return Object.keys(readAgricultureNames()).length;
+        const data = await response.json();
+        const records = data?.result?.records || [];
+        const names = {};
+        for (const row of records) {
+          const hebrew = normalize(row?.plant_name);
+          const scientific = String(row?.scientific_name || '').trim();
+          if (hebrew && scientific) names[hebrew] = scientific;
+        }
+        if (Object.keys(names).length) writeJson(AGRICULTURE_CACHE_KEY, names);
+        return Object.keys(names).length || Object.keys(readAgricultureNames()).length;
+      } catch {
+        return Object.keys(readAgricultureNames()).length;
+      } finally {
+        agricultureSyncPromise = null;
+      }
+    })();
+    return agricultureSyncPromise;
   }
 
   async function wikidataScientificName(entityId) {
@@ -70,15 +108,9 @@
       const wanted = normalize(scientific);
       const plants = (data.results || []).filter(row => row.kingdom === 'Plantae' || row.kingdomKey === 6);
       if (!plants.length) return null;
-
-      const exact = plants.find(row =>
-        normalize(row.canonicalName) === wanted ||
-        normalize(row.scientificName) === wanted
-      );
+      const exact = plants.find(row => normalize(row.canonicalName) === wanted || normalize(row.scientificName) === wanted);
       return exact?.canonicalName || exact?.scientificName || null;
-    } catch {
-      return null;
-    }
+    } catch { return null; }
   }
 
   async function wikipediaResolve(query, lang) {
@@ -89,8 +121,7 @@
       const data = await response.json();
       const pages = data?.query?.pages ? Object.values(data.query.pages).sort((a, b) => (a.index || 0) - (b.index || 0)) : [];
       for (const page of pages) {
-        const entityId = page?.pageprops?.wikibase_item;
-        const scientific = await wikidataScientificName(entityId);
+        const scientific = await wikidataScientificName(page?.pageprops?.wikibase_item);
         const verified = await validatedPlantName(scientific);
         if (verified) return verified;
       }
@@ -115,20 +146,29 @@
 
   async function resolveLocalName(query, lang) {
     const normalized = normalize(query);
-    const known = KNOWN_LOCAL_NAMES[lang]?.[normalized];
-    if (known) return known;
+    const names = KNOWN_LOCAL_NAMES[lang] || {};
+    const directKey = Object.keys(names).find(key => normalize(key) === normalized);
+    if (directKey) return names[directKey];
+
+    if (lang === 'he') {
+      let agricultureNames = readAgricultureNames();
+      if (agricultureNames[normalized]) return agricultureNames[normalized];
+      await syncAgricultureNames();
+      agricultureNames = readAgricultureNames();
+      if (agricultureNames[normalized]) return agricultureNames[normalized];
+    }
 
     const cache = readCache();
     const key = `${lang}:${normalized}`;
     if (cache[key]) return cache[key];
 
     const scientific = await wikipediaResolve(query, lang) || await wikidataResolve(query, lang);
-    if (scientific) {
-      cache[key] = scientific;
-      writeCache(cache);
-    }
+    if (scientific) { cache[key] = scientific; writeCache(cache); }
     return scientific;
   }
 
-  window.PlantNameSearch = {resolveLocalName, detectLanguage};
+  // Warm the official Israeli dataset in the background; cached names remain available offline afterwards.
+  if (typeof navigator === 'undefined' || navigator.onLine !== false) syncAgricultureNames();
+
+  window.PlantNameSearch = {resolveLocalName, detectLanguage, syncAgricultureNames};
 })();
