@@ -23,6 +23,9 @@ async function handler(req, res) {
 
   try {
     const contentType = req.headers['content-type'] || 'application/octet-stream';
+    if (!/^image\/(jpeg|png)(?:;|$)/i.test(contentType)) {
+      return res.status(415).json({error: 'unsupported_image_type'});
+    }
     const body = req.body;
     if (!body) return res.status(400).json({error: 'missing_image'});
 
