@@ -8,6 +8,11 @@
     en: 'Install app',
     ar: 'تثبيت التطبيق'
   };
+  const manualLabels = {
+    he: 'להתקנה: פתח את תפריט Chrome ובחר „הוספה למסך הבית” או „התקנת האפליקציה”.',
+    en: 'To install: open the Chrome menu and choose “Add to Home screen” or “Install app”.',
+    ar: 'للتثبيت: افتح قائمة Chrome واختر «إضافة إلى الشاشة الرئيسية» أو «تثبيت التطبيق». '
+  };
 
   let deferredPrompt = null;
   if ('serviceWorker' in navigator) {
@@ -39,7 +44,10 @@
   });
 
   installButton.addEventListener('click', async () => {
-    if (!deferredPrompt) return;
+    if (!deferredPrompt) {
+      alert(manualLabels[currentLanguage()] || manualLabels.he);
+      return;
+    }
     installButton.disabled = true;
     try {
       deferredPrompt.prompt();
@@ -57,4 +65,5 @@
   });
 
   if (isStandalone()) installButton.hidden = true;
+  else installButton.hidden = false;
 })();
