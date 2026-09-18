@@ -162,13 +162,27 @@ async function identifyPhoto(file) {
   preview.alt = t().photoPreview;
   preview.hidden = false;
 
-  // Android crash isolation build: preview only. No local ONNX and no Pl@ntNet upload.
-  view = {type: 'loading', message: 'בדיקת יציבות: התמונה נטענה ללא הפעלת מנוע הזיהוי.'};
+  // v33 diagnostic: keep the proven preview path and test Pl@ntNet only. No local ONNX.
+  view = {type: 'loading', message: 'התמונה נטענה. Pl@ntNet מנתח אותה…'};
   renderView();
-
-  photoBusy = false;
-  activeInferenceId = null;
-  inputs.forEach(input => { input.disabled = false; });
+  try {
+    const plantnetResults = await window.PlantNetAI.identify(file);
+    view = {
+      type: 'loading',
+      message: plantnetResults.length
+        ? 'Pl@ntNet החזיר תוצאות: ' + plantnetResults.slice(0, 3).map(r => r.scientificName + ' (' + (r.score * 100).toFixed(1) + '%)').join(' • ')
+        : 'Pl@ntNet לא החזיר התאמות לתמונה.'
+    };
+    renderView();
+  } catch (error) {
+    console.error(error);
+    view = {type: 'error', message: 'בדיקת Pl@ntNet נכשלה: ' + (error.message || 'שגיאה לא ידועה')};
+    renderView();
+  } finally {
+    photoBusy = false;
+    activeInferenceId = null;
+    inputs.forEach(input => { input.disabled = false; });
+  }
 }
 
 // v31 diagnostic: preview the selected File in Chrome; no AI engines.
