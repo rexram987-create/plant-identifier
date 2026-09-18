@@ -1,4 +1,4 @@
-const CACHE = 'plant-identifier-v36';
+const CACHE = 'plant-identifier-v37';
 const MODEL_CACHE = 'plant-ai-model-v3';
 const OFFLINE_ASSETS = [
   './', './index.html', './styles.css?v=22', './mobile-fix.css?v=22', './inaturalist.css', './wikipedia.css',
