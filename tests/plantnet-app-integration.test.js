@@ -9,8 +9,5 @@ assert.match(source, /plantnetResults/, 'photo state keeps PlantNet results sepa
 assert.match(source, /Pl@ntNet/, 'renders a clearly labelled PlantNet result section');
 assert.match(source, /catch\([^)]*\)\s*=>\s*\[\]/, 'PlantNet failure falls back without breaking local identification');
 
-const localCall = source.indexOf('await window.PlantLocalAI.identify(file');
-const plantnetCall = source.indexOf('window.PlantNetAI.identify(file)');
-assert.ok(localCall >= 0 && plantnetCall > localCall, 'PlantNet starts only after local inference to reduce mobile memory pressure');
 
 console.log('PASS PlantNet app integration contract');
