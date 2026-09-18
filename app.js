@@ -175,8 +175,9 @@ async function identifyPhoto(file) {
     photoBusy = false;
     activeInferenceId = null;
     inputs.forEach(input => { input.disabled = false; });
-    const plantnetPromise = window.PlantNetAI.identify(file).catch(() => []);
-    const [geo, plantnetResults] = await Promise.all([rerankByGeography(raw), plantnetPromise]);
+    // Diagnostic build: isolate Android crash by temporarily skipping the Pl@ntNet image upload.
+    const plantnetResults = [];
+    const geo = await rerankByGeography(raw);
     if (id !== requestId) return;
     view = {type: 'photo', engine: raw.engine, geo, pending: false, plantnetPending: false, plantnetResults, plantnetUnavailable: navigator.onLine === false};
     renderView();
