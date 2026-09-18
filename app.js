@@ -1,7 +1,7 @@
 const translations={
-he:{dir:'rtl',lang:'he',eyebrow:'מגדיר צמחים נגיש ורב־לשוני',title:'מגדיר הצמחים',language:'שפה',theme:'מצב כהה',font:'טקסט גדול',heroTitle:'זהה צמח או חפש מידע לפי שם',heroText:'אפשר לחפש לפי שם וגם לנסות זיהוי תמונה מקומי במכשיר.',searchTitle:'חיפוש לפי שם',searchText:'אפשר לחפש בשם מקומי, באנגלית או בשם המדעי.',searchLabel:'שם הצמח',searchPlaceholder:'למשל: כלנית מצויה',searchButton:'חפש',photoTitle:'זיהוי לפי תמונה',photoText:'צלם צמח או בחר תמונה. בפעם הראשונה יורד למכשיר מנוע זיהוי מקומי.',plannedTitle:'מקורות ושירותים',footer:'מגדיר צמחים נגיש ורב־לשוני',empty:'יש להקליד שם של צמח.',loading:'מחפש במאגר GBIF…',noResults:'לא נמצאו תוצאות מתאימות.',error:'לא הצלחנו להשלים את החיפוש.',resultsFor:'תוצאות עבור',scientificName:'שם מדעי',commonName:'שם נפוץ',family:'משפחה',genus:'סוג',source:'מקור: GBIF',viewGbif:'פתח ב־GBIF',unnamed:'ללא שם נפוץ',unknown:'לא ידוע',detailsButton:'בדוק את המין הזה',photoResultTitle:'זיהוי ניסיוני',photoResultIntro:'התמונה נותחה במכשיר באמצעות מנוע OpenPlants. התוצאה משוקללת גם לפי תצפיות אזוריות כאשר המיקום זמין.',lowConfidence:'רמת הביטחון נמוכה. מומלץ לצלם תקריב ברור של צמח אחד, עם הפרח והעלים במרכז התמונה.',mediumConfidence:'רמת הביטחון בינונית. כדאי להשוות את ההצעות ולצלם תקריב נוסף אם אפשר.',highConfidence:'ההתאמה הראשונה נראית חזקה יחסית, אך עדיין כדאי לאמת אותה לפי התמונות והמידע.',retake:'צלם תקריב נוסף',galleryAgain:'בחר תמונה אחרת',photoTip:'טיפ: צלם צמח אחד מקרוב, באור טוב, כשהפרח או העלים ממלאים חלק גדול מהתמונה.',confidence:'התאמה',aiError:'לא הצלחנו לטעון או להריץ את מנוע הזיהוי המקומי. ודא שיש חיבור לאינטרנט בניסיון הראשון ונסה שוב.',geoNote:'הדירוג שוקל גם תצפיות iNaturalist בקרבת מקום.',geoNoLocation:'לא ניתן היה להשתמש במיקום; הדירוג מבוסס על התמונה בלבד.',geoNoData:'המיקום התקבל, אך לא נמצאו מספיק תצפיות אזוריות להשפיע על הדירוג.'},
-en:{dir:'ltr',lang:'en',eyebrow:'Accessible multilingual plant guide',title:'Plant Identifier',language:'Language',theme:'Dark mode',font:'Large text',heroTitle:'Identify a plant or search by name',heroText:'Search by name or try experimental on-device photo identification.',searchTitle:'Search by name',searchText:'Search by a local, English, or scientific name.',searchLabel:'Plant name',searchPlaceholder:'For example: Anemone coronaria',searchButton:'Search',photoTitle:'Identify by photo',photoText:'Take or choose a photo. The local model downloads on first use.',plannedTitle:'Sources and services',footer:'Accessible multilingual plant identifier',empty:'Please enter a plant name.',loading:'Searching GBIF…',noResults:'No matching plants found.',error:'We could not complete the search.',resultsFor:'Results for',scientificName:'Scientific name',commonName:'Common name',family:'Family',genus:'Genus',source:'Source: GBIF',viewGbif:'Open in GBIF',unnamed:'No common name',unknown:'Unknown',detailsButton:'Check this species',photoResultTitle:'Experimental identification',photoResultIntro:'The image was analysed on your device with OpenPlants. Results are also re-ranked using nearby observations when location is available.',lowConfidence:'Confidence is low. Take a clear close-up of one plant with the flower and leaves centered.',mediumConfidence:'Confidence is moderate. Compare the suggestions and take another close-up if possible.',highConfidence:'The first match is relatively strong, but it should still be verified against images and information.',retake:'Take another close-up',galleryAgain:'Choose another image',photoTip:'Tip: photograph one plant closely, in good light, with the flower or leaves filling much of the frame.',confidence:'Match',aiError:'The local identification engine could not be loaded or run. Make sure you are online on first use and try again.',geoNote:'Ranking also uses nearby iNaturalist observations.',geoNoLocation:'Location could not be used; ranking is based on the image only.',geoNoData:'Location was obtained, but there were not enough nearby observations to affect the ranking.'},
-ar:{dir:'rtl',lang:'ar',eyebrow:'دليل نباتات ميسّر ومتعدد اللغات',title:'مُعرّف النباتات',language:'اللغة',theme:'الوضع الداكن',font:'نص كبير',heroTitle:'تعرّف على نبات أو ابحث بالاسم',heroText:'ابحث بالاسم أو جرّب التعرف المحلي التجريبي بالصورة.',searchTitle:'البحث بالاسم',searchText:'ابحث بالاسم المحلي أو الإنجليزي أو العلمي.',searchLabel:'اسم النبات',searchPlaceholder:'مثال: Anemone coronaria',searchButton:'بحث',photoTitle:'التعرف بواسطة صورة',photoText:'التقط أو اختر صورة. يتم تنزيل النموذج المحلي عند أول استخدام.',plannedTitle:'المصادر والخدمات',footer:'مُعرّف نباتات ميسّر ومتعدد اللغات',empty:'يرجى إدخال اسم نبات.',loading:'جارٍ البحث في GBIF…',noResults:'لم يتم العثور على نتائج.',error:'تعذر إكمال البحث.',resultsFor:'نتائج البحث عن',scientificName:'الاسم العلمي',commonName:'الاسم الشائع',family:'الفصيلة',genus:'الجنس',source:'المصدر: GBIF',viewGbif:'افتح في GBIF',unnamed:'لا يوجد اسم شائع',unknown:'غير معروف',detailsButton:'تحقق من هذا النوع',photoResultTitle:'تعرف تجريبي',photoResultIntro:'تم تحليل الصورة على الجهاز باستخدام OpenPlants، كما تتم إعادة ترتيب النتائج وفق المشاهدات القريبة عندما يتوفر الموقع.',lowConfidence:'درجة الثقة منخفضة. التقط صورة مقربة وواضحة لنبات واحد مع الزهرة والأوراق في الوسط.',mediumConfidence:'درجة الثقة متوسطة. قارن الاقتراحات والتقط صورة مقربة إضافية إن أمكن.',highConfidence:'المطابقة الأولى قوية نسبياً، لكن يفضل التحقق منها بالصور والمعلومات.',retake:'التقط صورة مقربة أخرى',galleryAgain:'اختر صورة أخرى',photoTip:'نصيحة: صور نباتاً واحداً عن قرب وفي إضاءة جيدة، واجعل الزهرة أو الأوراق تملأ جزءاً كبيراً من الصورة.',confidence:'مطابقة',aiError:'تعذر تحميل أو تشغيل محرك التعرف المحلي. تأكد من الاتصال بالإنترنت في الاستخدام الأول وحاول مجدداً.',geoNote:'يأخذ الترتيب أيضاً مشاهدات iNaturalist القريبة بالحسبان.',geoNoLocation:'تعذر استخدام الموقع؛ يعتمد الترتيب على الصورة فقط.',geoNoData:'تم الحصول على الموقع، لكن لم توجد مشاهدات محلية كافية لتغيير الترتيب.'}
+he:{dir:'rtl',lang:'he',eyebrow:'מגדיר צמחים נגיש ורב־לשוני',title:'מגדיר הצמחים',language:'שפה',theme:'מצב כהה',font:'טקסט גדול',heroTitle:'זהה צמח או חפש מידע לפי שם',heroText:'אפשר לחפש לפי שם וגם לנסות זיהוי תמונה מקומי במכשיר.',searchTitle:'חיפוש לפי שם',searchText:'אפשר לחפש בשם מקומי, באנגלית או בשם המדעי.',searchLabel:'שם הצמח',searchPlaceholder:'למשל: כלנית מצויה',searchButton:'חפש',photoTitle:'זיהוי לפי תמונה',photoText:'צלם צמח או בחר תמונה. בפעם הראשונה יורד למכשיר מנוע זיהוי מקומי.',plannedTitle:'מקורות ושירותים',footer:'מגדיר צמחים נגיש ורב־לשוני',empty:'יש להקליד שם של צמח.',loading:'מחפש במאגר GBIF…',noResults:'לא נמצאו תוצאות מתאימות.',error:'לא הצלחנו להשלים את החיפוש.',resultsFor:'תוצאות עבור',scientificName:'שם מדעי',commonName:'שם נפוץ',family:'משפחה',genus:'סוג',source:'מקור: GBIF',viewGbif:'פתח ב־GBIF',unnamed:'ללא שם נפוץ',unknown:'לא ידוע',detailsButton:'בדוק את המין הזה',photoResultTitle:'זיהוי ניסיוני',photoResultIntro:'התמונה נותחה במכשיר באמצעות מנוע OpenPlants. התוצאה משוקללת גם לפי תצפיות אזוריות כאשר המיקום זמין.',lowConfidence:'רמת הביטחון נמוכה. מומלץ לצלם תקריב ברור של צמח אחד, עם הפרח והעלים במרכז התמונה.',mediumConfidence:'רמת הביטחון בינונית. כדאי להשוות את ההצעות ולצלם תקריב נוסף אם אפשר.',highConfidence:'ההתאמה הראשונה נראית חזקה יחסית, אך עדיין כדאי לאמת אותה לפי התמונות והמידע.',retake:'צלם תקריב נוסף',galleryAgain:'בחר תמונה אחרת',photoTip:'טיפ: צלם צמח אחד מקרוב, באור טוב, כשהפרח או העלים ממלאים חלק גדול מהתמונה.',confidence:'התאמה',aiError:'לא הצלחנו לטעון או להריץ את מנוע הזיהוי המקומי. ודא שיש חיבור לאינטרנט בניסיון הראשון ונסה שוב.',geoNote:'הדירוג שוקל גם תצפיות iNaturalist בקרבת מקום.',geoNoLocation:'לא ניתן היה להשתמש במיקום; הדירוג מבוסס על התמונה בלבד.',geoNoData:'המיקום התקבל, אך לא נמצאו מספיק תצפיות אזוריות להשפיע על הדירוג.',plantnetTitle:'תוצאות Pl@ntNet',plantnetLoading:'Pl@ntNet עדיין מנתח את התמונה…',plantnetUnavailable:'Pl@ntNet אינו זמין כרגע. הזיהוי המקומי ממשיך לפעול כרגיל.',plantnetNoResults:'Pl@ntNet לא החזיר התאמות לתמונה.'},
+en:{dir:'ltr',lang:'en',eyebrow:'Accessible multilingual plant guide',title:'Plant Identifier',language:'Language',theme:'Dark mode',font:'Large text',heroTitle:'Identify a plant or search by name',heroText:'Search by name or try experimental on-device photo identification.',searchTitle:'Search by name',searchText:'Search by a local, English, or scientific name.',searchLabel:'Plant name',searchPlaceholder:'For example: Anemone coronaria',searchButton:'Search',photoTitle:'Identify by photo',photoText:'Take or choose a photo. The local model downloads on first use.',plannedTitle:'Sources and services',footer:'Accessible multilingual plant identifier',empty:'Please enter a plant name.',loading:'Searching GBIF…',noResults:'No matching plants found.',error:'We could not complete the search.',resultsFor:'Results for',scientificName:'Scientific name',commonName:'Common name',family:'Family',genus:'Genus',source:'Source: GBIF',viewGbif:'Open in GBIF',unnamed:'No common name',unknown:'Unknown',detailsButton:'Check this species',photoResultTitle:'Experimental identification',photoResultIntro:'The image was analysed on your device with OpenPlants. Results are also re-ranked using nearby observations when location is available.',lowConfidence:'Confidence is low. Take a clear close-up of one plant with the flower and leaves centered.',mediumConfidence:'Confidence is moderate. Compare the suggestions and take another close-up if possible.',highConfidence:'The first match is relatively strong, but it should still be verified against images and information.',retake:'Take another close-up',galleryAgain:'Choose another image',photoTip:'Tip: photograph one plant closely, in good light, with the flower or leaves filling much of the frame.',confidence:'Match',aiError:'The local identification engine could not be loaded or run. Make sure you are online on first use and try again.',geoNote:'Ranking also uses nearby iNaturalist observations.',geoNoLocation:'Location could not be used; ranking is based on the image only.',geoNoData:'Location was obtained, but there were not enough nearby observations to affect the ranking.',plantnetTitle:'Pl@ntNet results',plantnetLoading:'Pl@ntNet is still analysing the image…',plantnetUnavailable:'Pl@ntNet is unavailable right now. Local identification continues to work normally.',plantnetNoResults:'Pl@ntNet returned no matches for this image.'},
+ar:{dir:'rtl',lang:'ar',eyebrow:'دليل نباتات ميسّر ومتعدد اللغات',title:'مُعرّف النباتات',language:'اللغة',theme:'الوضع الداكن',font:'نص كبير',heroTitle:'تعرّف على نبات أو ابحث بالاسم',heroText:'ابحث بالاسم أو جرّب التعرف المحلي التجريبي بالصورة.',searchTitle:'البحث بالاسم',searchText:'ابحث بالاسم المحلي أو الإنجليزي أو العلمي.',searchLabel:'اسم النبات',searchPlaceholder:'مثال: Anemone coronaria',searchButton:'بحث',photoTitle:'التعرف بواسطة صورة',photoText:'التقط أو اختر صورة. يتم تنزيل النموذج المحلي عند أول استخدام.',plannedTitle:'المصادر والخدمات',footer:'مُعرّف نباتات ميسّر ومتعدد اللغات',empty:'يرجى إدخال اسم نبات.',loading:'جارٍ البحث في GBIF…',noResults:'لم يتم العثور على نتائج.',error:'تعذر إكمال البحث.',resultsFor:'نتائج البحث عن',scientificName:'الاسم العلمي',commonName:'الاسم الشائع',family:'الفصيلة',genus:'الجنس',source:'المصدر: GBIF',viewGbif:'افتح في GBIF',unnamed:'لا يوجد اسم شائع',unknown:'غير معروف',detailsButton:'تحقق من هذا النوع',photoResultTitle:'تعرف تجريبي',photoResultIntro:'تم تحليل الصورة على الجهاز باستخدام OpenPlants، كما تتم إعادة ترتيب النتائج وفق المشاهدات القريبة عندما يتوفر الموقع.',lowConfidence:'درجة الثقة منخفضة. التقط صورة مقربة وواضحة لنبات واحد مع الزهرة والأوراق في الوسط.',mediumConfidence:'درجة الثقة متوسطة. قارن الاقتراحات والتقط صورة مقربة إضافية إن أمكن.',highConfidence:'المطابقة الأولى قوية نسبياً، لكن يفضل التحقق منها بالصور والمعلومات.',retake:'التقط صورة مقربة أخرى',galleryAgain:'اختر صورة أخرى',photoTip:'نصيحة: صور نباتاً واحداً عن قرب وفي إضاءة جيدة، واجعل الزهرة أو الأوراق تملأ جزءاً كبيراً من الصورة.',confidence:'مطابقة',aiError:'تعذر تحميل أو تشغيل محرك التعرف المحلي. تأكد من الاتصال بالإنترنت في الاستخدام الأول وحاول مجدداً.',geoNote:'يأخذ الترتيب أيضاً مشاهدات iNaturalist القريبة بالحسبان.',geoNoLocation:'تعذر استخدام الموقع؛ يعتمد الترتيب على الصورة فقط.',geoNoData:'تم الحصول على الموقع، لكن لم توجد مشاهدات محلية كافية لتغيير الترتيب.',plantnetTitle:'نتائج Pl@ntNet',plantnetLoading:'لا يزال Pl@ntNet يحلل الصورة…',plantnetUnavailable:'خدمة Pl@ntNet غير متاحة حالياً. يستمر التعرف المحلي بالعمل كالمعتاد.',plantnetNoResults:'لم يُرجع Pl@ntNet أي تطابقات لهذه الصورة.'}
 };
 
 for (const code of Object.keys(translations)) Object.assign(translations[code], window.PlantTranslationsExtra[code]);
@@ -120,17 +120,22 @@ async function rerankByGeography(top) {
   const radius = 150;
   const counts = await Promise.all(top.map(r => nearbyCount(r.name, loc, radius).catch(() => null)));
   const complete = counts.every(count => count !== null);
-  // Missing responses must not give a competing species an artificial advantage.
   const maxCount = complete ? Math.max(...counts, 0) : 0;
-  const items = top.map((r, i) => ({
-    ...r,
-    nearbyCount: counts[i],
-    regionalScore: maxCount > 0 ? Math.log1p(counts[i]) / Math.log1p(maxCount) : 0
-  }));
-  if (maxCount > 0) items.sort((a, b) =>
-    (b.probability * .68 + b.regionalScore * .32) - (a.probability * .68 + a.regionalScore * .32)
-  );
+  const items = top.map((r, i) => ({...r, nearbyCount: counts[i], regionalScore: maxCount > 0 ? Math.log1p(counts[i]) / Math.log1p(maxCount) : 0}));
+  if (maxCount > 0) items.sort((a, b) => (b.probability * .68 + b.regionalScore * .32) - (a.probability * .68 + a.regionalScore * .32));
   return {items, used: true, hasData: maxCount > 0, radius, incomplete: !complete};
+}
+function renderPlantNet(state, x) {
+  if (state.plantnetPending) return '<section class="plantnet-results"><h2>' + esc(x.plantnetTitle) + '</h2><p class="result-message"><small>' + esc(x.plantnetLoading) + '</small></p></section>';
+  if (state.plantnetUnavailable) return '<section class="plantnet-results"><h2>' + esc(x.plantnetTitle) + '</h2><p class="result-message"><small>' + esc(x.plantnetUnavailable) + '</small></p></section>';
+  const plantnetResults = state.plantnetResults || [];
+  if (!plantnetResults.length) return '<section class="plantnet-results"><h2>' + esc(x.plantnetTitle) + '</h2><p class="result-message"><small>' + esc(x.plantnetNoResults) + '</small></p></section>';
+  return '<section class="plantnet-results"><h2>' + esc(x.plantnetTitle) + '</h2><div class="results-grid">' + plantnetResults.map((r, i) =>
+    '<article class="plant-result-card" data-scientific-name="' + esc(r.scientificName) + '"><h3>' + (i + 1) + '. <em>' + esc(r.scientificName) + '</em></h3>' +
+    (r.commonNames?.length ? '<p>' + esc(r.commonNames.join(', ')) + '</p>' : '') +
+    '<p><strong>' + esc(x.confidence) + ': ' + (r.score * 100).toFixed(1) + '%</strong></p>' +
+    '<button class="details-button" type="button" data-ai-search="' + esc(r.scientificName) + '">' + esc(x.detailsButton) + '</button></article>'
+  ).join('') + '</div></section>';
 }
 function renderPhoto(state) {
   const x = t(), geo = state.geo, top = geo.items;
@@ -142,19 +147,13 @@ function renderPhoto(state) {
     '<p class="result-message"><small>' + esc(geoText) + '</small></p>' +
     '<div class="confidence-warning" role="status"><strong>' + esc(guidance) + '</strong><p>' + esc(x.scoreNote) + '</p><p>' + esc(x.photoTip) + '</p></div>' +
     '<div class="photo-actions result-photo-actions"><button class="upload" type="button" data-retake>' + esc(x.retake) + '</button><button class="upload" type="button" data-gallery-again>' + esc(x.galleryAgain) + '</button></div>' +
-    '<div class="results-grid">' + top.map((r, i) =>
-      '<article class="plant-result-card" data-scientific-name="' + esc(r.name) + '"><h3>' + (i + 1) + '. <em>' + esc(r.name) + '</em></h3>' +
-      '<p><strong>' + esc(x.confidence) + ': ' + (r.probability * 100).toFixed(1) + '%</strong></p>' +
-      (geo.used ? '<p><small>' + esc(x.nearbyObservations) + ': ' + (r.nearbyCount == null ? esc(x.unknown) : Number(r.nearbyCount).toLocaleString(root.lang)) + '</small></p>' : '') +
-      '<button class="details-button" type="button" data-ai-search="' + esc(r.name) + '">' + esc(x.detailsButton) + '</button></article>'
-    ).join('') + '</div>';
+    '<div class="results-grid">' + top.map((r, i) => '<article class="plant-result-card" data-scientific-name="' + esc(r.name) + '"><h3>' + (i + 1) + '. <em>' + esc(r.name) + '</em></h3><p><strong>' + esc(x.confidence) + ': ' + (r.probability * 100).toFixed(1) + '%</strong></p>' + (geo.used ? '<p><small>' + esc(x.nearbyObservations) + ': ' + (r.nearbyCount == null ? esc(x.unknown) : Number(r.nearbyCount).toLocaleString(root.lang)) + '</small></p>' : '') + '<button class="details-button" type="button" data-ai-search="' + esc(r.name) + '">' + esc(x.detailsButton) + '</button></article>').join('') + '</div>' +
+    renderPlantNet(state, x);
 }
 async function identifyPhoto(file) {
   if (photoBusy) return;
-  const id = ++requestId;
   photoBusy = true;
-  activeInferenceId = id;
-  const inputs = ['cameraPhoto', 'plantPhoto'].map(x => document.getElementById(x));
+  const inputs = [document.getElementById('plantPhoto')].filter(Boolean);
   inputs.forEach(input => { input.disabled = true; });
   const preview = document.getElementById('preview');
   if (previewUrl) URL.revokeObjectURL(previewUrl);
@@ -162,41 +161,40 @@ async function identifyPhoto(file) {
   preview.src = previewUrl;
   preview.alt = t().photoPreview;
   preview.hidden = false;
+
+  // Pl@ntNet-only mobile-safe flow. Keep local ONNX disabled until standalone PWA testing is complete.
+  view = {type: 'loading', message: t().plantnetLoading};
+  renderView();
   try {
-    const raw = await window.PlantLocalAI.identify(file, message => {
-      if (id !== requestId) return;
-      view = {type: 'loading', message};
-      renderView();
-    });
-    if (id !== requestId) return;
-    view = {type: 'photo', engine: raw.engine, geo: {items: raw, used: false}, pending: true};
-    renderView();
-    // Release image inputs before the optional network enrichment finishes.
+    const plantnetResults = await window.PlantNetAI.identify(file);
+    const x = t();
+    result.hidden = false;
+    result.innerHTML = '<section class="plantnet-results"><h2>' + esc(x.plantnetTitle) + '</h2>' +
+      (plantnetResults.length
+        ? '<div class="results-grid">' + plantnetResults.map((r, i) =>
+            '<article class="plant-result-card" data-scientific-name="' + esc(r.scientificName) + '">' +
+            '<div class="plant-result-heading"><h3>' + (i + 1) + '. <em>' + esc(r.scientificName) + '</em></h3><span class="source-badge">Pl@ntNet</span></div>' +
+            (r.commonNames?.length ? '<p>' + esc(r.commonNames.join(', ')) + '</p>' : '') +
+            '<p><strong>' + esc(x.confidence) + ': ' + (r.score * 100).toFixed(1) + '%</strong></p>' +
+            '<button class="details-button" type="button" data-ai-search="' + esc(r.scientificName) + '">' + esc(x.detailsButton) + '</button></article>'
+          ).join('') + '</div>'
+        : '<p class="result-message">' + esc(x.plantnetNoResults) + '</p>') +
+      '</section>';
+  } catch (error) {
+    console.error(error);
+    showMessage('error', 'plantnetUnavailable');
+  } finally {
     photoBusy = false;
     activeInferenceId = null;
     inputs.forEach(input => { input.disabled = false; });
-    const geo = await rerankByGeography(raw);
-    if (id !== requestId) return;
-    view = {type: 'photo', engine: raw.engine, geo, pending: false};
-    renderView();
-  } catch (error) {
-    console.error(error);
-    if (id === requestId) showMessage('error', 'aiError');
-  } finally {
-    if (activeInferenceId === id) {
-      activeInferenceId = null;
-      photoBusy = false;
-      inputs.forEach(input => { input.disabled = false; });
-    }
   }
 }
-for (const name of ['plantPhoto', 'cameraPhoto']) {
-  document.getElementById(name).addEventListener('change', e => {
-    const file = e.target.files?.[0];
-    e.target.value = '';
-    if (file) identifyPhoto(file);
-  });
-}
+
+// Mobile-safe gallery flow: preview the image, then identify it with Pl@ntNet.
+document.getElementById('plantPhoto').addEventListener('change', e => {
+  const file = e.target.files?.[0];
+  if (file) identifyPhoto(file);
+});
 document.addEventListener('click', e => {
   const b = e.target.closest('[data-balcony-search]');
   if (!b) return;
@@ -226,6 +224,4 @@ themeToggle.setAttribute('aria-pressed', String(root.dataset.theme !== 'light'))
 fontToggle.setAttribute('aria-pressed', root.dataset.largeText);
 applyLanguage(languageSelect.value);
 
-document.querySelectorAll('[data-photo-input]').forEach(button => {
-  button.addEventListener('click', () => document.getElementById(button.dataset.photoInput).click());
-});
+// v30 diagnostic: no JavaScript-triggered file input clicks.

@@ -21,6 +21,8 @@
     resizeMode: 'center-crop'
   };
 
+  const MOBILE_SAFE_ENGINE = FALLBACK;
+
   let enginePromise;
   function status(key, name = '') {
     const code = document.documentElement.lang;
@@ -93,17 +95,9 @@
       await loadScript(ORT_URL);
       window.ort.env.wasm.wasmPaths = ORT_BASE;
       window.ort.env.wasm.numThreads = 1;
-      try {
-        const engine = await buildEngine(PRIMARY, onStatus);
-        console.info(`Plant identifier using ${engine.name} (${engine.labels.length} labels)`);
-        return engine;
-      } catch (primaryError) {
-        console.warn('OpenPlants could not be loaded; using PlantNet fallback.', primaryError);
-        onStatus?.(status('fallback'));
-        const engine = await buildEngine(FALLBACK, onStatus);
-        console.info(`Plant identifier fallback: ${engine.name} (${engine.labels.length} labels)`);
-        return engine;
-      }
+      const engine = await buildEngine(MOBILE_SAFE_ENGINE, onStatus);
+      console.info(`Plant identifier mobile-safe engine: ${engine.name} (${engine.labels.length} labels)`);
+      return engine;
     })().catch(error => {
       enginePromise = null;
       throw error;
