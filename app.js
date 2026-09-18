@@ -163,7 +163,6 @@ async function identifyPhoto(file) {
   preview.src = previewUrl;
   preview.alt = t().photoPreview;
   preview.hidden = false;
-  const plantnetPromise = window.PlantNetAI.identify(file).catch(() => []);
   try {
     const raw = await window.PlantLocalAI.identify(file, message => {
       if (id !== requestId) return;
@@ -176,6 +175,7 @@ async function identifyPhoto(file) {
     photoBusy = false;
     activeInferenceId = null;
     inputs.forEach(input => { input.disabled = false; });
+    const plantnetPromise = window.PlantNetAI.identify(file).catch(() => []);
     const [geo, plantnetResults] = await Promise.all([rerankByGeography(raw), plantnetPromise]);
     if (id !== requestId) return;
     view = {type: 'photo', engine: raw.engine, geo, pending: false, plantnetPending: false, plantnetResults, plantnetUnavailable: navigator.onLine === false};
