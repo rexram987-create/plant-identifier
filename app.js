@@ -171,13 +171,7 @@ async function identifyPhoto(file) {
   inputs.forEach(input => { input.disabled = false; });
 }
 
-for (const name of ['plantPhoto']) {
-  document.getElementById(name).addEventListener('change', e => {
-    const file = e.target.files?.[0];
-    e.target.value = '';
-    if (file) identifyPhoto(file);
-  });
-}
+// v30 diagnostic: native file picker only; do not read or process the selected File.
 document.addEventListener('click', e => {
   const b = e.target.closest('[data-balcony-search]');
   if (!b) return;
@@ -207,6 +201,4 @@ themeToggle.setAttribute('aria-pressed', String(root.dataset.theme !== 'light'))
 fontToggle.setAttribute('aria-pressed', root.dataset.largeText);
 applyLanguage(languageSelect.value);
 
-document.querySelectorAll('[data-photo-input]').forEach(button => {
-  button.addEventListener('click', () => document.getElementById('plantPhoto').click());
-});
+// v30 diagnostic: no JavaScript-triggered file input clicks.
