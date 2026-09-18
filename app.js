@@ -152,9 +152,7 @@ function renderPhoto(state) {
 }
 async function identifyPhoto(file) {
   if (photoBusy) return;
-  const id = ++requestId;
   photoBusy = true;
-  activeInferenceId = id;
   const inputs = ['cameraPhoto', 'plantPhoto'].map(x => document.getElementById(x));
   inputs.forEach(input => { input.disabled = true; });
   const preview = document.getElementById('preview');
@@ -163,35 +161,16 @@ async function identifyPhoto(file) {
   preview.src = previewUrl;
   preview.alt = t().photoPreview;
   preview.hidden = false;
-  try {
-    const raw = await window.PlantLocalAI.identify(file, message => {
-      if (id !== requestId) return;
-      view = {type: 'loading', message};
-      renderView();
-    });
-    if (id !== requestId) return;
-    view = {type: 'photo', engine: raw.engine, geo: {items: raw, used: false}, pending: true, plantnetPending: true, plantnetResults: []};
-    renderView();
-    photoBusy = false;
-    activeInferenceId = null;
-    inputs.forEach(input => { input.disabled = false; });
-    // Diagnostic build: isolate Android crash by temporarily skipping the Pl@ntNet image upload.
-    const plantnetResults = [];
-    const geo = await rerankByGeography(raw);
-    if (id !== requestId) return;
-    view = {type: 'photo', engine: raw.engine, geo, pending: false, plantnetPending: false, plantnetResults, plantnetUnavailable: navigator.onLine === false};
-    renderView();
-  } catch (error) {
-    console.error(error);
-    if (id === requestId) showMessage('error', 'aiError');
-  } finally {
-    if (activeInferenceId === id) {
-      activeInferenceId = null;
-      photoBusy = false;
-      inputs.forEach(input => { input.disabled = false; });
-    }
-  }
+
+  // Android crash isolation build: preview only. No local ONNX and no Pl@ntNet upload.
+  view = {type: 'loading', message: 'בדיקת יציבות: התמונה נטענה ללא הפעלת מנוע הזיהוי.'};
+  renderView();
+
+  photoBusy = false;
+  activeInferenceId = null;
+  inputs.forEach(input => { input.disabled = false; });
 }
+
 for (const name of ['plantPhoto', 'cameraPhoto']) {
   document.getElementById(name).addEventListener('change', e => {
     const file = e.target.files?.[0];
