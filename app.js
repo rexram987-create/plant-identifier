@@ -171,7 +171,11 @@ async function identifyPhoto(file) {
   inputs.forEach(input => { input.disabled = false; });
 }
 
-// v30 diagnostic: native file picker only; do not read or process the selected File.
+// v31 diagnostic: preview the selected File in Chrome; no AI engines.
+document.getElementById('plantPhoto').addEventListener('change', e => {
+  const file = e.target.files?.[0];
+  if (file) identifyPhoto(file);
+});
 document.addEventListener('click', e => {
   const b = e.target.closest('[data-balcony-search]');
   if (!b) return;
