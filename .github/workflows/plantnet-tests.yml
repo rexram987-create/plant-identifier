@@ -25,3 +25,6 @@ jobs:
         run: node tests/plantnet-client.test.js
       - name: PlantNet app integration contract
         run: node tests/plantnet-app-integration.test.js
+
+      - name: Mobile-safe local engine contract
+        run: node tests/mobile-safe-image-engine.test.js
