@@ -162,22 +162,27 @@ async function identifyPhoto(file) {
   preview.alt = t().photoPreview;
   preview.hidden = false;
 
-  // v33 diagnostic: keep the proven preview path and test Pl@ntNet only. No local ONNX.
-  view = {type: 'loading', message: 'התמונה נטענה. Pl@ntNet מנתח אותה…'};
+  // Pl@ntNet-only mobile-safe flow. Keep local ONNX disabled until standalone PWA testing is complete.
+  view = {type: 'loading', message: t().plantnetLoading};
   renderView();
   try {
     const plantnetResults = await window.PlantNetAI.identify(file);
-    view = {
-      type: 'loading',
-      message: plantnetResults.length
-        ? 'Pl@ntNet החזיר תוצאות: ' + plantnetResults.slice(0, 3).map(r => r.scientificName + ' (' + (r.score * 100).toFixed(1) + '%)').join(' • ')
-        : 'Pl@ntNet לא החזיר התאמות לתמונה.'
-    };
-    renderView();
+    const x = t();
+    result.hidden = false;
+    result.innerHTML = '<section class="plantnet-results"><h2>' + esc(x.plantnetTitle) + '</h2>' +
+      (plantnetResults.length
+        ? '<div class="results-grid">' + plantnetResults.map((r, i) =>
+            '<article class="plant-result-card" data-scientific-name="' + esc(r.scientificName) + '">' +
+            '<div class="plant-result-heading"><h3>' + (i + 1) + '. <em>' + esc(r.scientificName) + '</em></h3><span class="source-badge">Pl@ntNet</span></div>' +
+            (r.commonNames?.length ? '<p>' + esc(r.commonNames.join(', ')) + '</p>' : '') +
+            '<p><strong>' + esc(x.confidence) + ': ' + (r.score * 100).toFixed(1) + '%</strong></p>' +
+            '<button class="details-button" type="button" data-ai-search="' + esc(r.scientificName) + '">' + esc(x.detailsButton) + '</button></article>'
+          ).join('') + '</div>'
+        : '<p class="result-message">' + esc(x.plantnetNoResults) + '</p>') +
+      '</section>';
   } catch (error) {
     console.error(error);
-    view = {type: 'error', message: 'בדיקת Pl@ntNet נכשלה: ' + (error.message || 'שגיאה לא ידועה')};
-    renderView();
+    showMessage('error', 'plantnetUnavailable');
   } finally {
     photoBusy = false;
     activeInferenceId = null;
@@ -185,7 +190,7 @@ async function identifyPhoto(file) {
   }
 }
 
-// v31 diagnostic: preview the selected File in Chrome; no AI engines.
+// Mobile-safe gallery flow: preview the image, then identify it with Pl@ntNet.
 document.getElementById('plantPhoto').addEventListener('change', e => {
   const file = e.target.files?.[0];
   if (file) identifyPhoto(file);
