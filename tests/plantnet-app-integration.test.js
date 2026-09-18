@@ -10,3 +10,6 @@ assert.match(source, /Pl@ntNet/, 'renders a clearly labelled PlantNet result sec
 
 
 console.log('PASS PlantNet app integration contract');
+
+assert.doesNotMatch(source, /window\.PlantLocalAI\.identify\(file/, 'diagnostic build must not invoke local ONNX inference');
+assert.match(source, /URL\.createObjectURL\(file\)/, 'diagnostic build still previews the selected photo');
