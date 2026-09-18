@@ -171,7 +171,7 @@ async function identifyPhoto(file) {
   inputs.forEach(input => { input.disabled = false; });
 }
 
-for (const name of ['plantPhoto', 'cameraPhoto']) {
+for (const name of ['plantPhoto']) {
   document.getElementById(name).addEventListener('change', e => {
     const file = e.target.files?.[0];
     e.target.value = '';
@@ -208,5 +208,5 @@ fontToggle.setAttribute('aria-pressed', root.dataset.largeText);
 applyLanguage(languageSelect.value);
 
 document.querySelectorAll('[data-photo-input]').forEach(button => {
-  button.addEventListener('click', () => document.getElementById(button.dataset.photoInput).click());
+  button.addEventListener('click', () => document.getElementById('plantPhoto').click());
 });
