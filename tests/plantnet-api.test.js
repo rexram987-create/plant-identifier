@@ -12,6 +12,11 @@ const assert = require('node:assert/strict');
   assert.equal(url.searchParams.get('api-key'), 'secret-test-key');
   assert.equal(url.searchParams.get('nb-results'), '3');
 
+  assert.equal(typeof api._test?.readRequestBody, 'function', 'exports raw request reader for tests');
+  const chunks = [Buffer.from([1, 2]), Buffer.from([3, 4])];
+  const rawReq = {async *[Symbol.asyncIterator]() { for (const chunk of chunks) yield chunk; }};
+  assert.deepEqual(await api._test.readRequestBody(rawReq), Buffer.from([1, 2, 3, 4]));
+
   assert.equal(typeof api._test?.normaliseResults, 'function', 'exports result normaliser for tests');
   const results = api._test.normaliseResults({results: [{score: 0.91, species: {scientificNameWithoutAuthor: 'Nerium oleander', commonNames: ['Oleander']}}]});
   assert.deepEqual(results, [{scientificName: 'Nerium oleander', commonNames: ['Oleander'], score: 0.91}]);
