@@ -153,7 +153,7 @@ function renderPhoto(state) {
 async function identifyPhoto(file) {
   if (photoBusy) return;
   photoBusy = true;
-  const inputs = ['cameraPhoto', 'plantPhoto'].map(x => document.getElementById(x));
+  const inputs = [document.getElementById('plantPhoto')].filter(Boolean);
   inputs.forEach(input => { input.disabled = true; });
   const preview = document.getElementById('preview');
   if (previewUrl) URL.revokeObjectURL(previewUrl);
