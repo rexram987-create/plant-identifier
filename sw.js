@@ -1,9 +1,9 @@
-const CACHE = 'plant-identifier-v24';
+const CACHE = 'plant-identifier-v25';
 const MODEL_CACHE = 'plant-ai-model-v3';
 const OFFLINE_ASSETS = [
   './', './index.html', './styles.css?v=22', './mobile-fix.css?v=22', './inaturalist.css', './wikipedia.css',
   './local-name-search.js?v=23', './translations-extra.js?v=22', './image-identification.js?v=21', './plantnet-client.js?v=1',
-  './app.js?v=24', './inaturalist.js?v=21', './wikipedia.js?v=21', './install.js?v=21',
+  './app.js?v=25', './inaturalist.js?v=21', './wikipedia.js?v=21', './install.js?v=21',
   './manifest.webmanifest', './icon-192.png', './icon-512.png',
   './vendor/onnxruntime-1.22.0/ort.min.js',
   './vendor/onnxruntime-1.22.0/ort-wasm-simd-threaded.jsep.mjs',
@@ -27,7 +27,7 @@ self.addEventListener('fetch', event => {
   event.respondWith((async () => {
     const cache = await caches.open(CACHE);
     const cached = await cache.match(event.request);
-    if (cached && (['21', '22', '23', '24'].includes(url.searchParams.get('v')) || url.pathname.includes('/vendor/onnxruntime-1.22.0/'))) return cached;
+    if (cached && (['21', '22', '23', '24', '25'].includes(url.searchParams.get('v')) || url.pathname.includes('/vendor/onnxruntime-1.22.0/'))) return cached;
     try {
       const response = await fetch(event.request);
       if (response.ok) {
