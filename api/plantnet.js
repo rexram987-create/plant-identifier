@@ -16,6 +16,15 @@ function normaliseResults(payload) {
   })).filter(result => result.scientificName);
 }
 
+async function readRequestBody(req) {
+  if (Buffer.isBuffer(req.body)) return req.body;
+  if (typeof req.body === 'string') return Buffer.from(req.body, 'base64');
+  if (req.body?.type === 'Buffer' && Array.isArray(req.body.data)) return Buffer.from(req.body.data);
+  const chunks = [];
+  for await (const chunk of req) chunks.push(Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk));
+  return Buffer.concat(chunks);
+}
+
 async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({error: 'method_not_allowed'});
   const apiKey = process.env.PLANTNET_API_KEY;
@@ -26,14 +35,8 @@ async function handler(req, res) {
     if (!/^image\/(jpeg|png)(?:;|$)/i.test(contentType)) {
       return res.status(415).json({error: 'unsupported_image_type'});
     }
-    const body = req.body;
-    if (!body) return res.status(400).json({error: 'missing_image'});
-
-    let bytes;
-    if (Buffer.isBuffer(body)) bytes = body;
-    else if (typeof body === 'string') bytes = Buffer.from(body, 'base64');
-    else if (body?.type === 'Buffer' && Array.isArray(body.data)) bytes = Buffer.from(body.data);
-    else return res.status(400).json({error: 'invalid_image'});
+    const bytes = await readRequestBody(req);
+    if (!bytes.length) return res.status(400).json({error: 'missing_image'});
 
     const form = new FormData();
     form.append('images', new Blob([bytes], {type: contentType}), 'plant.jpg');
@@ -50,4 +53,4 @@ async function handler(req, res) {
 }
 
 module.exports = handler;
-module.exports._test = {buildPlantNetUrl, normaliseResults};
+module.exports._test = {buildPlantNetUrl, normaliseResults, readRequestBody};
