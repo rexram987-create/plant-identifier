@@ -168,7 +168,7 @@
   }
 
   function commonNameForScientific(scientific, lang = 'he') {
-    const wanted = normalize(scientific).replace(/×/g, 'x').replace(/\\s+/g, ' ');
+    const wanted = normalize(scientific).replace(/×/g, 'x').replace(/\s+/g, ' ');
     if (!wanted) return '';
     const aliases = KNOWN_LOCAL_NAMES[lang] || {};
     const agriculture = lang === 'he' ? readAgricultureNames() : {};
