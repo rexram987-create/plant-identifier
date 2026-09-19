@@ -16,7 +16,7 @@
   function esc(v) { return String(v ?? '').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'",'&#039;'); }
 
   // Require an exact scientific taxon match, not a fuzzy Wikipedia search hit.
-  const normalizeTaxon = value => String(value || '').toLowerCase().replace(/×/g, 'x').replace(/\\s+/g, ' ').trim();
+  const normalizeTaxon = value => String(value || '').toLowerCase().replace(/×/g, 'x').replace(/\s+/g, ' ').trim();
   const articleCache = new Map();
 
   async function lookupTaxon(name) {
@@ -100,7 +100,7 @@
     const {article, commonName} = await fetchPlantDetails(name, code);
     if (!card.isConnected) return;
     const displayName = localName || commonName;
-    if (displayName) {
+    if (displayName && !card.querySelector('.plant-common-name')) {
       const p = document.createElement('p');
       p.className = 'plant-common-name';
       p.textContent = x.common + ': ' + displayName;
