@@ -167,8 +167,21 @@
     return scientific;
   }
 
+  function commonNameForScientific(scientific, lang = 'he') {
+    const wanted = normalize(scientific).replace(/×/g, 'x').replace(/\\s+/g, ' ');
+    if (!wanted) return '';
+    const aliases = KNOWN_LOCAL_NAMES[lang] || {};
+    const agriculture = lang === 'he' ? readAgricultureNames() : {};
+    const known = lang === 'he' ? {'fragaria x ananassa': 'תות שדה', 'fragaria ananassa': 'תות שדה'} : {};
+    if (known[wanted]) return known[wanted];
+    for (const [local, latin] of Object.entries({...agriculture, ...aliases})) {
+      if (normalize(latin).replace(/×/g, 'x') === wanted) return local;
+    }
+    return '';
+  }
+
   // Warm the official Israeli dataset in the background; cached names remain available offline afterwards.
   if (typeof navigator === 'undefined' || navigator.onLine !== false) syncAgricultureNames();
 
-  window.PlantNameSearch = {resolveLocalName, detectLanguage, syncAgricultureNames};
+  window.PlantNameSearch = {resolveLocalName, detectLanguage, syncAgricultureNames, commonNameForScientific};
 })();
