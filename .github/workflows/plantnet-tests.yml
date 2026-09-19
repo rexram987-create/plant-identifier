@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - feature/plantnet-image-identification
+      - feature/common-names-wikipedia-cards
   workflow_dispatch:
 
 permissions:
@@ -26,5 +27,9 @@ jobs:
       - name: PlantNet app integration contract
         run: node tests/plantnet-app-integration.test.js
 
+      - name: Common names and Wikipedia cards contract
+        run: node tests/common-names-wikipedia.test.js
+      - name: JavaScript syntax check
+        run: node --check wikipedia.js && node --check local-name-search.js
       - name: Mobile-safe local engine contract
         run: node tests/mobile-safe-image-engine.test.js
