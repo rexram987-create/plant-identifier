@@ -10,5 +10,6 @@ assert.match(wiki, /commonNameForScientific/, 'common name uses local names');
 assert.match(wiki, /enrichCard\(card, name\)/, 'Wikipedia details appear on result cards automatically');
 assert.match(wiki, /article\.extract/, 'Wikipedia summary is rendered');
 assert.match(names, /'fragaria x ananassa': 'תות שדה'/, 'strawberry common name is available');
-assert.match(html, /wikipedia\.js\?v=22/, 'fresh Wikipedia script loaded');
+assert.match(fs.readFileSync(path.join(__dirname, '..', 'app.js'), 'utf8'), /plant-common-name/, 'common name is rendered immediately on PlantNet cards');
+assert.match(html, /wikipedia\.js\?v=23/, 'fresh Wikipedia script loaded');
 console.log('PASS common names and Wikipedia cards contract');
