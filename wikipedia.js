@@ -96,12 +96,14 @@
     panel.setAttribute('aria-live', 'polite');
     panel.innerHTML = '<p class="result-message" role="status">' + esc(x.loading) + '</p>';
     card.appendChild(panel);
+    const localName = window.PlantNameSearch?.commonNameForScientific?.(name, code) || '';
     const {article, commonName} = await fetchPlantDetails(name, code);
     if (!card.isConnected) return;
-    if (commonName) {
+    const displayName = localName || commonName;
+    if (displayName) {
       const p = document.createElement('p');
       p.className = 'plant-common-name';
-      p.textContent = x.common + ': ' + commonName;
+      p.textContent = x.common + ': ' + displayName;
       const heading = card.querySelector('.plant-result-heading') || card.querySelector('h3');
       if (heading) heading.after(p);
       else card.prepend(p);
