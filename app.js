@@ -132,7 +132,7 @@ function renderPlantNet(state, x) {
   if (!plantnetResults.length) return '<section class="plantnet-results"><h2>' + esc(x.plantnetTitle) + '</h2><p class="result-message"><small>' + esc(x.plantnetNoResults) + '</small></p></section>';
   return '<section class="plantnet-results"><h2>' + esc(x.plantnetTitle) + '</h2><div class="results-grid">' + plantnetResults.map((r, i) =>
     '<article class="plant-result-card" data-scientific-name="' + esc(r.scientificName) + '"><h3>' + (i + 1) + '. <em>' + esc(r.scientificName) + '</em></h3>' +
-    (r.commonNames?.length ? '<p>' + esc(r.commonNames.join(', ')) + '</p>' : '') +
+    (document.documentElement.lang === 'en' && r.commonNames?.length ? '<p lang="en">' + esc(r.commonNames.join(', ')) + '</p>' : '') +
     '<p><strong>' + esc(x.confidence) + ': ' + (r.score * 100).toFixed(1) + '%</strong></p>' +
     '<button class="details-button" type="button" data-ai-search="' + esc(r.scientificName) + '">' + esc(x.detailsButton) + '</button></article>'
   ).join('') + '</div></section>';
@@ -175,7 +175,7 @@ async function identifyPhoto(file) {
             '<article class="plant-result-card" data-scientific-name="' + esc(r.scientificName) + '">' +
             '<div class="plant-result-heading"><h3>' + (i + 1) + '. <em>' + esc(r.scientificName) + '</em></h3><span class="source-badge">Pl@ntNet</span></div>' +
             (window.PlantNameSearch?.commonNameForScientific?.(r.scientificName, document.documentElement.lang) ? '<p class="plant-common-name"><strong>' + esc(document.documentElement.lang === 'he' ? 'שם נפוץ' : document.documentElement.lang === 'ar' ? 'الاسم الشائع' : 'Common name') + ': ' + esc(window.PlantNameSearch.commonNameForScientific(r.scientificName, document.documentElement.lang)) + '</strong></p>' : '') +
-            (r.commonNames?.length ? '<p>' + esc(r.commonNames.join(', ')) + '</p>' : '') +
+            (document.documentElement.lang === 'en' && r.commonNames?.length ? '<p lang="en">' + esc(r.commonNames.join(', ')) + '</p>' : '') +
             '<p><strong>' + esc(x.confidence) + ': ' + (r.score * 100).toFixed(1) + '%</strong></p>' +
             '<button class="details-button" type="button" data-ai-search="' + esc(r.scientificName) + '">' + esc(x.detailsButton) + '</button></article>'
           ).join('') + '</div>'
