@@ -77,7 +77,7 @@
   function enhance() {
     result.querySelectorAll('.plant-result-card').forEach(card => {
       if (enhanced.has(card)) return;
-      const name = (card.dataset.scientificName || '').toLowerCase().trim().replace(/\\s+/g, ' ');
+      const name = (card.dataset.scientificName || '').toLowerCase().trim().replace(/\s+/g, ' ');
       if (!name) return;
       enhanced.add(card);
       const record = care[name];
