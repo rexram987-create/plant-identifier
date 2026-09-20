@@ -79,7 +79,7 @@
     const key = target + ':' + extract;
     if (translationCache.has(key)) return translationCache.get(key);
     const promise = (async () => {
-      const words = extract.match(/\\S+\\s*/g) || [];
+      const words = extract.match(/\S+\s*/g) || [];
       const chunks = [];
       let current = '';
       const encoder = new TextEncoder();
@@ -125,7 +125,7 @@
       (article.image ? '<img class="wiki-image" src="' + esc(article.image) + '" alt="' + esc(article.title) + '" loading="lazy">' : '') +
       (translation ? '<p class="wiki-note" role="note">' + esc(x.translated) + '</p>' : article.language !== lang() ? '<p class="wiki-note" role="note">' + esc(x.fallback) + '</p>' : '') +
       '<p lang="' + esc(translation ? lang() : article.language) + '" dir="auto">' + esc(translation || article.extract) + '</p>' +
-      (translation ? '<details><summary>' + esc(article.title) + ' — English original</summary><p lang="en" dir="ltr">' + esc(article.extract) + '</p></details>' : '') +
+      (translation ? '<details><summary>' + esc(article.title) + ' — ' + esc(lang() === 'he' ? 'המקור באנגלית' : lang() === 'ar' ? 'النص الإنجليزي الأصلي' : 'English original') + '</summary><p lang="en" dir="ltr">' + esc(article.extract) + '</p></details>' : '') +
       '<p class="wiki-note">' + esc(x.note) + '</p>' +
       '<a class="source-link" href="' + esc(article.url) + '" target="_blank" rel="noopener noreferrer">' + esc(x.open) + '</a>';
   }
