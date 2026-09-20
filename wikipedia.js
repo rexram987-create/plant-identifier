@@ -150,7 +150,15 @@
       if (heading) heading.after(p);
       else card.prepend(p);
     }
-    if (code === 'he' && !displayName && HEBREW_TRANSLITERATIONS[normalizeTaxon(name)]) {\n      const p = document.createElement('p');\n      p.className = 'plant-common-name';\n      p.textContent = x.transliteration + ': ' + HEBREW_TRANSLITERATIONS[normalizeTaxon(name)];\n      (card.querySelector('.plant-result-heading') || card.querySelector('h3'))?.after(p);\n    }\n    const translation = article?.language === 'en' ? await translateEnglish(article.extract, code) : '';\n    if (!card.isConnected || lang() !== code) return;\n    renderArticle(panel, article, x, translation);
+    if (code === 'he' && !displayName && HEBREW_TRANSLITERATIONS[normalizeTaxon(name)]) {
+      const p = document.createElement('p');
+      p.className = 'plant-common-name';
+      p.textContent = x.transliteration + ': ' + HEBREW_TRANSLITERATIONS[normalizeTaxon(name)];
+      (card.querySelector('.plant-result-heading') || card.querySelector('h3'))?.after(p);
+    }
+    const translation = article?.language === 'en' ? await translateEnglish(article.extract, code) : '';
+    if (!card.isConnected || lang() !== code) return;
+    renderArticle(panel, article, x, translation);
   }
 
   const enhancedCards = new WeakSet();
