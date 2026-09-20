@@ -3,9 +3,9 @@
   if (!result) return;
 
   const ui = {
-    he: { common:'שם נפוץ', button:'מידע מוויקיפדיה', loading:'טוען מידע מוויקיפדיה…', noMatch:'לא נמצא כרגע ערך מתאים בוויקיפדיה.', title:'מידע מוויקיפדיה', open:'פתח את הערך בוויקיפדיה', note:'ויקיפדיה משמשת כאן למידע משלים. לזיהוי מדעי יש להשוות גם ל־GBIF ול־iNaturalist.', fallback:'אין ערך עם תקציר בעברית למין זה. המידע הבא מוצג באנגלית.' },
-    en: { common:'Common name', button:'Wikipedia information', loading:'Loading information from Wikipedia…', noMatch:'No suitable Wikipedia article was found.', title:'Wikipedia information', open:'Open article in Wikipedia', note:'Wikipedia is used here for supplementary information. Scientific identification should also be checked against GBIF and iNaturalist.', fallback:'This article is available in English.' },
-    ar: { common:'الاسم الشائع', button:'معلومات من ويكيبيديا', loading:'جارٍ تحميل معلومات من ويكيبيديا…', noMatch:'لم يتم العثور على مقالة مناسبة في ويكيبيديا.', title:'معلومات من ويكيبيديا', open:'افتح المقالة في ويكيبيديا', note:'تُستخدم ويكيبيديا هنا كمصدر معلومات إضافي. يُفضّل التحقق من التعرف العلمي أيضًا عبر GBIF وiNaturalist.', fallback:'لا تتوفر خلاصة للمقالة بالعربية. المعلومات التالية باللغة الإنجليزية.' }
+    he: { common:'שם נפוץ', button:'מידע מוויקיפדיה', loading:'טוען מידע מוויקיפדיה…', noMatch:'לא נמצא כרגע ערך מתאים בוויקיפדיה.', title:'מידע מוויקיפדיה', open:'פתח את הערך בוויקיפדיה', note:'ויקיפדיה משמשת כאן למידע משלים. לזיהוי מדעי יש להשוות גם ל־GBIF ול־iNaturalist.', fallback:'אין ערך עם תקציר בעברית למין זה. המידע הבא מוצג באנגלית.', translated:'תרגום אוטומטי לעברית מתוך ויקיפדיה האנגלית. ייתכנו שגיאות בתרגום.', transliteration:'תעתיק עברי (לא שם עברי רשמי)' },
+    en: { common:'Common name', button:'Wikipedia information', loading:'Loading information from Wikipedia…', noMatch:'No suitable Wikipedia article was found.', title:'Wikipedia information', open:'Open article in Wikipedia', note:'Wikipedia is used here for supplementary information. Scientific identification should also be checked against GBIF and iNaturalist.', fallback:'This article is available in English.', translated:'Machine-translated from English Wikipedia.', transliteration:'Hebrew transliteration (not an official common name)' },
+    ar: { common:'الاسم الشائع', button:'معلومات من ويكيبيديا', loading:'جارٍ تحميل معلومات من ويكيبيديا…', noMatch:'لم يتم العثور على مقالة مناسبة في ويكيبيديا.', title:'معلومات من ويكيبيديا', open:'افتح المقالة في ويكيبيديا', note:'تُستخدم ويكيبيديا هنا كمصدر معلومات إضافي. يُفضّل التحقق من التعرف العلمي أيضًا عبر GBIF وiNaturalist.', fallback:'لا تتوفر خلاصة للمقالة بالعربية. المعلومات التالية باللغة الإنجليزية.', translated:'ترجمة آلية من ويكيبيديا الإنجليزية.', transliteration:'نقل صوتي عبري (ليس اسمًا رسميًا)' }
   };
 
   function lang() {
@@ -72,19 +72,60 @@
     return articleCache.get(key);
   }
 
+  // Anonymous MyMemory API: each segment must be at most 500 UTF-8 bytes.
+  const translationCache = new Map();
+  async function translateEnglish(extract, target) {
+    if (!['he', 'ar'].includes(target) || !extract) return '';
+    const key = target + ':' + extract;
+    if (translationCache.has(key)) return translationCache.get(key);
+    const promise = (async () => {
+      const words = extract.match(/\\S+\\s*/g) || [];
+      const chunks = [];
+      let current = '';
+      const encoder = new TextEncoder();
+      for (const word of words) {
+        if (encoder.encode(current + word).length > 450 && current) {
+          chunks.push(current.trim()); current = '';
+        }
+        if (encoder.encode(word).length > 450) return '';
+        current += word;
+      }
+      if (current.trim()) chunks.push(current.trim());
+      if (chunks.length > 12) return '';
+      const translated = [];
+      for (const chunk of chunks) {
+        const url = 'https://api.mymemory.translated.net/get?q=' + encodeURIComponent(chunk) + '&langpair=en%7C' + target;
+        const response = await fetch(url);
+        if (!response.ok) return '';
+        const data = await response.json();
+        const value = data.responseData?.translatedText || '';
+        if (Number(data.responseStatus) !== 200 || !value || /MYMEMORY WARNING|QUERY LENGTH LIMIT/i.test(value)) return '';
+        translated.push(value);
+      }
+      return translated.join(' ');
+    })().catch(() => '');
+    translationCache.set(key, promise);
+    return promise;
+  }
+
+  const HEBREW_TRANSLITERATIONS = {
+    'nephrolepis biserrata': 'נפרולפיס ביסראטה'
+  };
+
   function scientificName(card) {
     return card.dataset.scientificName || '';
   }
 
-  function renderArticle(panel, article, x) {
+  function renderArticle(panel, article, x, translation = '') {
     if (!article) {
       panel.innerHTML = '<p>' + esc(x.noMatch) + '</p>';
       return;
     }
     panel.innerHTML = '<h4>' + esc(x.title) + ' — ' + esc(article.title) + '</h4>' +
       (article.image ? '<img class="wiki-image" src="' + esc(article.image) + '" alt="' + esc(article.title) + '" loading="lazy">' : '') +
-      (article.language !== lang() ? '<p class="wiki-note" role="note">' + esc(x.fallback) + '</p>' : '') +
-      '<p lang="' + esc(article.language) + '" dir="auto">' + esc(article.extract) + '</p>' +
+      (translation ? '<p class="wiki-note" role="note">' + esc(x.translated) + '</p>' : article.language !== lang() ? '<p class="wiki-note" role="note">' + esc(x.fallback) + '</p>' : '') +
+      '<p lang="' + esc(translation ? lang() : article.language) + '" dir="auto">' + esc(translation || article.extract) + '</p>' +
+      (translation ? '<details><summary>' + esc(article.title) + ' — English original</summary><p lang="en" dir="ltr">' + esc(article.extract) + '</p></details>' : '') +
       '<p class="wiki-note">' + esc(x.note) + '</p>' +
       '<a class="source-link" href="' + esc(article.url) + '" target="_blank" rel="noopener noreferrer">' + esc(x.open) + '</a>';
   }
@@ -109,7 +150,7 @@
       if (heading) heading.after(p);
       else card.prepend(p);
     }
-    renderArticle(panel, article, x);
+    if (code === 'he' && !displayName && HEBREW_TRANSLITERATIONS[normalizeTaxon(name)]) {\n      const p = document.createElement('p');\n      p.className = 'plant-common-name';\n      p.textContent = x.transliteration + ': ' + HEBREW_TRANSLITERATIONS[normalizeTaxon(name)];\n      (card.querySelector('.plant-result-heading') || card.querySelector('h3'))?.after(p);\n    }\n    const translation = article?.language === 'en' ? await translateEnglish(article.extract, code) : '';\n    if (!card.isConnected || lang() !== code) return;\n    renderArticle(panel, article, x, translation);
   }
 
   const enhancedCards = new WeakSet();
