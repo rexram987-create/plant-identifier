@@ -3,9 +3,9 @@
   if (!result) return;
 
   const ui = {
-    he: { common:'שם נפוץ', button:'מידע מוויקיפדיה', loading:'טוען מידע מוויקיפדיה…', noMatch:'לא נמצא כרגע ערך מתאים בוויקיפדיה.', title:'מידע מוויקיפדיה', open:'פתח את הערך בוויקיפדיה', note:'ויקיפדיה משמשת כאן למידע משלים. לזיהוי מדעי יש להשוות גם ל־GBIF ול־iNaturalist.' },
-    en: { common:'Common name', button:'Wikipedia information', loading:'Loading information from Wikipedia…', noMatch:'No suitable Wikipedia article was found.', title:'Wikipedia information', open:'Open article in Wikipedia', note:'Wikipedia is used here for supplementary information. Scientific identification should also be checked against GBIF and iNaturalist.' },
-    ar: { common:'الاسم الشائع', button:'معلومات من ويكيبيديا', loading:'جارٍ تحميل معلومات من ويكيبيديا…', noMatch:'لم يتم العثور على مقالة مناسبة في ويكيبيديا.', title:'معلومات من ويكيبيديا', open:'افتح المقالة في ويكيبيديا', note:'تُستخدم ويكيبيديا هنا كمصدر معلومات إضافي. يُفضّل التحقق من التعرف العلمي أيضًا عبر GBIF وiNaturalist.' }
+    he: { common:'שם נפוץ', button:'מידע מוויקיפדיה', loading:'טוען מידע מוויקיפדיה…', noMatch:'לא נמצא כרגע ערך מתאים בוויקיפדיה.', title:'מידע מוויקיפדיה', open:'פתח את הערך בוויקיפדיה', note:'ויקיפדיה משמשת כאן למידע משלים. לזיהוי מדעי יש להשוות גם ל־GBIF ול־iNaturalist.', fallback:'אין ערך עם תקציר בעברית למין זה. המידע הבא מוצג באנגלית.' },
+    en: { common:'Common name', button:'Wikipedia information', loading:'Loading information from Wikipedia…', noMatch:'No suitable Wikipedia article was found.', title:'Wikipedia information', open:'Open article in Wikipedia', note:'Wikipedia is used here for supplementary information. Scientific identification should also be checked against GBIF and iNaturalist.', fallback:'This article is available in English.' },
+    ar: { common:'الاسم الشائع', button:'معلومات من ويكيبيديا', loading:'جارٍ تحميل معلومات من ويكيبيديا…', noMatch:'لم يتم العثور على مقالة مناسبة في ويكيبيديا.', title:'معلومات من ويكيبيديا', open:'افتح المقالة في ويكيبيديا', note:'تُستخدم ويكيبيديا هنا كمصدر معلومات إضافي. يُفضّل التحقق من التعرف العلمي أيضًا عبر GBIF وiNaturalist.', fallback:'لا تتوفر خلاصة للمقالة بالعربية. المعلومات التالية باللغة الإنجليزية.' }
   };
 
   function lang() {
@@ -83,7 +83,8 @@
     }
     panel.innerHTML = '<h4>' + esc(x.title) + ' — ' + esc(article.title) + '</h4>' +
       (article.image ? '<img class="wiki-image" src="' + esc(article.image) + '" alt="' + esc(article.title) + '" loading="lazy">' : '') +
-      '<p>' + esc(article.extract) + '</p>' +
+      (article.language !== lang() ? '<p class="wiki-note" role="note">' + esc(x.fallback) + '</p>' : '') +
+      '<p lang="' + esc(article.language) + '" dir="auto">' + esc(article.extract) + '</p>' +
       '<p class="wiki-note">' + esc(x.note) + '</p>' +
       '<a class="source-link" href="' + esc(article.url) + '" target="_blank" rel="noopener noreferrer">' + esc(x.open) + '</a>';
   }
@@ -98,8 +99,8 @@
     card.appendChild(panel);
     const localName = window.PlantNameSearch?.commonNameForScientific?.(name, code) || '';
     const {article, commonName} = await fetchPlantDetails(name, code);
-    if (!card.isConnected) return;
-    const displayName = localName || commonName;
+    if (!card.isConnected || lang() !== code) return;
+    const displayName = localName || (code === 'he' && !/[\u0590-\u05FF]/.test(commonName) ? '' : code === 'ar' && !/[\u0600-\u06FF]/.test(commonName) ? '' : commonName);
     if (displayName && !card.querySelector('.plant-common-name')) {
       const p = document.createElement('p');
       p.className = 'plant-common-name';
