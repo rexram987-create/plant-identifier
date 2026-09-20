@@ -1,0 +1,6 @@
+.plant-care-guide { margin-block: 1rem; border: 1px solid rgba(170,235,204,.24); border-radius: 1.25rem; padding: 1rem; background: rgba(155,230,190,.05); overflow-wrap: anywhere; }
+.plant-care-guide > summary { cursor: pointer; font-weight: 750; font-size: 1.1em; line-height: 1.5; }
+.plant-care-guide > summary:focus-visible { outline: 3px solid #a9ebc9; outline-offset: 4px; }
+.plant-care-content { margin-block-start: 1rem; line-height: 1.65; }
+.plant-care-content p { margin-block: .75rem; }
+.plant-care-content a { overflow-wrap: anywhere; }
