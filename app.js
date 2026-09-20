@@ -183,7 +183,17 @@ async function identifyPhoto(file) {
       '</section>';
   } catch (error) {
     console.error(error);
-    showMessage('error', 'plantnetUnavailable');
+    const messages = {
+      image_too_large: {he: 'התמונה גדולה מדי לשליחה. נסה תמונה קטנה יותר.', en: 'The image is too large to send. Try a smaller photo.', ar: 'الصورة كبيرة جدًا للإرسال. جرّب صورة أصغر.'},
+      image_conversion_failed: {he: 'לא הצלחנו להכין את התמונה. נסה תמונה אחרת.', en: 'Could not prepare the image. Try another photo.', ar: 'تعذر تجهيز الصورة. جرّب صورة أخرى.'},
+      unsupported_image_type: {he: 'יש לבחור קובץ תמונה.', en: 'Please choose an image file.', ar: 'يرجى اختيار ملف صورة.'},
+      network_error: {he: 'החיבור נכשל. בדוק את האינטרנט ונסה שוב.', en: 'Connection failed. Check your internet and retry.', ar: 'فشل الاتصال. تحقق من الإنترنت وأعد المحاولة.'},
+      plantnet_not_configured: {he: 'שירות זיהוי התמונות אינו מוגדר בשרת.', en: 'Image identification is not configured on the server.', ar: 'خدمة التعرف على الصور غير مهيأة على الخادم.'},
+      plantnet_error: {he: 'PlantNet דחה את הבקשה. נסה שוב מאוחר יותר.', en: 'PlantNet rejected the request. Please retry later.', ar: 'رفض PlantNet الطلب. حاول لاحقًا.'}
+    };
+    const message = messages[error.message]?.[document.documentElement.lang] || t().plantnetUnavailable;
+    view = {type: 'error', message};
+    renderView();
   } finally {
     photoBusy = false;
     activeInferenceId = null;
