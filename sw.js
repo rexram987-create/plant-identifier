@@ -1,9 +1,9 @@
-const CACHE = 'plant-identifier-v41';
+const CACHE = 'plant-identifier-v42';
 const MODEL_CACHE = 'plant-ai-model-v3';
 const OFFLINE_ASSETS = [
   './', './index.html', './styles.css?v=22', './mobile-fix.css?v=22', './inaturalist.css', './wikipedia.css',
   './local-name-search.js?v=25', './translations-extra.js?v=22', './image-identification.js?v=26', './plantnet-client.js?v=1',
-  './app.js?v=40', './inaturalist.js?v=21', './wikipedia.js?v=25', './install.js?v=36',
+  './app.js?v=40', './plant-care.js?v=1', './plant-care.css?v=1', './inaturalist.js?v=21', './wikipedia.js?v=25', './install.js?v=36',
   './manifest.webmanifest', './icon-192.png', './icon-512.png',
   './vendor/onnxruntime-1.22.0/ort.min.js',
   './vendor/onnxruntime-1.22.0/ort-wasm-simd-threaded.jsep.mjs',
