@@ -44,7 +44,13 @@ async function handler(req, res) {
 
     const upstream = await fetch(buildPlantNetUrl(apiKey), {method: 'POST', body: form});
     const payload = await upstream.json().catch(() => ({}));
-    if (!upstream.ok) return res.status(upstream.status).json({error: 'plantnet_error'});
+    if (!upstream.ok) {
+      console.error('PlantNet request failed with HTTP status', upstream.status);
+      return res.status(upstream.status).json({
+        error: 'plantnet_error',
+        upstreamStatus: upstream.status
+      });
+    }
     return res.status(200).json({source: 'Pl@ntNet', results: normaliseResults(payload)});
   } catch (error) {
     console.error('PlantNet proxy error', error);
