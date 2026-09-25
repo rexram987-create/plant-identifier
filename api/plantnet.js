@@ -3,16 +3,26 @@ const PLANTNET_ENDPOINT = 'https://my-api.plantnet.org/v2/identify/all';
 function buildPlantNetUrl(apiKey) {
   const url = new URL(PLANTNET_ENDPOINT);
   url.searchParams.set('api-key', apiKey);
-  url.searchParams.set('nb-results', '3');
+  url.searchParams.set('nb-results', '5');
+  url.searchParams.set('detailed', 'true');
   url.searchParams.set('lang', 'en');
   return url;
 }
 
+function normaliseTaxon(items) {
+  return (Array.isArray(items) ? items : []).slice(0, 3).map(item => ({
+    name: item?.scientificNameWithoutAuthor || item?.scientificName || item?.name || item?.taxon?.scientificNameWithoutAuthor || item?.taxon?.scientificName || '',
+    score: Number(item?.score) || 0
+  })).filter(item => item.name);
+}
+
 function normaliseResults(payload) {
-  return (payload?.results || []).slice(0, 3).map(result => ({
+  return (payload?.results || []).slice(0, 5).map(result => ({
     scientificName: result?.species?.scientificNameWithoutAuthor || result?.species?.scientificName || '',
     commonNames: Array.isArray(result?.species?.commonNames) ? result.species.commonNames : [],
-    score: Number(result?.score) || 0
+    score: Number(result?.score) || 0,
+    genus: result?.species?.genus?.scientificNameWithoutAuthor || '',
+    family: result?.species?.family?.scientificNameWithoutAuthor || ''
   })).filter(result => result.scientificName);
 }
 
@@ -76,7 +86,14 @@ async function handler(req, res) {
         keyCheck
       });
     }
-    return res.status(200).json({source: 'Pl@ntNet', results: normaliseResults(payload)});
+    return res.status(200).json({
+      source: 'Pl@ntNet',
+      results: normaliseResults(payload),
+      taxonomy: {
+        genus: normaliseTaxon(payload?.otherResults?.genus),
+        family: normaliseTaxon(payload?.otherResults?.family)
+      }
+    });
   } catch (error) {
     console.error('PlantNet proxy error', error);
     return res.status(502).json({error: 'plantnet_unavailable'});
