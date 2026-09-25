@@ -180,8 +180,23 @@
     return '';
   }
 
+  // These are genus-level labels, never species-level identifications.
+  // Corymbia is botanically distinct from Eucalyptus; both are commonly called eucalypts.
+  const VERIFIED_GENUS_LABELS = {
+    he: {
+      eucalyptus: 'אקליפטוס',
+      corymbia: 'קורימביה (מקבוצת האקליפטוסים)'
+    },
+    en: {eucalyptus: 'Eucalyptus', corymbia: 'Corymbia (eucalypt group)'},
+    ar: {eucalyptus: 'الأوكالبتوس', corymbia: 'كوريمبيا (من مجموعة الأوكالبتوس)'}
+  };
+  function commonNameForGenus(scientificGenus, lang = 'he') {
+    const genus = normalize(scientificGenus).split(' ')[0];
+    return VERIFIED_GENUS_LABELS[lang]?.[genus] || '';
+  }
+
   // Warm the official Israeli dataset in the background; cached names remain available offline afterwards.
   if (typeof navigator === 'undefined' || navigator.onLine !== false) syncAgricultureNames();
 
-  window.PlantNameSearch = {resolveLocalName, detectLanguage, syncAgricultureNames, commonNameForScientific};
+  window.PlantNameSearch = {resolveLocalName, detectLanguage, syncAgricultureNames, commonNameForScientific, commonNameForGenus};
 })();
