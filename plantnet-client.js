@@ -38,7 +38,11 @@
     }
     const payload = await response.json().catch(() => ({}));
     if (!response.ok) {
-      const error = new Error(response.status === 413 ? 'image_too_large' : payload.error || 'plantnet_request_failed');
+      const code = response.status === 413 ? 'image_too_large' :
+        payload.keyCheck === 'rejected' ? 'plantnet_key_rejected' :
+        response.status === 404 && payload.keyCheck === 'accepted' ? 'plantnet_404_key_valid' :
+        payload.error || 'plantnet_request_failed';
+      const error = new Error(code);
       error.status = response.status;
       throw error;
     }
