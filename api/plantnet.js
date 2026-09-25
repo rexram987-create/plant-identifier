@@ -45,10 +45,35 @@ async function handler(req, res) {
     const upstream = await fetch(buildPlantNetUrl(apiKey), {method: 'POST', body: form});
     const payload = await upstream.json().catch(() => ({}));
     if (!upstream.ok) {
-      console.error('PlantNet request failed with HTTP status', upstream.status);
+      // Pl@ntNet documents 404 "Species not found" as an identification outcome.
+      // Do not log provider response bodies, image contents, or the API key.
+      const description = [payload?.message, payload?.error, payload?.detail]
+        .filter(value => typeof value === 'string').join(' ');
+      const speciesNotFound = upstream.status === 404 && /species not found/i.test(description);
+      if (speciesNotFound) {
+        console.info('PlantNet identification returned no species (HTTP 404)');
+        return res.status(200).json({source: 'Pl@ntNet', results: []});
+      }
+
+      let keyCheck = 'not_checked';
+      if (upstream.status === 404) {
+        try {
+          const quotaUrl = new URL('https://my-api.plantnet.org/v2/quota');
+          quotaUrl.searchParams.set('api-key', apiKey);
+          const quotaResponse = await fetch(quotaUrl, {signal: AbortSignal.timeout(4000)});
+          keyCheck = quotaResponse.ok ? 'accepted' :
+            [401, 403].includes(quotaResponse.status) ? 'rejected' : 'inconclusive';
+        } catch {
+          keyCheck = 'unavailable';
+        }
+      }
+      console.error('PlantNet identification failed', JSON.stringify({
+        status: upstream.status, keyCheck
+      }));
       return res.status(upstream.status).json({
         error: 'plantnet_error',
-        upstreamStatus: upstream.status
+        upstreamStatus: upstream.status,
+        keyCheck
       });
     }
     return res.status(200).json({source: 'Pl@ntNet', results: normaliseResults(payload)});

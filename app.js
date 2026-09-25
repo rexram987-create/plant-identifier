@@ -189,7 +189,9 @@ async function identifyPhoto(file) {
       unsupported_image_type: {he: 'יש לבחור קובץ תמונה.', en: 'Please choose an image file.', ar: 'يرجى اختيار ملف صورة.'},
       network_error: {he: 'החיבור נכשל. בדוק את האינטרנט ונסה שוב.', en: 'Connection failed. Check your internet and retry.', ar: 'فشل الاتصال. تحقق من الإنترنت وأعد المحاولة.'},
       plantnet_not_configured: {he: 'שירות זיהוי התמונות אינו מוגדר בשרת.', en: 'Image identification is not configured on the server.', ar: 'خدمة التعرف على الصور غير مهيأة على الخادم.'},
-      plantnet_error: {he: 'PlantNet דחה את הבקשה. נסה שוב מאוחר יותר.', en: 'PlantNet rejected the request. Please retry later.', ar: 'رفض PlantNet الطلب. حاول لاحقًا.'}
+      plantnet_key_rejected: {he: 'Pl@ntNet דחה את מפתח ה־API שמוגדר בשרת. יש לבדוק את הגדרת המפתח ב־Vercel.', en: 'Pl@ntNet rejected the server API key. Check the Vercel key configuration.', ar: 'رفض Pl@ntNet مفتاح API على الخادم. تحقق من إعداد المفتاح في Vercel.'},
+      plantnet_404_key_valid: {he: 'Pl@ntNet החזיר שגיאת 404, אך מפתח ה־API התקבל בבדיקת המכסה. נסה תמונת צמח ברורה נוספת.', en: 'Pl@ntNet returned 404, but the API key passed the quota check. Try another clear plant photo.', ar: 'أعاد Pl@ntNet خطأ 404، لكن مفتاح API اجتاز فحص الحصة. جرّب صورة نبات واضحة أخرى.'},
+      plantnet_error: {he: 'Pl@ntNet דחה את הבקשה. נסה שוב מאוחר יותר.', en: 'Pl@ntNet rejected the request. Please retry later.', ar: 'رفض PlantNet الطلب. حاول لاحقًا.'}
     };
     const message = messages[error.message]?.[document.documentElement.lang] || t().plantnetUnavailable;
     view = {type: 'error', message};
