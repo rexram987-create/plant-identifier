@@ -46,7 +46,9 @@
       error.status = response.status;
       throw error;
     }
-    return payload.results || [];
+    const results = Array.isArray(payload.results) ? payload.results : [];
+    results.taxonomy = payload.taxonomy || {genus: [], family: []};
+    return results;
   }
 
   window.PlantNetAI = {identify};
