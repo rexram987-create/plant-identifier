@@ -187,18 +187,22 @@ async function identifyPhoto(file) {
       (uncertain && candidateGenusLocal ? '<p class="result-message"><strong>' + esc(x.possibleGeneralName) + ': ' + esc(candidateGenusLocal) + '</strong><br><small>' + esc(x.genusOnlyDisclaimer) + '</small></p>' : '') +
       taxonomyHint +
       (plantnetResults.length
-        ? '<div class="results-grid">' + plantnetResults.map((r, i) =>
-            '<article class="plant-result-card" data-scientific-name="' + esc(r.scientificName) + '">' +
-            '<div class="plant-result-heading"><h3>' + (i + 1) + '. ' +
-              (window.PlantNameSearch?.commonNameForScientific?.(r.scientificName, document.documentElement.lang)
-                ? esc(window.PlantNameSearch.commonNameForScientific(r.scientificName, document.documentElement.lang)) + '<br>'
-                : '') +
-              '<em>' + esc(r.scientificName) + '</em></h3><span class="source-badge">Pl@ntNet</span></div>' +
-
-            (document.documentElement.lang === 'en' && r.commonNames?.length ? '<p lang="en">' + esc(r.commonNames.join(', ')) + '</p>' : '') +
-            '<p><strong>' + esc(x.confidence) + ': ' + (r.score * 100).toFixed(1) + '%</strong></p>' +
-            '<button class="details-button" type="button" data-ai-search="' + esc(r.scientificName) + '">' + esc(x.detailsButton) + '</button></article>'
-          ).join('') + '</div>'
+        ? '<div class="results-grid">' + plantnetResults.map((r, i) => {
+            const speciesLocal = window.PlantNameSearch?.commonNameForScientific?.(r.scientificName, document.documentElement.lang) || '';
+            // Each card uses its own Pl@ntNet genus. Never borrow the first result's genus.
+            const genusLocal = !speciesLocal && uncertain
+              ? window.PlantNameSearch?.commonNameForGenus?.(r.genus, document.documentElement.lang) || ''
+              : '';
+            const displayName = speciesLocal || genusLocal;
+            return '<article class="plant-result-card" data-scientific-name="' + esc(r.scientificName) + '">' +
+              '<div class="plant-result-heading"><h3>' + (i + 1) + '. ' +
+                (displayName ? esc(displayName) + '<br>' : '') +
+                '<em>' + esc(r.scientificName) + '</em></h3><span class="source-badge">Pl@ntNet</span></div>' +
+              (genusLocal ? '<p class="plant-common-name"><small>' + esc(x.genusOnlyDisclaimer) + '</small></p>' : '') +
+              (document.documentElement.lang === 'en' && r.commonNames?.length ? '<p lang="en">' + esc(r.commonNames.join(', ')) + '</p>' : '') +
+              '<p><strong>' + esc(x.confidence) + ': ' + (r.score * 100).toFixed(1) + '%</strong></p>' +
+              '<button class="details-button" type="button" data-ai-search="' + esc(r.scientificName) + '">' + esc(x.detailsButton) + '</button></article>';
+          }).join('') + '</div>'
         : '<p class="result-message">' + esc(x.plantnetNoResults) + '</p>') +
       '</section>';
   } catch (error) {
